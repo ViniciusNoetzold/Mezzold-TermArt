@@ -1,0 +1,39 @@
+{
+  "username": "ViniciusNoetzold",
+  "name": "Vinícius de Almeida Noetzold",
+  "portrait": {
+    "image": "assets/photo.jpg",
+    "out": "Vini2-ascii.svg",
+    "cols": 80,
+    "braille": false
+  },
+  "signature": {
+    "image": "assets/signature.png",
+    "out": "vinicius-wordmark.svg",
+    "title": "./signature.sh",
+    "cols": 58,
+    "width": 560,
+    "height": 385
+  },
+  "heatmap": true,
+  "city_3d": true,
+  "neofetch": [
+    ["Title", "Vinícius de Almeida Noetzold", "#e3b341"],
+    ["Role", "Tech Support Analyst @ Hansen Software", "#c9d1d9"],
+    ["Education", "B.S. in Computer Science (Student)", "#c9d1d9"],
+    ["Focus", "Systems, APIs, Automation, QA & AI", "#39c5cf"],
+    ["Languages", "Python, Java, TypeScript, JavaScript, SQL", "#56d364"],
+    ["Backend", "Spring Boot, Fastify, Node.js, REST APIs", "#c9d1d9"],
+    ["Data & Tools", "PostgreSQL, Redis, SQLite, Docker, Git", "#c9d1d9"],
+    ["Highlights", "Mezzold Connect, YouTube Trend, QuotePRO, EduSystem", "#f0883e"],
+    ["Status", "Connecting Support, Dev and Quality", "#56d364"]
+  ],
+  "bottom_logo": {
+    "image": "assets/mezzold-logo.png",
+    "out": "mezzold-studios.svg",
+    "title": "./mezzold_studios.sh",
+    "cols": 76,
+    "width": 860,
+    "height": 420
+  }
+}

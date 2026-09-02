@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*$py.class
+_temp*
+_upload*
+dist/
+build/
+*.egg-info/
+.env
+.DS_Store
+
+# Ignore large upstream clone working trees from git tracking
+upstream/
+
+# Ignore loose test files in root
+/*.svg
+/*.png
+/*.jpg
+/*.jpeg
