@@ -9,7 +9,7 @@ __author__ = "Mezzold Studios"
 # Auto-import all module plugins into the registry
 from .modules.image import chafa_engine, ascii_braille, portrait, signature
 from .modules.profile import heatmap, neofetch, stats_card
-from .modules.isometric_3d import wordmark_3d, city_3d
+from .modules.isometric_3d import wordmark_3d, city_3d, typography
 from .modules.recorder import vhs_recorder, agg_generator
 from .modules.fx import pipes_svg
 

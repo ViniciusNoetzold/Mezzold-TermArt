@@ -63,6 +63,11 @@ def cmd_wordmark(args):
     res = p.run(text=args.text, out_svg=args.out, username=args.username, cols=args.cols)
     print(f"[TermArt] ✓ 3D Wordmark generated: {res.get('output_path')} ({res.get('frames')} frames)")
 
+def cmd_text(args):
+    p = registry.get("typography")
+    res = p.run(text=args.text, out_svg=args.out, font_name=args.font, username=args.username)
+    print(f"[TermArt] ✓ ASCII Typography generated: {res.get('output_path')}")
+
 def cmd_heatmap(args):
     p = registry.get("heatmap")
     res = p.run(username=args.username, out_svg=args.out)
@@ -146,6 +151,14 @@ def main():
     wo_p.add_argument("--username", default="developer")
     wo_p.add_argument("--cols", type=int, default=52)
     wo_p.set_defaults(func=cmd_wordmark)
+
+    # text
+    tx_p = sub.add_parser("text", help="Generate high-legibility FIGlet ASCII typography banner SVG")
+    tx_p.add_argument("--text", required=True, help="Text to render (use \\n for newline)")
+    tx_p.add_argument("--out", default="typography.svg")
+    tx_p.add_argument("--font", default="slant", help="FIGlet font (slant, standard, doom, small, big)")
+    tx_p.add_argument("--username", default="developer")
+    tx_p.set_defaults(func=cmd_text)
 
     # heatmap
     he_p = sub.add_parser("heatmap", help="Scrape contributions & generate animated SVG heatmap")
