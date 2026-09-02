@@ -50,6 +50,7 @@ class SignaturePlugin(BasePlugin):
         titlebar_h: int = 32,
         pad_x: int = 24,
         accent_color: str = "#58a6ff",
+        braille: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         temp_crop = os.path.join(os.path.dirname(os.path.abspath(out_svg)), "_temp_crop.png")
@@ -57,7 +58,7 @@ class SignaturePlugin(BasePlugin):
         cropped.save(temp_crop)
 
         conv = AsciiBraillePlugin()
-        res = conv.run(image_path=temp_crop, width=cols, braille=True)
+        res = conv.run(image_path=temp_crop, width=cols, braille=braille)
         all_lines = res.get("lines", [])
         if os.path.exists(temp_crop):
             try:

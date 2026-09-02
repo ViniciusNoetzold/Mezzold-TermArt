@@ -55,7 +55,7 @@ def cmd_portrait(args):
 
 def cmd_signature(args):
     p = registry.get("signature")
-    res = p.run(image_path=args.image, out_svg=args.out, title=args.title, username=args.username, cols=args.cols)
+    res = p.run(image_path=args.image, out_svg=args.out, title=args.title, username=args.username, cols=args.cols, braille=args.braille)
     print(f"[TermArt] ✓ Signature generated: {res.get('output_path')}")
 
 def cmd_wordmark(args):
@@ -142,6 +142,7 @@ def main():
     si_p.add_argument("--title", default="./signature.sh")
     si_p.add_argument("--username", default="developer")
     si_p.add_argument("--cols", type=int, default=58)
+    si_p.add_argument("--braille", action="store_true", help="Use braille dots instead of pure ASCII characters")
     si_p.set_defaults(func=cmd_signature)
 
     # wordmark
