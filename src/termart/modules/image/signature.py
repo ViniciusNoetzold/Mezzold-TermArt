@@ -240,19 +240,22 @@ class SignaturePlugin(BasePlugin):
                 f'font-size="{font_size:.1f}" text-anchor="middle">{text_content}</text>'
             )
 
-            clip_id = f"clp_{clip_pfx}_{ry}"
-            parts.append(
-                f'<clipPath id="{clip_id}"><rect x="0" y="{row_top:.1f}" height="{line_spacing*1.2:.1f}" width="0">'
-                f'<animate attributeName="width" from="0" to="{canvas_w}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
-                f'</rect></clipPath>'
-            )
-            parts.append(f'<g clip-path="url(#{clip_id})">{text}</g>')
-            parts.append(
-                f'<rect y="{row_top+2:.1f}" width="9" height="{line_spacing-2:.1f}" fill="{CURSOR}" opacity="0">'
-                f'<animate attributeName="x" from="{pad_x}" to="{canvas_w-pad_x}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
-                f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
-                f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
-            )
+            if anim_mode != "none":
+                clip_id = f"clp_{clip_pfx}_{ry}"
+                parts.append(
+                    f'<clipPath id="{clip_id}"><rect x="0" y="{row_top:.1f}" height="{line_spacing*1.2:.1f}" width="{canvas_w}">'
+                    f'<animate attributeName="width" from="0" to="{canvas_w}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
+                    f'</rect></clipPath>'
+                )
+                parts.append(f'<g clip-path="url(#{clip_id})">{text}</g>')
+                parts.append(
+                    f'<rect y="{row_top+2:.1f}" width="9" height="{line_spacing-2:.1f}" fill="{CURSOR}" opacity="0">'
+                    f'<animate attributeName="x" from="{pad_x}" to="{canvas_w-pad_x}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
+                    f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
+                    f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
+                )
+            else:
+                parts.append(text)
 
         parts.append(get_animation_close(clip_pfx, anim_mode, art_w=canvas_w))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h, accent=accent_color))

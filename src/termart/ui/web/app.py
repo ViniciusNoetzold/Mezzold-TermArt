@@ -2810,6 +2810,43 @@ Sleep 3s
         const doc = parser.parseFromString(svgStr, "image/svg+xml");
         const svgEl = doc.documentElement;
 
+        // 1. Unmask typewriter clipPaths so art is immediately 100% visible in static canvas
+        doc.querySelectorAll('[clip-path]').forEach(el => {
+          const cp = el.getAttribute('clip-path') || '';
+          if (cp.includes('clp_') || cp.includes('reveal') || cp.includes('type')) {
+            el.removeAttribute('clip-path');
+          }
+        });
+        doc.querySelectorAll('clipPath').forEach(cp => {
+          const id = cp.getAttribute('id') || '';
+          if (id.startsWith('clp_') || id.includes('reveal') || id.includes('type')) {
+            cp.remove();
+          }
+        });
+
+        // 2. Remove temporary cursor animation elements
+        doc.querySelectorAll('rect').forEach(r => {
+          if (r.getAttribute('opacity') === '0' && r.querySelector('set[attributeName="opacity"]')) {
+            r.remove();
+          }
+        });
+
+        // 3. Ensure any remaining clipPath rects are not zero-width
+        doc.querySelectorAll('clipPath rect').forEach(r => {
+          if (r.getAttribute('width') === '0') {
+            r.setAttribute('width', '100%');
+          }
+        });
+
+        // 4. Freeze animation final states
+        doc.querySelectorAll('animate, set').forEach(anim => {
+          const attr = anim.getAttribute('attributeName');
+          const toVal = anim.getAttribute('to');
+          if (attr && toVal && anim.parentElement) {
+            anim.parentElement.setAttribute(attr, toVal);
+          }
+        });
+
         let width = parseFloat(svgEl.getAttribute("width"));
         let height = parseFloat(svgEl.getAttribute("height"));
         const viewBox = svgEl.getAttribute("viewBox");

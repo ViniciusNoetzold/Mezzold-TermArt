@@ -109,19 +109,22 @@ class PortraitPlugin(BasePlugin):
                 f'<text xml:space="preserve" x="{PAD}" y="{y:.1f}" fill="{INK}" font-size="{FONT_SIZE:.1f}" '
                 f'textLength="{ART_W}" lengthAdjust="spacing">{safe_line}</text>'
             )
-            clip_id = f"clp_{clip_pfx}_{ry}"
-            parts.append(
-                f'<clipPath id="{clip_id}"><rect x="{PAD}" y="{row_y:.1f}" height="{CELL_H:.1f}" width="0">'
-                f'<animate attributeName="width" from="0" to="{ART_W}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
-                f'</rect></clipPath>'
-            )
-            parts.append(f'<g clip-path="url(#{clip_id})">{text}</g>')
-            parts.append(
-                f'<rect y="{row_y+1:.1f}" width="{CELL_W:.1f}" height="{CELL_H-2:.1f}" fill="{CURSOR}" opacity="0">'
-                f'<animate attributeName="x" from="{PAD}" to="{PAD+ART_W}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
-                f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
-                f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
-            )
+            if anim_mode != "none":
+                clip_id = f"clp_{clip_pfx}_{ry}"
+                parts.append(
+                    f'<clipPath id="{clip_id}"><rect x="{PAD}" y="{row_y:.1f}" height="{CELL_H:.1f}" width="{ART_W}">'
+                    f'<animate attributeName="width" from="0" to="{ART_W}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
+                    f'</rect></clipPath>'
+                )
+                parts.append(f'<g clip-path="url(#{clip_id})">{text}</g>')
+                parts.append(
+                    f'<rect y="{row_y+1:.1f}" width="{CELL_W:.1f}" height="{CELL_H-2:.1f}" fill="{CURSOR}" opacity="0">'
+                    f'<animate attributeName="x" from="{PAD}" to="{PAD+ART_W}" begin="{delay:.3f}s" dur="{ROW_DUR:.2f}s" fill="freeze"/>'
+                    f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
+                    f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
+                )
+            else:
+                parts.append(text)
 
         parts.append(get_animation_close(clip_pfx, anim_mode, art_w=canvas_w))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, CANVAS_H, TITLEBAR_H, accent=accent_color))
