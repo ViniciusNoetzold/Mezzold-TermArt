@@ -7,6 +7,7 @@ import os
 from typing import Dict, Any
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
+from ...core.animator import get_animation_defs, get_animation_open, get_animation_close, get_animation_overlays
 from .ascii_braille import AsciiBraillePlugin
 
 @registry.register
@@ -25,7 +26,9 @@ class PortraitPlugin(BasePlugin):
         braille: bool = False,
         canvas_w: int = 840,
         accent_color: str = "#58a6ff",
-        oscillate: bool = False,
+        anim_mode: str = "oscillate",
+        scanline: bool = False,
+        oscillate: bool = None,
         **kwargs
     ) -> Dict[str, Any]:
         conv = AsciiBraillePlugin()
@@ -62,15 +65,24 @@ class PortraitPlugin(BasePlugin):
 
         clip_pfx = os.path.basename(out_svg).replace("-", "_").replace(".", "_")
 
+        if oscillate is not None:
+            anim_mode = "oscillate" if oscillate else "none"
+
+        cx = canvas_w / 2
+        cy = (TITLEBAR_H + ART_H) / 2
+
         parts = []
         parts.append(
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{canvas_w}" height="{CANVAS_H}" '
             f'viewBox="0 0 {canvas_w} {CANVAS_H}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">'
         )
         parts.append(
-            f'<defs><linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
+            f'<defs>'
+            f'<linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>'
-            f'</linearGradient></defs>'
+            f'</linearGradient>'
+            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, CANVAS_H)}'
+            f'</defs>'
         )
         parts.append(f'<rect width="{canvas_w}" height="{CANVAS_H}" rx="12" fill="url(#bg_{clip_pfx})"/>')
         parts.append(f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{CANVAS_H-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1"/>')
@@ -81,18 +93,10 @@ class PortraitPlugin(BasePlugin):
 
         parts.append(
             f'<text x="{canvas_w/2}" y="{TITLEBAR_H/2 + 4}" fill="{TITLE_TEXT}" font-size="12" '
-            f'text-anchor="middle">{html.escape(username)}@github: ~/whoami</text>'
+            f'text-anchor="middle">{html.escape(username)}@github: ~/whoami --anim={anim_mode}</text>'
         )
 
-        cx = canvas_w / 2
-        cy = (TITLEBAR_H + ART_H) / 2
-        if oscillate:
-            parts.append(
-                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
-                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
-                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
-                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
-            )
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy))
 
         art_top = TITLEBAR_H + PAD * 0.4
         for ry, line in enumerate(lines):
@@ -119,8 +123,8 @@ class PortraitPlugin(BasePlugin):
                 f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
             )
 
-        if oscillate:
-            parts.append('</g>')
+        parts.append(get_animation_close())
+        parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, CANVAS_H, TITLEBAR_H, accent=accent_color))
 
         status_line_y = TITLEBAR_H + ART_H + PAD * 0.35
         status_y = status_line_y + 19

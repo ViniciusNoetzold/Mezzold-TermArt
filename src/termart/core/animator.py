@@ -1,0 +1,91 @@
+"""
+Mezzold TermArt - Universal SVG Animation Engine
+Provides GPU-accelerated SVG animations for any ASCII art:
+- 3D Floating & Tilt Oscillation
+- Continuous Digital Rain / Waterfall Cascade
+- Gravity Drop & Snap Collision
+- Cybernetic Pulse (Breathing Glow)
+- CRT Laser Scanline / Radar Sweep Overlay
+"""
+
+def get_animation_defs(clip_pfx: str, anim_mode: str, scanline: bool, canvas_w: int, canvas_h: int) -> str:
+    defs = []
+    if scanline or anim_mode == "radar":
+        defs.append(
+            f'<linearGradient id="radar_beam_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
+            f'<stop offset="0%" stop-color="#00ffff" stop-opacity="0"/>'
+            f'<stop offset="60%" stop-color="#00ffff" stop-opacity="0.12"/>'
+            f'<stop offset="100%" stop-color="#39c5cf" stop-opacity="0.75"/>'
+            f'</linearGradient>'
+        )
+    if anim_mode == "cascade":
+        defs.append(
+            f'<linearGradient id="cascade_grad_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
+            f'<stop offset="0%" stop-color="#fff" stop-opacity="0.2"/>'
+            f'<stop offset="35%" stop-color="#fff" stop-opacity="1"/>'
+            f'<stop offset="70%" stop-color="#fff" stop-opacity="0.3"/>'
+            f'<stop offset="100%" stop-color="#fff" stop-opacity="0.2"/>'
+            f'</linearGradient>'
+            f'<mask id="cascade_mask_{clip_pfx}">'
+            f'<rect x="0" y="0" width="{canvas_w}" height="{canvas_h * 2}" fill="url(#cascade_grad_{clip_pfx})">'
+            f'<animateTransform attributeName="transform" type="translate" values="0 -{canvas_h}; 0 0" dur="2.8s" repeatCount="indefinite"/>'
+            f'</rect>'
+            f'</mask>'
+        )
+    return "".join(defs)
+
+
+def get_animation_open(clip_pfx: str, anim_mode: str, cx: float, cy: float) -> str:
+    if anim_mode == "oscillate":
+        return (
+            f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+            f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
+            f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
+            f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
+        )
+    elif anim_mode == "cascade":
+        return f'<g mask="url(#cascade_mask_{clip_pfx})">'
+    elif anim_mode == "drop":
+        return (
+            f'<g>'
+            f'<animateTransform attributeName="transform" type="translate" '
+            f'values="0 -100; 0 0; 0 -14; 0 0; 0 -4; 0 0; 0 0; 0 0" '
+            f'keyTimes="0; 0.28; 0.38; 0.46; 0.52; 0.58; 0.9; 1" '
+            f'dur="4s" repeatCount="indefinite"/>'
+            f'<animate attributeName="opacity" values="0; 1; 1; 1; 1; 1; 1; 0" '
+            f'keyTimes="0; 0.12; 0.88; 0.92; 0.95; 0.97; 0.99; 1" dur="4s" repeatCount="indefinite"/>'
+        )
+    elif anim_mode == "pulse":
+        return (
+            f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+            f'<animateTransform attributeName="transform" type="scale" values="0.96 0.96; 1.04 1.04; 0.96 0.96" dur="3s" repeatCount="indefinite" additive="sum"/>'
+        )
+    return '<g>'
+
+
+def get_animation_close() -> str:
+    return '</g>'
+
+
+def get_animation_overlays(
+    clip_pfx: str,
+    anim_mode: str,
+    scanline: bool,
+    canvas_w: int,
+    canvas_h: int,
+    titlebar_h: int,
+    accent: str = "#00ffff",
+    sweep_dur: float = 3.6
+) -> str:
+    parts = []
+    if scanline or anim_mode == "radar":
+        parts.append(
+            f'<rect x="0" y="0" width="{canvas_w}" height="42" fill="url(#radar_beam_{clip_pfx})" pointer-events="none">'
+            f'<animate attributeName="y" values="{titlebar_h}; {canvas_h}; {titlebar_h}" dur="{sweep_dur}s" repeatCount="indefinite"/>'
+            f'</rect>'
+            f'<line x1="0" y1="0" x2="{canvas_w}" y2="0" stroke="{accent}" stroke-width="1.8" opacity="0.85" pointer-events="none">'
+            f'<animate attributeName="y1" values="{titlebar_h}; {canvas_h}; {titlebar_h}" dur="{sweep_dur}s" repeatCount="indefinite"/>'
+            f'<animate attributeName="y2" values="{titlebar_h}; {canvas_h}; {titlebar_h}" dur="{sweep_dur}s" repeatCount="indefinite"/>'
+            f'</line>'
+        )
+    return "".join(parts)

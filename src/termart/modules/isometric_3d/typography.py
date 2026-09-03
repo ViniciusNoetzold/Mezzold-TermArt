@@ -8,6 +8,7 @@ import pyfiglet
 from typing import Dict, Any
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
+from ...core.animator import get_animation_defs, get_animation_open, get_animation_close, get_animation_overlays
 
 @registry.register
 class TypographyPlugin(BasePlugin):
@@ -26,7 +27,9 @@ class TypographyPlugin(BasePlugin):
         canvas_h: int = 385,
         titlebar_h: int = 32,
         pad_x: int = 24,
-        oscillate: bool = False,
+        anim_mode: str = "oscillate",
+        scanline: bool = False,
+        oscillate: bool = None,
         **kwargs
     ) -> Dict[str, Any]:
         f = pyfiglet.Figlet(font=font_name)
@@ -54,15 +57,24 @@ class TypographyPlugin(BasePlugin):
 
         clip_pfx = os.path.basename(out_svg).replace("-", "_").replace(".", "_")
 
+        if oscillate is not None:
+            anim_mode = "oscillate" if oscillate else "none"
+
+        cx = canvas_w / 2
+        cy = (canvas_h + titlebar_h - 36) / 2
+
         parts = []
         parts.append(
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{canvas_w}" height="{canvas_h}" '
             f'viewBox="0 0 {canvas_w} {canvas_h}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">'
         )
         parts.append(
-            f'<defs><linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
+            f'<defs>'
+            f'<linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="#111722"/><stop offset="1" stop-color="#0d1117"/>'
-            f'</linearGradient></defs>'
+            f'</linearGradient>'
+            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h)}'
+            f'</defs>'
         )
         parts.append(f'<rect width="{canvas_w}" height="{canvas_h}" rx="12" fill="url(#bg_{clip_pfx})"/>')
         parts.append(f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{canvas_h-1}" rx="12" fill="none" stroke="#30363d" stroke-width="1"/>')
@@ -73,20 +85,12 @@ class TypographyPlugin(BasePlugin):
 
         parts.append(
             f'<text x="{canvas_w/2}" y="{titlebar_h/2 + 4}" fill="#7d8590" font-size="12" '
-            f'text-anchor="middle">{html.escape(username)}@github: ~$ whoami --name</text>'
+            f'text-anchor="middle">{html.escape(username)}@github: ~$ whoami --name --anim={anim_mode}</text>'
         )
 
         first_block_len = len(rendered_blocks[0]) if rendered_blocks else len(all_lines)
 
-        cx = canvas_w / 2
-        cy = (canvas_h + titlebar_h - 36) / 2
-        if oscillate:
-            parts.append(
-                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
-                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
-                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
-                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
-            )
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy))
 
         for ry, line in enumerate(all_lines):
             y = start_y + ry * line_spacing
@@ -114,8 +118,8 @@ class TypographyPlugin(BasePlugin):
                     f'<set attributeName="opacity" to="0" begin="{delay+0.08:.3f}s"/></rect>'
                 )
 
-        if oscillate:
-            parts.append('</g>')
+        parts.append(get_animation_close())
+        parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h))
 
         bot_y = canvas_h - 16
         parts.append(f'<line x1="0" y1="{canvas_h-36}" x2="{canvas_w}" y2="{canvas_h-36}" stroke="#30363d"/>')

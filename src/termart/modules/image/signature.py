@@ -9,20 +9,17 @@ from PIL import Image, ImageEnhance, ImageFilter
 from typing import Dict, Any
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
+from ...core.animator import get_animation_defs, get_animation_open, get_animation_close, get_animation_overlays
 from .ascii_braille import AsciiBraillePlugin
 
-def crop_tight(image_path: str, threshold: int = 35, pad: int = 8):
+def crop_tight(image_path: str, pad: int = 4) -> Image.Image:
     im = Image.open(image_path).convert("L")
     arr = np.array(im)
-    if arr.mean() > 128:
-        arr = 255 - arr
-        im = Image.fromarray(arr)
-
-    mask = arr > threshold
-    ys, xs = np.nonzero(mask)
-    if len(ys) == 0 or len(xs) == 0:
+    mask = arr < 240
+    if not mask.any():
         return im
 
+    ys, xs = np.where(mask)
     y0 = max(0, ys.min() - pad)
     y1 = min(im.height, ys.max() + pad)
     x0 = max(0, xs.min() - pad)
@@ -51,7 +48,9 @@ class SignaturePlugin(BasePlugin):
         pad_x: int = 24,
         accent_color: str = "#58a6ff",
         braille: bool = False,
-        oscillate: bool = False,
+        anim_mode: str = "oscillate",
+        scanline: bool = False,
+        oscillate: bool = None,
         **kwargs
     ) -> Dict[str, Any]:
         temp_crop = os.path.join(os.path.dirname(os.path.abspath(out_svg)), "_temp_crop.png")
@@ -98,15 +97,24 @@ class SignaturePlugin(BasePlugin):
 
         clip_pfx = os.path.basename(out_svg).replace("-", "_").replace(".", "_")
 
+        if oscillate is not None:
+            anim_mode = "oscillate" if oscillate else "none"
+
+        cx = canvas_w / 2
+        cy = (canvas_h + titlebar_h) / 2
+
         parts = []
         parts.append(
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{canvas_w}" height="{canvas_h}" '
             f'viewBox="0 0 {canvas_w} {canvas_h}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">'
         )
         parts.append(
-            f'<defs><linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
+            f'<defs>'
+            f'<linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>'
-            f'</linearGradient></defs>'
+            f'</linearGradient>'
+            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h)}'
+            f'</defs>'
         )
         parts.append(f'<rect width="{canvas_w}" height="{canvas_h}" rx="12" fill="url(#bg_{clip_pfx})"/>')
         parts.append(f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{canvas_h-1}" rx="12" fill="none" stroke="{FRAME}" stroke-width="1"/>')
@@ -117,18 +125,10 @@ class SignaturePlugin(BasePlugin):
 
         parts.append(
             f'<text x="{canvas_w/2}" y="{titlebar_h/2 + 4}" fill="{TITLE_TEXT}" font-size="12" '
-            f'text-anchor="middle">{html.escape(username)}@github: ~$ {html.escape(title)}</text>'
+            f'text-anchor="middle">{html.escape(username)}@github: ~$ {html.escape(title)} --anim={anim_mode}</text>'
         )
 
-        cx = canvas_w / 2
-        cy = (canvas_h + titlebar_h) / 2
-        if oscillate:
-            parts.append(
-                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
-                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
-                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
-                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
-            )
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy))
 
         for ry, line in enumerate(lines):
             y = start_y + ry * line_spacing
@@ -155,8 +155,8 @@ class SignaturePlugin(BasePlugin):
                 f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
             )
 
-        if oscillate:
-            parts.append('</g>')
+        parts.append(get_animation_close())
+        parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h, accent=accent_color))
 
         parts.append("</svg>")
         svg = "".join(parts)
