@@ -54,9 +54,21 @@ It unifies **C**, **Go**, **Rust**, and **Python** high-performance engines unde
 
 ---
 
+## 🖱️ Windows 1-Click Launchers (.bat)
+
+Para quem usa Windows, criamos atalhos prontos para usar com **apenas 1 duplo clique**:
+
+| Arquivo `.bat` | O que faz |
+| :--- | :--- |
+| **`instalar_ferramentas.bat`** | Instala todas as bibliotecas Python (`requirements.txt`), atualiza o pip e valida os 4 binários nativos. |
+| **`iniciar_terminal.bat`** | Abre o console interativo com menu visual, atalhos rápidos e gerador guiado de SVGs. |
+| **`iniciar_studio.bat`** | Inicia o servidor local e abre o **Web Studio Visual** direto no seu navegador (`localhost:7860`). |
+
+---
+
 ## 🖥️ Visual Web Studio (`termstudio.py`)
 
-Prefer a visual experience? Launch the local Web Studio:
+Prefer a visual experience? Launch the local Web Studio via `iniciar_studio.bat` or:
 
 ```bash
 python termstudio.py
