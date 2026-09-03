@@ -2636,6 +2636,9 @@ def render_clock(color: str = "phosphor", format_mode: str = "24h", username: st
 
 @app.get("/api/render/chess")
 def render_chess(match: str = "opera", animated: bool = True, speed: float = 1.0, username: str = "grandmaster"):
+    import importlib
+    from ...modules.profile import chess_board
+    importlib.reload(chess_board)
     p = registry.get("chess_board")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_ch.svg")
     p.run(match=match, animated=animated, speed=speed, out_svg=tmp, username=username)
