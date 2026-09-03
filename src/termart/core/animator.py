@@ -54,25 +54,38 @@ def get_animation_open(
     cx: float,
     cy: float,
     art_w: float = None,
-    speed: float = 8.0
+    speed: float = 9.0,
+    has_mirrored: bool = False
 ) -> str:
     if art_w is None:
         art_w = cx * 2
 
     if anim_mode in ("waves", "waves_left", "wave", "wave_left"):
+        cycle_w = 2 * art_w if has_mirrored else art_w
+        dur = speed * 1.5 if has_mirrored else speed
+        prefix_uses = [f'<use href="#art_{clip_pfx}" x="-{cycle_w:.1f}" y="0"/>']
+        if has_mirrored:
+            prefix_uses.append(f'<use href="#art_mirrored_{clip_pfx}" x="-{art_w:.1f}" y="0"/>')
+        prefix_str = "".join(prefix_uses)
         return (
             f'<g clip-path="url(#term_clip_{clip_pfx})">'
             f'<g>'
-            f'<animateTransform attributeName="transform" type="translate" from="0 0" to="-{art_w:.1f} 0" dur="{speed:.1f}s" repeatCount="indefinite"/>'
-            f'<use href="#art_{clip_pfx}" x="-{art_w:.1f}" y="0"/>'
+            f'<animateTransform attributeName="transform" type="translate" from="0 0" to="-{cycle_w:.1f} 0" dur="{dur:.1f}s" repeatCount="indefinite"/>'
+            f'{prefix_str}'
             f'<g id="art_{clip_pfx}">'
         )
     elif anim_mode in ("waves_right", "wave_right"):
+        cycle_w = 2 * art_w if has_mirrored else art_w
+        dur = speed * 1.5 if has_mirrored else speed
+        prefix_uses = [f'<use href="#art_{clip_pfx}" x="-{cycle_w:.1f}" y="0"/>']
+        if has_mirrored:
+            prefix_uses.append(f'<use href="#art_mirrored_{clip_pfx}" x="-{art_w:.1f}" y="0"/>')
+        prefix_str = "".join(prefix_uses)
         return (
             f'<g clip-path="url(#term_clip_{clip_pfx})">'
             f'<g>'
-            f'<animateTransform attributeName="transform" type="translate" from="-{art_w:.1f} 0" to="0 0" dur="{speed:.1f}s" repeatCount="indefinite"/>'
-            f'<use href="#art_{clip_pfx}" x="-{art_w:.1f}" y="0"/>'
+            f'<animateTransform attributeName="transform" type="translate" from="-{cycle_w:.1f} 0" to="0 0" dur="{dur:.1f}s" repeatCount="indefinite"/>'
+            f'{prefix_str}'
             f'<g id="art_{clip_pfx}">'
         )
     elif anim_mode == "oscillate":
@@ -102,16 +115,26 @@ def get_animation_open(
     return '<g>'
 
 
-def get_animation_close(clip_pfx: str = "", anim_mode: str = "none", art_w: float = None) -> str:
+def get_animation_close(clip_pfx: str = "", anim_mode: str = "none", art_w: float = None, has_mirrored: bool = False) -> str:
     if anim_mode in ("waves", "waves_left", "wave", "wave_left", "waves_right", "wave_right"):
         if art_w is None:
             art_w = 800
-        return (
-            f'</g>'
-            f'<use href="#art_{clip_pfx}" x="{art_w:.1f}" y="0"/>'
-            f'</g>'
-            f'</g>'
-        )
+        if has_mirrored:
+            return (
+                f'<use href="#art_mirrored_{clip_pfx}" x="{art_w:.1f}" y="0"/>'
+                f'<use href="#art_{clip_pfx}" x="{2*art_w:.1f}" y="0"/>'
+                f'<use href="#art_mirrored_{clip_pfx}" x="{3*art_w:.1f}" y="0"/>'
+                f'</g>'
+                f'</g>'
+            )
+        else:
+            return (
+                f'</g>'
+                f'<use href="#art_{clip_pfx}" x="{art_w:.1f}" y="0"/>'
+                f'<use href="#art_{clip_pfx}" x="{2*art_w:.1f}" y="0"/>'
+                f'</g>'
+                f'</g>'
+            )
     return '</g>'
 
 

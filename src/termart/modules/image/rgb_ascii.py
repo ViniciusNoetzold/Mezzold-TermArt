@@ -6,6 +6,7 @@ Samples exact RGB values per character cell with optimized tspan grouping.
 import os
 import html
 from typing import Dict, Any
+import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
@@ -38,6 +39,17 @@ class RgbAsciiPlugin(BasePlugin):
         if contrast != 1.0:
             im = ImageEnhance.Contrast(im).enhance(contrast)
             im = ImageEnhance.Color(im).enhance(1.2)
+
+        is_wave = anim_mode in ("waves", "waves_left", "wave", "wave_left", "waves_right", "wave_right")
+        if is_wave:
+            arr = np.array(im.convert("L"))
+            col_max = arr.max(axis=0)
+            active_cols = np.where(col_max > 22)[0]
+            if len(active_cols) > 0:
+                min_x = max(0, int(active_cols.min()) - 2)
+                max_x = min(im.width, int(active_cols.max()) + 3)
+                if min_x > 8 or (im.width - max_x) > 8:
+                    im = im.crop((min_x, 0, max_x, im.height))
 
         orig_w, orig_h = im.size
         aspect = orig_h / orig_w
@@ -91,15 +103,10 @@ class RgbAsciiPlugin(BasePlugin):
             f'text-anchor="middle">{username}@github: ~$ {title} --color={color_mode} --anim={anim_mode}</text>'
         )
 
-        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=art_w))
-
+        # Build normal characters and colors grid
+        normal_rows = []
         for ry in range(rows):
-            y = start_y + ry * line_h
-            line_parts = [f'<text xml:space="preserve" x="{pad_x}" y="{y:.1f}" font-size="{font_size:.1f}">']
-            
-            curr_color = None
-            curr_text = []
-
+            row_chars = []
             for rx in range(cols):
                 r, g, b = im_small.getpixel((rx, ry))
                 lum = int(0.299 * r + 0.587 * g + 0.114 * b)
@@ -122,7 +129,24 @@ class RgbAsciiPlugin(BasePlugin):
                     bg_col = min(int(g * 1.15), 255)
                     bb = min(int(b * 1.15), 255)
                     hex_color = f"#{br:02x}{bg_col:02x}{bb:02x}"
+                row_chars.append((char, hex_color))
+            normal_rows.append(row_chars)
 
+        # Build seamlessly mirrored grid for wave loop continuity
+        FLIP_MAP = {'/': '\\', '\\': '/', '(': ')', ')': '(', '<': '>', '>': '<', '[': ']', ']': '['}
+        mirrored_rows = []
+        if is_wave:
+            for ry in range(rows):
+                rev = []
+                for char, col in reversed(normal_rows[ry]):
+                    rev.append((FLIP_MAP.get(char, char), col))
+                mirrored_rows.append(rev)
+
+        def build_row_svg(row_chars, y_pos):
+            line_parts = [f'<text xml:space="preserve" x="{pad_x}" y="{y_pos:.1f}" font-size="{font_size:.1f}" textLength="{art_w}" lengthAdjust="spacingAndGlyphs">']
+            curr_color = None
+            curr_text = []
+            for char, hex_color in row_chars:
                 if hex_color != curr_color:
                     if curr_text:
                         safe_txt = html.escape("".join(curr_text))
@@ -130,15 +154,29 @@ class RgbAsciiPlugin(BasePlugin):
                         curr_text = []
                     curr_color = hex_color
                 curr_text.append(char)
-
             if curr_text:
                 safe_txt = html.escape("".join(curr_text))
                 line_parts.append(f'<tspan fill="{curr_color}">{safe_txt}</tspan>')
-
             line_parts.append("</text>")
-            parts.append("".join(line_parts))
+            return "".join(line_parts)
 
-        parts.append(get_animation_close(clip_pfx, anim_mode, art_w=art_w))
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=art_w, has_mirrored=is_wave))
+
+        # Block 0: Normal artwork
+        for ry in range(rows):
+            y = start_y + ry * line_h
+            parts.append(build_row_svg(normal_rows[ry], y))
+        parts.append("</g>")
+
+        # Block 1: Mirrored artwork (for seamless wave continuity)
+        if is_wave:
+            parts.append(f'<g id="art_mirrored_{clip_pfx}">')
+            for ry in range(rows):
+                y = start_y + ry * line_h
+                parts.append(build_row_svg(mirrored_rows[ry], y))
+            parts.append("</g>")
+
+        parts.append(get_animation_close(clip_pfx, anim_mode, art_w=art_w, has_mirrored=is_wave))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h))
 
         parts.append("</svg>")
