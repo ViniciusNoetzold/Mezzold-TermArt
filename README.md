@@ -65,55 +65,55 @@ Reúne motores compilados de alta performance em **C**, **Go**, **Rust** e algor
 
 ### 🖼️ Transformação de Imagens & Cores (12 Motores)
 
-| Motor | Inspiração / Upstream | Tipo | O que faz |
+| Motor | Estilo / Tecnologia | Tipo | O que faz |
 | :--- | :--- | :--- | :--- |
-| **`rgb_ascii`** | Mezzold Core | TrueColor | Converte fotos em ASCII 24-bit colorido de alta fidelidade com animações de onda contínua. |
-| **`drawille`** | `asciimoo/drawille` | Subpixel Braille | Matriz 2x4 Unicode com **8x mais resolução** que o ASCII padrão e amostragem TrueColor. |
-| **`dither`** | `leeoniya/dither` | Retro Dither | Algoritmos históricos de difusão: **Atkinson** (Macintosh 1984), **Floyd-Steinberg** e **Bayer 4x4** (Game Boy). |
-| **`jp2a`** | `cslarsen/jp2a` | Unix Classic | Conversor JPEG-to-ASCII com equalização de histograma, inversão e rampas personalizadas. |
-| **`halftone`** | `ironwallaby/dither` | Press Retícula | Retícula de impressão de jornais antigos e histórias em quadrinhos com pontos geométricos (`• ● ⬤`). |
+| **`rgb_ascii`** | TrueColor Matrix | Alta Resolução | Converte fotos em ASCII 24-bit colorido de alta fidelidade com animações de onda contínua. |
+| **`drawille`** | Subpixel Braille | Matriz 2x4 | Matriz 2x4 Unicode com **8x mais resolução** que o ASCII padrão e amostragem TrueColor. |
+| **`dither`** | Retro Dither | Difusão de Erro | Algoritmos históricos de difusão: **Atkinson** (Macintosh 1984), **Floyd-Steinberg** e **Bayer 4x4** (Game Boy). |
+| **`jp2a`** | Unix Classic | Escala de Cinza | Conversor JPEG-to-ASCII com equalização de histograma, inversão e rampas personalizadas. |
+| **`halftone`** | Press Retícula | Pontos Geométricos | Retícula de impressão de jornais antigos e histórias em quadrinhos com pontos geométricos (`• ● ⬤`). |
 | **`edge_art`** | Sobel Filter | Manga Blueprint | Detecção de bordas direcionais mapeando gradientes para traços nanquim (`/ \ │ ─ +`). |
-| **`glitch`** | Cyberpunk VHS | Glitch & CRT | Aberração cromática com divisão de canais RGB horizontal, scanlines analógicas e ruído digital. |
+| **`glitch`** | Cyberpunk VHS | Aberração RGB | Aberração cromática com divisão de canais RGB horizontal, scanlines analógicas e ruído digital. |
 | **`pixel_mosaic`** | PICO-8 / C64 | 8-Bit Arcade | Sprites retrô com quantização para paletas dos consoles clássicos (**PICO-8**, **Commodore 64**, **Game Boy**). |
 | **`palette_swap`** | Developer Themes | Quantização | Quantiza fotos para temas de IDEs: **Dracula**, **Catppuccin**, **Nord**, **Gruvbox**, **TokyoNight**. |
-| **`rainbow_wave`** | `busyloop/lolcat` | Rainbow Shifter | Aplica gradiente contínuo de onda senoidal de arco-íris sobre textos e arte ASCII com ciclo animado. |
-| **`chafa`** | `hpjansson/chafa` | Binário C Nativo | Gráficos de terminal ultra-HD usando múltiplos símbolos e blocos Unicode. |
-| **`signature`** | Mezzold HD | Caligrafia | Assinaturas e logotipos com recorte cirúrgico de margens e gradientes vibrantes. |
+| **`rainbow_wave`** | Rainbow Shifter | Espectro Contínuo | Aplica gradiente contínuo de onda senoidal de arco-íris sobre textos e arte ASCII com ciclo animado. |
+| **`chafa`** | Binário Nativo | Sub-pixel HD | Gráficos de terminal ultra-HD usando múltiplos símbolos e blocos Unicode. |
+| **`signature`** | Caligrafia Vetorial | Logotipos | Assinaturas e logotipos com recorte cirúrgico de margens e gradientes vibrantes. |
 
 ---
 
 ### 🕹️ Screensavers Retrô, 3D & Efeitos Ambientais (12 Motores)
 
-| Motor | Inspiração / Upstream | Tipo | O que faz |
+| Motor | Estilo / Tecnologia | Tipo | O que faz |
 | :--- | :--- | :--- | :--- |
-| **`doom_fire`** | `posva/terminal-fire` | Simulação 1992 | A lendária rotina de fogo do Doom / PSX com partículas dissipando em chamas vivas em SVG 60fps. |
-| **`cmatrix`** | `abishekvashok/cmatrix` | Screensaver | Chuva de código digital de *The Matrix* com Katakana, líderes brilhantes brancos e rastros verdes em 60fps. |
-| **`cbonsai`** | `jallbrit/cbonsai` | Procedural | Árvores Bonsai japonesas fractais com flores de cerejeira (*Sakura*) ou pinheiro (*Pine*) oscilando ao vento. |
-| **`asciiquarium`**| `cmatsuoka/asciiquarium`| Screensaver | Aquário marinho com cardumes de peixes, tubarão patrulheiro, bolhas de ar e algas marinhas. |
-| **`donut_3d`** | `a1k0n/donut.c` | Matemática 3D | O lendário Donut giratório 3D de Andy Sloane em flipbook vetorial SVG 60fps com iluminação Phong. |
+| **`doom_fire`** | Simulação 1992 | Partículas PSX | A lendária rotina de fogo do Doom / PSX com partículas dissipando em chamas vivas em SVG 60fps. |
+| **`cmatrix`** | Chuva Digital | Katakana Matrix | Chuva de código digital de *The Matrix* com Katakana, líderes brilhantes brancos e rastros verdes em 60fps. |
+| **`cbonsai`** | Procedural Fractal | Botânica Zen | Árvores Bonsai japonesas fractais com flores de cerejeira (*Sakura*) ou pinheiro (*Pine*) oscilando ao vento. |
+| **`asciiquarium`**| Aquário Dinâmico | Vida Marinha | Aquário marinho com cardumes de peixes, tubarão patrulheiro, bolhas de ar e algas marinhas. |
+| **`donut_3d`** | Geometria 3D | Phong Shading | O lendário Donut giratório 3D em flipbook vetorial SVG 60fps com iluminação Phong. |
 | **`synthwave_grid`**| Outrun 80s | 3D Wireframe | Horizonte synthwave dos anos 80 com sol neon fatiado e grade de perspectiva 3D em movimento infinito. |
-| **`cava`** | `karlstav/cava` | Audio Visualizer| Barras de espectro de áudio equalizadas oscilando em tempo real com gradientes cyberpunk. |
-| **`game_of_life`** | John Conway | Autômato Celular | O clássico Jogo da Vida com gliders, pulsars e naves espaciais evoluindo em loop contínuo. |
-| **`pipes`** | `pipeseroni/pipes.sh` | Screensaver | Labirinto procedural de encanamentos 3D com loop infinito e animação de crescimento. |
-| **`cowsay`** | `cowsay / ponysay` | Balão Unix | Balões de diálogo clássicos com mascotes (**Cow**, **Dragon**, **Robot**, **Cat**, **Ghost**). |
-| **`tetris_reveal`**| Gravity Engine | Revelação | Os blocos de pixels caem do teto com gravidade e ricochete até travar em suas posições e revelar a imagem. |
-| **`ansi_cp437`** | `ansilove / TheDraw` | BBS Teletext | Arte de BBS dos anos 90 com blocos sombreados do Code Page 437 (`░ ▒ ▓ █`) e 16 cores VGA. |
+| **`cava`** | Equalizador | Audio Visualizer| Barras de espectro de áudio equalizadas oscilando em tempo real com gradientes cyberpunk. |
+| **`game_of_life`** | Autômato Celular | Matemática Discreta | O clássico Jogo da Vida com gliders, pulsars e naves espaciais evoluindo em loop contínuo. |
+| **`pipes`** | Labirinto Procedural | Screensaver 3D | Labirinto procedural de encanamentos 3D com loop infinito e animação de crescimento. |
+| **`cowsay`** | Balão Retrô | Mascotes ASCII | Balões de diálogo clássicos com mascotes (**Cow**, **Dragon**, **Robot**, **Cat**, **Ghost**). |
+| **`tetris_reveal`**| Simulação Física | Revelação por Blocos| Os blocos de pixels caem do teto com gravidade e ricochete até travar em suas posições e revelar a imagem. |
+| **`ansi_cp437`** | BBS Teletext | Code Page 437 | Arte de BBS dos anos 90 com blocos sombreados do Code Page 437 (`░ ▒ ▓ █`) e 16 cores VGA. |
 
 ---
 
 ### 📊 Widgets de Perfil & Estética Developer (9 Motores)
 
-| Motor | Inspiração / Upstream | O que faz |
+| Motor | Estilo / Tecnologia | O que faz |
 | :--- | :--- | :--- |
-| **`pokemon_card`** | `phisch/pokemon-colorscripts` | Card RPG de batalha com sprites 8-bit/16-bit de Pokémon clássicos, barra de HP e Pokédex. |
-| **`weather_card`** | `chubin/wttr.in` | Previsão do tempo retro em ASCII com fases da lua, tendências térmicas e ícones animados. |
-| **`tty_clock`** | `xorg62/tty-clock` | Relógio digital LED 7-segmentos em blocos com dois pontos pulsantes e carimbo de data. |
-| **`chess_board`** | GNU Chess / FEN | Tabuleiro de xadrez com peças Unicode, coordenadas algébricas e partidas históricas (Kasparov). |
-| **`file_tree`** | Unix `tree` / `eza` | Árvore de diretórios com ícones de desenvolvedor e guias de ramos (`├──`, `└──`). |
-| **`fortune_banner`**| BSD `fortune` | Biscoito da sorte Unix com citações de pioneiros da computação e cursor piscante. |
-| **`heatmap`** | Zero-Token Scraper | Heatmap em cascata animada de contribuições do GitHub sem requisição de API tokens. |
-| **`neofetch`** | Unix `neofetch` | Cartão de especificações técnicas do desenvolvedor no estilo terminal macOS. |
-| **`stats_card`** | `github-readme-stats` | Card de métricas e estatísticas do GitHub em dark-mode moderno. |
+| **`pokemon_card`** | Card RPG Battle | 16 Pokémon clássicos, modo Shiny com sparkles, seleção de Nível (Lv.5 a 100), HP dinâmico e lore da Pokédex. |
+| **`weather_card`** | Terminal Radar | Previsão meteorológica detalhada com seletor de cidades mundiais, unidade (°C/°F), ícones ASCII ricos e telemetria. |
+| **`tty_clock`** | Relógio Digital LED | Relógio digital LED 7-segmentos com 8 esquemas de cores (Matrix, Cyan, Âmbar, Rubi, etc.) e formato 12h/24h. |
+| **`chess_board`** | Tabuleiro Animado | Reprodução animada completa lance a lance desde o lance 1 até o XEQUE-MATE (Opera Game, Pastor, Kasparov). |
+| **`file_tree`** | Árvore de Código | Árvore de diretórios com ícones de desenvolvedor e guias de ramos (`├──`, `└──`). |
+| **`fortune_banner`**| Filosofia Hacker | Biscoito da sorte Unix com citações de pioneiros da computação e cursor piscante. |
+| **`heatmap`** | Contribuições GitHub | Heatmap em cascata animada de contribuições do GitHub sem requisição de API tokens. |
+| **`neofetch`** | Terminal System Specs | Cartão de especificações técnicas do desenvolvedor no estilo terminal macOS. |
+| **`stats_card`** | Métricas GitHub | Card de métricas e estatísticas do GitHub em dark-mode moderno. |
 
 ---
 
@@ -219,26 +219,9 @@ O motor é **automaticamente descoberto e integrado** na CLI e no Web Studio!
 
 ---
 
-## 📦 Upstream Repositories & Reconhecimentos
+## 💡 Inspirações & Referências
 
-* [hpjansson/chafa](https://github.com/hpjansson/chafa) — Motor C de gráficos subpixel
-* [asciimoo/drawille](https://github.com/asciimoo/drawille) — Algoritmo 2x4 Unicode Braille
-* [leeoniya/dither](https://github.com/leeoniya/dither) — Dithering com difusão de erro
-* [cslarsen/jp2a](https://github.com/cslarsen/jp2a) — JPEG para ASCII clássico
-* [abishekvashok/cmatrix](https://github.com/abishekvashok/cmatrix) — Screensaver The Matrix em C
-* [jallbrit/cbonsai](https://github.com/jallbrit/cbonsai) — Árvore Bonsai procedural
-* [cmatsuoka/asciiquarium](https://github.com/cmatsuoka/asciiquarium) — Aquário marinho animado
-* [a1k0n/donut.c](https://www.a1k0n.net/2011/07/20/donut-math.html) — O clássico 3D Donut de Andy Sloane
-* [karlstav/cava](https://github.com/karlstav/cava) — Visualizador de áudio ALSA em ASCII
-* [phisch/pokemon-colorscripts](https://github.com/phisch/pokemon-colorscripts) — Sprites de Pokémon em terminal
-* [chubin/wttr.in](https://github.com/chubin/wttr.in) — Previsão do tempo em ASCII
-* [xorg62/tty-clock](https://github.com/xorg62/tty-clock) — Relógio digital de terminal
-* [busyloop/lolcat](https://github.com/busyloop/lolcat) — Gradiente contínuo de arco-íris
-* [posva/terminal-fire](https://github.com/posva/terminal-fire) — Efeito de fogo Doom 1992
-* [charmbracelet/vhs](https://github.com/charmbracelet/vhs) — Gravador de sessões de terminal em Go
-* [asciinema/agg](https://github.com/asciinema/agg) — Renderizador de terminal em Rust
-* [yoshi389111/github-profile-3d-contrib](https://github.com/yoshi389111/github-profile-3d-contrib) — Cidade 3D isométrica de commits
-* [pipeseroni/pipes.sh](https://github.com/pipeseroni/pipes.sh) — Canos procedurais de terminal
+* [chafa](https://github.com/hpjansson/chafa) • [wttr.in](https://github.com/chubin/wttr.in) • [cmatrix](https://github.com/abishekvashok/cmatrix) • [cbonsai](https://github.com/jallbrit/cbonsai) • [asciiquarium](https://github.com/cmatsuoka/asciiquarium) • [drawille](https://github.com/asciimoo/drawille) • [vhs](https://github.com/charmbracelet/vhs) • [agg](https://github.com/asciinema/agg) • [cava](https://github.com/karlstav/cava) • [donut.c](https://www.a1k0n.net/2011/07/20/donut-math.html) • [tty-clock](https://github.com/xorg62/tty-clock) • [pokemon-colorscripts](https://github.com/phisch/pokemon-colorscripts) • [pipes.sh](https://github.com/pipeseroni/pipes.sh)
 
 ---
 

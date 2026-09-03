@@ -6,6 +6,7 @@ Inspired by xorg62/tty-clock.
 """
 import os
 import time
+import html
 from typing import Dict, Any, List
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
@@ -38,40 +39,42 @@ class TtyClockPlugin(BasePlugin):
         date_str: str = None,
         out_svg: str = "tty_clock.svg",
         color_scheme: str = "phosphor",
+        format_mode: str = "24h",
         username: str = "chronos",
+        custom_label: str = "UTC CLOCK SYNCHRONIZED • PRECISION 1000ms",
         **kwargs
     ) -> Dict[str, Any]:
+        t_now = time.localtime()
         if not time_str:
-            time_str = time.strftime("%H:%M:%S")
+            if format_mode == "12h":
+                time_str = time.strftime("%I:%M:%S", t_now)
+            else:
+                time_str = time.strftime("%H:%M:%S", t_now)
         if not date_str:
-            date_str = time.strftime("%A, %d %b %Y")
+            am_pm = time.strftime("%p", t_now) if format_mode == "12h" else ""
+            date_str = time.strftime("%A, %d %b %Y", t_now)
+            if am_pm:
+                date_str = f"{date_str} [{am_pm}]"
 
         canvas_w = 680
         canvas_h = 290
         titlebar_h = 34
         clip_pfx = "clock_" + str(abs(hash(out_svg)) % 100000)
 
-        # Color schemes
-        if color_scheme == "cyan":
-            fg_led = "#00ffff"
-            bg_col = "#060d17"
-            frame_col = "#122a42"
-            glow_col = "#00bfff"
-        elif color_scheme == "amber":
-            fg_led = "#ffaa00"
-            bg_col = "#140c00"
-            frame_col = "#382000"
-            glow_col = "#ff6600"
-        elif color_scheme == "ruby":
-            fg_led = "#ff3366"
-            bg_col = "#14040a"
-            frame_col = "#38091a"
-            glow_col = "#ff0044"
-        else: # phosphor green
-            fg_led = "#33ff55"
-            bg_col = "#040905"
-            frame_col = "#162e1a"
-            glow_col = "#00cc33"
+        SCHEMES = {
+            "phosphor": {"fg": "#33ff55", "bg": "#040905", "frame": "#162e1a", "glow": "#00cc33"},
+            "cyan": {"fg": "#00ffff", "bg": "#060d17", "frame": "#122a42", "glow": "#00bfff"},
+            "amber": {"fg": "#ffaa00", "bg": "#140c00", "frame": "#382000", "glow": "#ff6600"},
+            "ruby": {"fg": "#ff3366", "bg": "#14040a", "frame": "#38091a", "glow": "#ff0044"},
+            "purple": {"fg": "#c084fc", "bg": "#0f081d", "frame": "#3b1c66", "glow": "#a855f7"},
+            "ice": {"fg": "#38bdf8", "bg": "#050e17", "frame": "#0c2b42", "glow": "#0ea5e9"},
+            "gold": {"fg": "#facc15", "bg": "#120e03", "frame": "#362800", "glow": "#eab308"},
+            "white": {"fg": "#f8fafc", "bg": "#0a0a0a", "frame": "#27272a", "glow": "#e2e8f0"}
+        }
+        scheme = SCHEMES.get(color_scheme.lower(), SCHEMES["phosphor"])
+        fg_led = scheme["fg"]
+        bg_col = scheme["bg"]
+        frame_col = scheme["frame"]
 
         parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{canvas_w}" height="{canvas_h}" '
@@ -86,7 +89,7 @@ class TtyClockPlugin(BasePlugin):
 
         parts.append(
             f'<text x="{canvas_w/2}" y="{titlebar_h/2 + 4}" fill="{fg_led}" font-size="12" '
-            f'text-anchor="middle">{username}@timekeeper: ~$ tty-clock -c -C {color_scheme} -B</text>'
+            f'text-anchor="middle">{username}@timekeeper: ~$ tty-clock -c -C {color_scheme.lower()} -B</text>'
         )
 
         # Build big clock grid
@@ -129,7 +132,7 @@ class TtyClockPlugin(BasePlugin):
         )
         parts.append(
             f'<text x="{canvas_w/2}" y="{date_y + 26}" fill="#7d8590" font-size="12" '
-            f'text-anchor="middle">UTC CLOCK SYNCHRONIZED • PRECISION 1000ms</text>'
+            f'text-anchor="middle">{html.escape(custom_label)}</text>'
         )
 
         parts.append('</svg>')

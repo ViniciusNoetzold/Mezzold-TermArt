@@ -118,13 +118,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div id="img-engine-single-wrap">
             <label class="text-xs text-slate-400 block mb-1">Motor de Renderização</label>
             <select id="img-engine" onchange="toggleImageEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
-              <optgroup label="Motores Principais & Chafa">
+              <optgroup label="Motores de Alta Resolução">
                 <option value="rgb_ascii">TrueColor RGB ASCII (Cores 24-bit Reais da Foto)</option>
-                <option value="chafa">Chafa (C Engine) - Sub-pixel Graphics de Alta Resolução</option>
+                <option value="chafa">Chafa Studio - Sub-pixel Graphics de Alta Resolução</option>
                 <option value="signature">Logo / Assinatura em Caligrafia (ASCII Puro / Braille)</option>
-                <option value="portrait">Retrato Terminal (Go Braille 2x4 com Digitação)</option>
+                <option value="portrait">Retrato Terminal (Braille 2x4 com Digitação)</option>
               </optgroup>
-              <optgroup label="Novos Motores Open-Source">
+              <optgroup label="Estilos Visuais & Filtros Especiais">
                 <option value="drawille">Drawille Subpixel (Matriz Braille 2x4 com 8x Resolução)</option>
                 <option value="dither">Retro Dithering (Atkinson Mac 1984, Floyd-Steinberg, Bayer)</option>
                 <option value="jp2a">jp2a Classic (Rampas Unix & Invert Contrast)</option>
@@ -133,7 +133,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <option value="glitch">Glitch Cyberpunk (Aberração Cromática VHS & Corrupção)</option>
                 <option value="pixel_mosaic">Pixel Mosaic (Sprites 8-bit Arcade PICO-8 & C64)</option>
                 <option value="palette_swap">Palette Swap (Dracula, Catppuccin, Nord, TokyoNight)</option>
-                <option value="rainbow_wave">Rainbow Wave (Lolcat Espectro Arco-Íris Contínuo)</option>
+                <option value="rainbow_wave">Rainbow Wave (Espectro Arco-Íris Contínuo)</option>
               </optgroup>
             </select>
           </div>
@@ -644,22 +644,172 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">Tipo de Widget</label>
-            <select id="profile-widget" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <select id="profile-widget" onchange="onProfileWidgetChange()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="pokemon">🎮 Card RPG Pokémon (16 Espécies, Shiny & Níveis)</option>
+              <option value="weather">⛅ Previsão do Tempo (wttr.in ASCII Radar & Cidades)</option>
+              <option value="clock">⏰ TTY Digital Clock (LED Neon & Formato 12h/24h)</option>
+              <option value="chess">♟️ Partida de Xadrez (Animação até o Xeque-Mate!)</option>
               <option value="heatmap">Heatmap em Cascata (GraphQL Real-Time Commits)</option>
               <option value="neofetch">Card Neofetch macOS (Specs Técnicas & Foco)</option>
               <option value="stats">GitHub Stats Card Dark (github-readme-stats)</option>
-              <option value="pokemon">🎮 Card RPG Pokémon (Gengar Lv.100)</option>
-              <option value="weather">⛅ Weather Forecast (wttr.in ASCII Radar)</option>
-              <option value="clock">⏰ TTY Digital Clock (LED 7-Segmentos)</option>
-              <option value="chess">♟️ Chess Match (Kasparov vs Deep Blue 1996)</option>
               <option value="tree">📁 Architecture File Tree (Estrutura de Pastas)</option>
               <option value="fortune">🥠 Fortune Cookie (Filosofia Hacker & Zen)</option>
             </select>
           </div>
 
           <div>
-            <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
+            <label class="text-xs text-slate-400 block mb-1">GitHub Username / Treinador</label>
             <input id="profile-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <!-- POKEMON OPTIONS -->
+          <div id="profile-opt-pokemon" class="flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-brand-accent flex items-center gap-1.5">
+              <span>🎮</span> <span>Opções do Pokémon</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Escolha o Pokémon</label>
+              <select id="pk-select" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="gengar">Gengar (#0094 - Fantasma/Veneno)</option>
+                <option value="pikachu">Pikachu (#0025 - Elétrico)</option>
+                <option value="charizard">Charizard (#0006 - Fogo/Voador)</option>
+                <option value="blastoise">Blastoise (#0009 - Água)</option>
+                <option value="venusaur">Venusaur (#0003 - Planta/Veneno)</option>
+                <option value="mewtwo">Mewtwo (#0150 - Psíquico)</option>
+                <option value="rayquaza">Rayquaza (#0384 - Dragão/Voador)</option>
+                <option value="umbreon">Umbreon (#0197 - Sombrio)</option>
+                <option value="lucario">Lucario (#0448 - Lutador/Aço)</option>
+                <option value="dragonite">Dragonite (#0149 - Dragão/Voador)</option>
+                <option value="snorlax">Snorlax (#0143 - Normal)</option>
+                <option value="eevee">Eevee (#0133 - Normal)</option>
+                <option value="gyarados">Gyarados (#0130 - Água/Voador)</option>
+                <option value="alakazam">Alakazam (#0065 - Psíquico)</option>
+                <option value="lugia">Lugia (#0249 - Psíquico/Voador)</option>
+                <option value="garchomp">Garchomp (#0445 - Dragão/Terrestre)</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Nível (Level)</label>
+                <select id="pk-level" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                  <option value="100">Lv. 100 (Max)</option>
+                  <option value="75">Lv. 75</option>
+                  <option value="50">Lv. 50</option>
+                  <option value="25">Lv. 25</option>
+                  <option value="5">Lv. 5 (Inicial)</option>
+                </select>
+              </div>
+              <div class="flex items-end pb-1">
+                <label class="flex items-center gap-2 text-xs text-amber-300 font-semibold cursor-pointer">
+                  <input id="pk-shiny" type="checkbox" class="rounded accent-brand-500">
+                  <span>✨ Modo Shiny</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- WEATHER OPTIONS -->
+          <div id="profile-opt-weather" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <span>⛅</span> <span>Localização & Clima</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Cidade / Localização</label>
+              <input id="weather-city" type="text" value="Curitiba, Brazil" placeholder="Ex: Curitiba, Tokyo, London" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <div class="flex flex-wrap gap-1 mt-1.5">
+                <button type="button" onclick="setWeatherCity('Curitiba, Brazil')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">Curitiba</button>
+                <button type="button" onclick="setWeatherCity('São Paulo, Brazil')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">São Paulo</button>
+                <button type="button" onclick="setWeatherCity('Rio de Janeiro, Brazil')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">Rio</button>
+                <button type="button" onclick="setWeatherCity('Tokyo, Japan')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">Tóquio</button>
+                <button type="button" onclick="setWeatherCity('New York, USA')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">Nova York</button>
+                <button type="button" onclick="setWeatherCity('London, UK')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">Londres</button>
+                <button type="button" onclick="setWeatherCity('Paris, France')" class="text-[10px] px-2 py-0.5 bg-brand-surface hover:bg-brand-border text-slate-300 rounded">Paris</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Condição do Tempo</label>
+                <select id="weather-condition" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                  <option value="sunny">☀️ Ensolarado / Céu Limpo</option>
+                  <option value="rainy">🌧️ Chuva Cyberpunk</option>
+                  <option value="thunder">⛈️ Tempestade Elétrica</option>
+                  <option value="snow">❄️ Neve Suave</option>
+                  <option value="cloudy">⛅ Parcialmente Nublado</option>
+                  <option value="night">🌙 Noite Estrelada & Lua</option>
+                  <option value="windy">💨 Ventania & Vórtice</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Unidade</label>
+                <select id="weather-unit" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                  <option value="C">°C (Celsius)</option>
+                  <option value="F">°F (Fahrenheit)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- CLOCK OPTIONS -->
+          <div id="profile-opt-clock" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <span>⏰</span> <span>Cores & Formato do Relógio</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Cor do Display LED</label>
+                <select id="clock-color" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                  <option value="phosphor">🟢 Verde Matrix (Phosphor)</option>
+                  <option value="cyan">🔵 Ciano Neon (Cyberpunk)</option>
+                  <option value="amber">🟠 Âmbar Vintage (Plasma)</option>
+                  <option value="ruby">🔴 Vermelho Rubi (Alarme)</option>
+                  <option value="purple">🟣 Roxo Synthwave</option>
+                  <option value="ice">🧊 Azul Ártico</option>
+                  <option value="gold">🟡 Ouro Imperial</option>
+                  <option value="white">⚪ Branco Puro</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Formato de Hora</label>
+                <select id="clock-format" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                  <option value="24h">24 Horas (14:35:00)</option>
+                  <option value="12h">12 Horas (02:35:00 PM)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- CHESS OPTIONS -->
+          <div id="profile-opt-chess" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <span>♟️</span> <span>Partida & Xeque-Mate</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Partida Histórica</label>
+              <select id="chess-match" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="opera">🎭 Paul Morphy (Opera Game 1858) - 17 lances, Sacrifício de Dama & Mate!</option>
+                <option value="scholar">⚡ Mate do Pastor (4 Lances) - Ataque veloz em f7</option>
+                <option value="fools">⚡ Mate do Louco (2 Lances) - O mate mais rápido da história</option>
+                <option value="immortal">👑 The Immortal Game 1851 (Anderssen) - Triplo Sacrifício</option>
+                <option value="kasparov">🤖 Kasparov vs Deep Blue 1996 - Ruptura tática decisiva</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Velocidade</label>
+                <select id="chess-speed" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                  <option value="1.0">1x (Normal)</option>
+                  <option value="1.5">1.5x (Rápido)</option>
+                  <option value="2.0">2x (Turbo)</option>
+                  <option value="0.7">0.7x (Cadenciado)</option>
+                </select>
+              </div>
+              <div class="flex items-end pb-1">
+                <label class="flex items-center gap-2 text-xs text-slate-200 font-semibold cursor-pointer">
+                  <input id="chess-animated" type="checkbox" checked class="rounded accent-brand-500">
+                  <span>▶ Animar até o Mate</span>
+                </label>
+              </div>
+            </div>
           </div>
 
           <button onclick="generateProfile()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
@@ -1811,11 +1961,53 @@ Sleep 3s
       }
     }
 
+    function onProfileWidgetChange() {
+      const w = document.getElementById('profile-widget').value;
+      const optPk = document.getElementById('profile-opt-pokemon');
+      const optWe = document.getElementById('profile-opt-weather');
+      const optCl = document.getElementById('profile-opt-clock');
+      const optCh = document.getElementById('profile-opt-chess');
+
+      if (optPk) optPk.classList.toggle('hidden', w !== 'pokemon');
+      if (optWe) optWe.classList.toggle('hidden', w !== 'weather');
+      if (optCl) optCl.classList.toggle('hidden', w !== 'clock');
+      if (optCh) optCh.classList.toggle('hidden', w !== 'chess');
+    }
+
+    function setWeatherCity(c) {
+      const el = document.getElementById('weather-city');
+      if (el) el.value = c;
+    }
+
     async function generateProfile() {
       const widget = document.getElementById('profile-widget').value;
       const user = document.getElementById('profile-user').value;
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Consultando dados em tempo real...</div>';
-      const res = await fetch(`/api/render/${widget}?username=${encodeURIComponent(user)}`);
+
+      let url = `/api/render/${widget}?username=${encodeURIComponent(user)}`;
+
+      if (widget === 'pokemon') {
+        const pk = document.getElementById('pk-select') ? document.getElementById('pk-select').value : 'gengar';
+        const shiny = document.getElementById('pk-shiny') ? document.getElementById('pk-shiny').checked : false;
+        const level = document.getElementById('pk-level') ? document.getElementById('pk-level').value : 100;
+        url += `&pokemon=${encodeURIComponent(pk)}&shiny=${shiny}&level=${encodeURIComponent(level)}`;
+      } else if (widget === 'weather') {
+        const city = document.getElementById('weather-city') ? document.getElementById('weather-city').value : 'Curitiba, Brazil';
+        const cond = document.getElementById('weather-condition') ? document.getElementById('weather-condition').value : 'sunny';
+        const unit = document.getElementById('weather-unit') ? document.getElementById('weather-unit').value : 'C';
+        url += `&city=${encodeURIComponent(city)}&condition=${encodeURIComponent(cond)}&unit=${encodeURIComponent(unit)}`;
+      } else if (widget === 'clock') {
+        const col = document.getElementById('clock-color') ? document.getElementById('clock-color').value : 'phosphor';
+        const fmt = document.getElementById('clock-format') ? document.getElementById('clock-format').value : '24h';
+        url += `&color=${encodeURIComponent(col)}&format_mode=${encodeURIComponent(fmt)}`;
+      } else if (widget === 'chess') {
+        const match = document.getElementById('chess-match') ? document.getElementById('chess-match').value : 'opera';
+        const anim = globalAnimationsDisabled ? false : (document.getElementById('chess-animated') ? document.getElementById('chess-animated').checked : true);
+        const speed = document.getElementById('chess-speed') ? document.getElementById('chess-speed').value : 1.0;
+        url += `&match=${encodeURIComponent(match)}&animated=${anim}&speed=${encodeURIComponent(speed)}`;
+      }
+
+      const res = await fetch(url);
       const svg = await res.text();
       setPreview(svg, `${widget}.svg`);
     }
@@ -2176,37 +2368,37 @@ def render_stats(username: str = "ViniciusNoetzold"):
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/pokemon")
-def render_pokemon(pokemon: str = "gengar", username: str = "trainer_vini"):
+def render_pokemon(pokemon: str = "gengar", shiny: bool = False, level: int = 100, username: str = "trainer_vini"):
     p = registry.get("pokemon_card")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_pk.svg")
-    p.run(pokemon=pokemon, out_svg=tmp, username=username)
+    p.run(pokemon=pokemon, shiny=shiny, level=level, out_svg=tmp, username=username)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/weather")
-def render_weather(city: str = "Curitiba, Brazil", condition: str = "sunny", username: str = "meteorologist"):
+def render_weather(city: str = "Curitiba, Brazil", condition: str = "sunny", unit: str = "C", username: str = "meteorologist"):
     p = registry.get("weather_card")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_we.svg")
-    p.run(city=city, condition=condition, out_svg=tmp, username=username)
+    p.run(city=city, condition=condition, unit=unit, out_svg=tmp, username=username)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/clock")
-def render_clock(color: str = "phosphor", username: str = "chronos"):
+def render_clock(color: str = "phosphor", format_mode: str = "24h", username: str = "chronos"):
     p = registry.get("tty_clock")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_cl.svg")
-    p.run(color_scheme=color, out_svg=tmp, username=username)
+    p.run(color_scheme=color, format_mode=format_mode, out_svg=tmp, username=username)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/chess")
-def render_chess(match: str = "kasparov", username: str = "grandmaster"):
+def render_chess(match: str = "opera", animated: bool = True, speed: float = 1.0, username: str = "grandmaster"):
     p = registry.get("chess_board")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_ch.svg")
-    p.run(match=match, out_svg=tmp, username=username)
+    p.run(match=match, animated=animated, speed=speed, out_svg=tmp, username=username)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
