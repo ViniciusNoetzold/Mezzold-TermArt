@@ -106,7 +106,17 @@ class Jp2aPlugin(BasePlugin):
                 char = ramp[int(lum / 255.0 * ramp_len)]
 
                 r, g, b = rgb_arr[ry, rx]
-                if color_mode == "rgb":
+                if color_mode == "vivid":
+                    lum_v = int(0.299 * r + 0.587 * g + 0.114 * b)
+                    sat_boost = 1.70
+                    sr = lum_v + (r - lum_v) * sat_boost
+                    sg = lum_v + (g - lum_v) * sat_boost
+                    sb = lum_v + (b - lum_v) * sat_boost
+                    vr = min(max(int(sr * 1.20), 0), 255)
+                    vg = min(max(int(sg * 1.20), 0), 255)
+                    vb = min(max(int(sb * 1.20), 0), 255)
+                    hex_color = f"#{vr:02x}{vg:02x}{vb:02x}"
+                elif color_mode == "rgb":
                     hex_color = f"#{r:02x}{g:02x}{b:02x}"
                 elif color_mode == "amber":
                     hex_color = f"#{min(255, int(lum*1.1)):02x}{int(lum*0.65):02x}00"

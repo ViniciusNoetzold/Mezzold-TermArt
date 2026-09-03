@@ -141,8 +141,16 @@ class DrawillePlugin(BasePlugin):
                     hex_color = f"#{cr:02x}{cg:02x}{cb:02x}"
                 elif color_mode == "matrix":
                     hex_color = f"#00{min(255, int((ar+ag+ab)/3 * 1.3)):02x}55"
-                elif color_mode == "mono":
-                    hex_color = "#58a6ff" if count > 0 else "#21262d"
+                elif color_mode == "vivid":
+                    lum = int(0.299 * ar + 0.587 * ag + 0.114 * ab)
+                    sat_boost = 1.70
+                    sr = lum + (ar - lum) * sat_boost
+                    sg = lum + (ag - lum) * sat_boost
+                    sb = lum + (ab - lum) * sat_boost
+                    vr = min(max(int(sr * 1.20), 0), 255)
+                    vg = min(max(int(sg * 1.20), 0), 255)
+                    vb = min(max(int(sb * 1.20), 0), 255)
+                    hex_color = f"#{vr:02x}{vg:02x}{vb:02x}"
                 else:
                     hex_color = f"#{ar:02x}{ag:02x}{ab:02x}"
 

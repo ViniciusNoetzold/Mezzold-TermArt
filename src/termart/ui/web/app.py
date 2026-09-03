@@ -273,7 +273,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div id="rgb-options" class="flex flex-col gap-2 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
             <span class="font-semibold text-emerald-400">Esquema de Cores</span>
             <select id="rgb-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
-              <option value="rgb">🎨 TrueColor RGB (Cores Reais 24-bit Amostradas da Imagem)</option>
+              <option value="vivid" selected>✨ TrueColor Vivid (Cores Reais Hi-Fi Vibrantes & Saturadas)</option>
+              <option value="rgb">🎨 TrueColor RGB Natural (Cores Reais 24-bit Neutras da Foto)</option>
               <option value="cyberpunk">🌆 Gradiente Cyberpunk (Ciano → Roxo → Rosa)</option>
               <option value="sunset">🌇 Gradiente Sunset (Dourado → Âmbar → Carmesim)</option>
               <option value="tokyo">🌃 Gradiente TokyoNight (Índigo → Roxo Neon)</option>
@@ -1489,8 +1490,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/40 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 font-semibold transition flex items-center gap-1.5 shadow-lg shadow-purple-500/10">
             <span>📦</span> <span>Baixar Todas (.ZIP)</span>
           </button>
-          <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
-            <span>⭳</span> <span>Baixar Arquivo</span>
+          <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/10" title="Baixar arquivo vetorial SVG">
+            <span>⭳</span> <span>Baixar SVG</span>
+          </button>
+          <button id="btn-download-png" onclick="downloadPng()" class="text-xs px-3.5 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 font-semibold transition flex items-center gap-2 shadow-lg shadow-emerald-500/10" title="Exportar arte em PNG de alta resolução (2x)">
+            <span>🖼️</span> <span>Baixar PNG</span>
           </button>
         </div>
       </div>
@@ -2056,8 +2060,11 @@ Sleep 3s
                 <button onclick="copySingleBatchSvg(${idx})" class="p-1 px-2 text-slate-400 hover:text-white rounded bg-brand-card border border-brand-border text-[11px] transition" title="Copiar código SVG">
                   📋 Copiar
                 </button>
-                <button onclick="downloadSingleBatchSvg(${idx})" class="px-2.5 py-1 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow">
-                  <span>⭳</span> <span>Baixar Este</span>
+                <button onclick="downloadSingleBatchSvg(${idx})" class="px-2.5 py-1 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow" title="Baixar SVG">
+                  <span>⭳</span> <span>SVG</span>
+                </button>
+                <button onclick="downloadSingleBatchPng(${idx})" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow" title="Baixar PNG em Alta Resolução">
+                  <span>🖼️</span> <span>PNG</span>
                 </button>
               </div>
             </div>
@@ -2751,6 +2758,91 @@ Sleep 3s
       a.download = currentFilename;
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    function convertSvgToPng(svgStr, filename, scale = 2) {
+      if (!svgStr) {
+        showToast("Nenhuma arte para converter!");
+        return;
+      }
+      showToast("Renderizando imagem PNG...", 2500);
+
+      try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(svgStr, "image/svg+xml");
+        const svgEl = doc.documentElement;
+
+        let width = parseFloat(svgEl.getAttribute("width"));
+        let height = parseFloat(svgEl.getAttribute("height"));
+        const viewBox = svgEl.getAttribute("viewBox");
+        if ((!width || !height || isNaN(width) || isNaN(height)) && viewBox) {
+          const parts = viewBox.split(/[\s,]+/).filter(Boolean);
+          if (parts.length === 4) {
+            width = parseFloat(parts[2]);
+            height = parseFloat(parts[3]);
+          }
+        }
+        width = width || 800;
+        height = height || 500;
+
+        if (!svgEl.getAttribute("xmlns")) {
+          svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        }
+
+        const serialized = new XMLSerializer().serializeToString(svgEl);
+        const svgBlob = new Blob([serialized], { type: "image/svg+xml;charset=utf-8" });
+        const URLObj = window.URL || window.webkitURL || window;
+        const blobUrl = URLObj.createObjectURL(svgBlob);
+
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(width * scale);
+          canvas.height = Math.round(height * scale);
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "#0d1117";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          URLObj.revokeObjectURL(blobUrl);
+
+          canvas.toBlob(function(blob) {
+            if (!blob) {
+              showToast("Erro ao gerar PNG.");
+              return;
+            }
+            const pngUrl = URLObj.createObjectURL(blob);
+            const a = document.createElement("a");
+            const baseName = (filename || "termart").replace(/\.svg$/i, "");
+            a.download = `${baseName}.png`;
+            a.href = pngUrl;
+            a.click();
+            URLObj.revokeObjectURL(pngUrl);
+            showToast(`✓ PNG exportado (${canvas.width}x${canvas.height})!`);
+          }, "image/png");
+        };
+        img.onerror = function() {
+          URLObj.revokeObjectURL(blobUrl);
+          showToast("Erro ao rasterizar SVG para PNG.");
+        };
+        img.src = blobUrl;
+      } catch (err) {
+        showToast("Erro ao processar conversão para PNG.");
+      }
+    }
+
+    function downloadPng() {
+      if (!currentSvg) {
+        showToast("Gere uma arte primeiro para exportar em PNG!");
+        return;
+      }
+      convertSvgToPng(currentSvg, currentFilename || "termart.svg", 2);
+    }
+
+    function downloadSingleBatchPng(idx) {
+      const item = currentBatchResults[idx];
+      if (!item) return;
+      convertSvgToPng(item.svg, item.filename, 2);
     }
 
 

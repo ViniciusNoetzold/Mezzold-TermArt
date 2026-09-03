@@ -169,7 +169,22 @@ class SignaturePlugin(BasePlugin):
 
                 r, g, b = im_rgb_small.getpixel((min(rx, num_cols - 1), min(ry, num_rows - 1)))
 
-                if color_mode == "rgb":
+                if color_mode == "vivid":
+                    lum = int(0.299 * r + 0.587 * g + 0.114 * b)
+                    sat_boost = 1.70
+                    sr = lum + (r - lum) * sat_boost
+                    sg = lum + (g - lum) * sat_boost
+                    sb = lum + (b - lum) * sat_boost
+                    vr = min(max(int(sr * 1.20), 0), 255)
+                    vg = min(max(int(sg * 1.20), 0), 255)
+                    vb = min(max(int(sb * 1.20), 0), 255)
+                    if max(r, g, b) > 12 and max(vr, vg, vb) < 48:
+                        lift = 48 / max(vr, vg, vb, 1)
+                        vr = min(int(vr * lift), 255)
+                        vg = min(int(vg * lift), 255)
+                        vb = min(int(vb * lift), 255)
+                    hex_color = f"#{vr:02x}{vg:02x}{vb:02x}"
+                elif color_mode == "rgb":
                     v = max(r, g, b)
                     if v < 75:
                         hex_color = accent_color if is_light_bg else "#f0f6fc"

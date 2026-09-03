@@ -123,6 +123,21 @@ class RgbAsciiPlugin(BasePlugin):
                     hex_color = f"#00{shade:02x}44"
                 elif color_mode == "mono":
                     hex_color = "#58a6ff" if lum > 110 else "#7d8590"
+                elif color_mode == "vivid":
+                    # TrueColor Vivid: Dynamic Rec.601 saturation boost + vibrance punch
+                    sat_boost = 1.68
+                    sr = lum + (r - lum) * sat_boost
+                    sg = lum + (g - lum) * sat_boost
+                    sb = lum + (b - lum) * sat_boost
+                    vr = min(max(int(sr * 1.18), 0), 255)
+                    vg = min(max(int(sg * 1.18), 0), 255)
+                    vb = min(max(int(sb * 1.18), 0), 255)
+                    if max(r, g, b) > 12 and max(vr, vg, vb) < 45:
+                        lift = 45 / max(vr, vg, vb, 1)
+                        vr = min(int(vr * lift), 255)
+                        vg = min(int(vg * lift), 255)
+                        vb = min(int(vb * lift), 255)
+                    hex_color = f"#{vr:02x}{vg:02x}{vb:02x}"
                 else:
                     # TrueColor RGB
                     br = min(int(r * 1.15), 255)
