@@ -92,6 +92,56 @@ def cmd_cava(args):
     res = p.run(out_svg=args.out, bars_count=args.bars, theme=args.theme, username=args.username)
     print(f"[TermArt] ✓ CAVA visualizer generated: {res.get('output_path')}")
 
+def cmd_pokemon(args):
+    p = registry.get("pokemon_card")
+    res = p.run(pokemon=args.pokemon, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Pokemon card generated: {res.get('output_path')}")
+
+def cmd_weather(args):
+    p = registry.get("weather_card")
+    res = p.run(city=args.city, condition=args.condition, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Weather card generated: {res.get('output_path')}")
+
+def cmd_clock(args):
+    p = registry.get("tty_clock")
+    res = p.run(time_str=args.time, date_str=args.date, color_scheme=args.color, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ TTY Clock generated: {res.get('output_path')}")
+
+def cmd_chess(args):
+    p = registry.get("chess_board")
+    res = p.run(match=args.match, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Chess board generated: {res.get('output_path')}")
+
+def cmd_tree(args):
+    p = registry.get("file_tree")
+    res = p.run(title=args.title, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ File tree generated: {res.get('output_path')}")
+
+def cmd_fortune(args):
+    p = registry.get("fortune_banner")
+    res = p.run(out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Fortune banner generated: {res.get('output_path')}")
+
+def cmd_fire(args):
+    p = registry.get("doom_fire")
+    res = p.run(cols=args.cols, rows=args.rows, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Doom fire generated: {res.get('output_path')}")
+
+def cmd_synthwave(args):
+    p = registry.get("synthwave_grid")
+    res = p.run(out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Synthwave grid generated: {res.get('output_path')}")
+
+def cmd_life(args):
+    p = registry.get("game_of_life")
+    res = p.run(cols=args.cols, rows=args.rows, theme=args.theme, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Game of Life generated: {res.get('output_path')}")
+
+def cmd_rainbow(args):
+    p = registry.get("rainbow_wave")
+    res = p.run(image_path=args.image, text_content=args.text, out_svg=args.out, cols=args.cols, username=args.username)
+    print(f"[TermArt] ✓ Rainbow wave generated: {res.get('output_path')}")
+
 def cmd_portrait(args):
     p = registry.get("portrait")
     res = p.run(image_path=args.image, out_svg=args.out, username=args.username, full_name=args.name, cols=args.cols, braille=args.braille)
@@ -319,6 +369,82 @@ def main():
     ca_p.add_argument("--theme", default="cyberpunk", choices=["cyberpunk", "matrix", "sunset", "ocean"])
     ca_p.add_argument("--username", default="audiophile")
     ca_p.set_defaults(func=cmd_cava)
+
+    # pokemon
+    pk_p = sub.add_parser("pokemon", help="Generate retro RPG Pokemon battle card SVG")
+    pk_p.add_argument("--pokemon", default="gengar", choices=["gengar", "pikachu", "charizard", "mewtwo", "rayquaza", "umbreon"])
+    pk_p.add_argument("--out", default="pokemon_card.svg")
+    pk_p.add_argument("--username", default="trainer_vini")
+    pk_p.set_defaults(func=cmd_pokemon)
+
+    # weather
+    we_p = sub.add_parser("weather", help="Generate retro ASCII weather forecast card SVG (wttr.in style)")
+    we_p.add_argument("--city", default="Curitiba, Brazil")
+    we_p.add_argument("--condition", default="sunny", choices=["sunny", "rainy", "thunder", "snow"])
+    we_p.add_argument("--out", default="weather_card.svg")
+    we_p.add_argument("--username", default="meteorologist")
+    we_p.set_defaults(func=cmd_weather)
+
+    # clock
+    cl_p = sub.add_parser("clock", help="Generate retro digital LED terminal clock SVG (tty-clock style)")
+    cl_p.add_argument("--time", default=None, help="Custom time HH:MM:SS")
+    cl_p.add_argument("--date", default=None, help="Custom date string")
+    cl_p.add_argument("--color", default="phosphor", choices=["phosphor", "cyan", "amber", "ruby"])
+    cl_p.add_argument("--out", default="tty_clock.svg")
+    cl_p.add_argument("--username", default="chronos")
+    cl_p.set_defaults(func=cmd_clock)
+
+    # chess
+    ch_p = sub.add_parser("chess", help="Generate terminal chessboard match card SVG")
+    ch_p.add_argument("--match", default="kasparov", choices=["kasparov", "start"])
+    ch_p.add_argument("--out", default="chess_board.svg")
+    ch_p.add_argument("--username", default="grandmaster")
+    ch_p.set_defaults(func=cmd_chess)
+
+    # tree
+    tr_p = sub.add_parser("tree", help="Generate directory tree architecture visualizer SVG")
+    tr_p.add_argument("--title", default="mezzold-termart-suite")
+    tr_p.add_argument("--out", default="file_tree.svg")
+    tr_p.add_argument("--username", default="architect")
+    tr_p.set_defaults(func=cmd_tree)
+
+    # fortune
+    fo_p = sub.add_parser("fortune", help="Generate BSD Unix fortune cookie banner SVG")
+    fo_p.add_argument("--out", default="fortune_banner.svg")
+    fo_p.add_argument("--username", default="philosopher")
+    fo_p.set_defaults(func=cmd_fortune)
+
+    # fire
+    fi_p = sub.add_parser("fire", help="Generate 1992 Doom / PSX fire routine animated SVG")
+    fi_p.add_argument("--cols", type=int, default=56)
+    fi_p.add_argument("--rows", type=int, default=22)
+    fi_p.add_argument("--out", default="doom_fire.svg")
+    fi_p.add_argument("--username", default="slayer")
+    fi_p.set_defaults(func=cmd_fire)
+
+    # synthwave
+    sy_p = sub.add_parser("synthwave", help="Generate 1980s Outrun synthwave horizon animated SVG")
+    sy_p.add_argument("--out", default="synthwave_grid.svg")
+    sy_p.add_argument("--username", default="cyber_rider")
+    sy_p.set_defaults(func=cmd_synthwave)
+
+    # life
+    li_p = sub.add_parser("life", help="Generate Conway's Game of Life cellular automaton SVG")
+    li_p.add_argument("--cols", type=int, default=50)
+    li_p.add_argument("--rows", type=int, default=22)
+    li_p.add_argument("--theme", default="phosphor", choices=["phosphor", "cyan"])
+    li_p.add_argument("--out", default="game_of_life.svg")
+    li_p.add_argument("--username", default="conway")
+    li_p.set_defaults(func=cmd_life)
+
+    # rainbow
+    ra_p = sub.add_parser("rainbow", help="Apply Lolcat continuous rainbow wave to text or image")
+    ra_p.add_argument("--image", default=None, help="Optional image to convert")
+    ra_p.add_argument("--text", default=None, help="Custom ASCII or banner text")
+    ra_p.add_argument("--cols", type=int, default=70)
+    ra_p.add_argument("--out", default="rainbow_wave.svg")
+    ra_p.add_argument("--username", default="rainbow_dev")
+    ra_p.set_defaults(func=cmd_rainbow)
 
     # studio
     tu_p = sub.add_parser("studio", help="Launch interactive Web Studio UI")

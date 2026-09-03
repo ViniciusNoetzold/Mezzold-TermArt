@@ -38,7 +38,17 @@ ENGINES_TO_TEST = [
     ("ansi_cp437", {"image_path": SAMPLE_IMG, "cols": 40}),
     ("qr_badge", {"url": "https://github.com/ViniciusNoetzold", "label": "GITHUB"}),
     ("donut_3d", {"frames_count": 8, "theme": "cyberpunk"}),
-    ("cava", {"bars_count": 20, "theme": "cyberpunk"})
+    ("cava", {"bars_count": 20, "theme": "cyberpunk"}),
+    ("doom_fire", {"cols": 35, "rows": 16, "frames_count": 8}),
+    ("synthwave_grid", {}),
+    ("game_of_life", {"cols": 35, "rows": 16, "frames_count": 8}),
+    ("rainbow_wave", {"image_path": SAMPLE_IMG, "cols": 40}),
+    ("pokemon_card", {"pokemon": "gengar"}),
+    ("weather_card", {"city": "Curitiba, Brazil", "condition": "sunny"}),
+    ("tty_clock", {"color_scheme": "phosphor"}),
+    ("chess_board", {"match": "kasparov"}),
+    ("file_tree", {}),
+    ("fortune_banner", {})
 ]
 
 def run_suite():

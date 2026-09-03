@@ -121,6 +121,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <option value="glitch">Glitch Cyberpunk (Aberração Cromática VHS & Corrupção)</option>
                 <option value="pixel_mosaic">Pixel Mosaic (Sprites 8-bit Arcade PICO-8 & C64)</option>
                 <option value="palette_swap">Palette Swap (Dracula, Catppuccin, Nord, TokyoNight)</option>
+                <option value="rainbow_wave">Rainbow Wave (Lolcat Espectro Arco-Íris Contínuo)</option>
               </optgroup>
             </select>
           </div>
@@ -346,6 +347,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="heatmap">Heatmap em Cascata (GraphQL Real-Time Commits)</option>
               <option value="neofetch">Card Neofetch macOS (Specs Técnicas & Foco)</option>
               <option value="stats">GitHub Stats Card Dark (github-readme-stats)</option>
+              <option value="pokemon">🎮 Card RPG Pokémon (Gengar Lv.100)</option>
+              <option value="weather">⛅ Weather Forecast (wttr.in ASCII Radar)</option>
+              <option value="clock">⏰ TTY Digital Clock (LED 7-Segmentos)</option>
+              <option value="chess">♟️ Chess Match (Kasparov vs Deep Blue 1996)</option>
+              <option value="tree">📁 Architecture File Tree (Estrutura de Pastas)</option>
+              <option value="fortune">🥠 Fortune Cookie (Filosofia Hacker & Zen)</option>
             </select>
           </div>
 
@@ -444,6 +451,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="qr_badge">📱 QR Code Badge (Crachá de Terminal Escaneável)</option>
               <option value="donut_3d">🍩 Donut 3D (Andy Sloane Torus Giratório 3D)</option>
               <option value="cava">📊 CAVA Visualizer (Equalizador de Áudio Rítmico)</option>
+              <option value="doom_fire">🔥 Doom / PSX Fire 1992 (Fogo em Chamas Vivas)</option>
+              <option value="synthwave_grid">🌆 Synthwave 80s (Horizonte Outrun com Sol Neon)</option>
+              <option value="game_of_life">🧬 Game of Life (Autômato Celular de Conway)</option>
             </select>
           </div>
 
@@ -1137,6 +1147,60 @@ def render_stats(username: str = "ViniciusNoetzold"):
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
 
+@app.get("/api/render/pokemon")
+def render_pokemon(pokemon: str = "gengar", username: str = "trainer_vini"):
+    p = registry.get("pokemon_card")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_pk.svg")
+    p.run(pokemon=pokemon, out_svg=tmp, username=username)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/weather")
+def render_weather(city: str = "Curitiba, Brazil", condition: str = "sunny", username: str = "meteorologist"):
+    p = registry.get("weather_card")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_we.svg")
+    p.run(city=city, condition=condition, out_svg=tmp, username=username)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/clock")
+def render_clock(color: str = "phosphor", username: str = "chronos"):
+    p = registry.get("tty_clock")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_cl.svg")
+    p.run(color_scheme=color, out_svg=tmp, username=username)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/chess")
+def render_chess(match: str = "kasparov", username: str = "grandmaster"):
+    p = registry.get("chess_board")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_ch.svg")
+    p.run(match=match, out_svg=tmp, username=username)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/tree")
+def render_tree(title: str = "mezzold-termart-suite", username: str = "architect"):
+    p = registry.get("file_tree")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_tr.svg")
+    p.run(title=title, out_svg=tmp, username=username)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/fortune")
+def render_fortune(username: str = "philosopher"):
+    p = registry.get("fortune_banner")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_fo.svg")
+    p.run(out_svg=tmp, username=username)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
 @app.get("/api/render/pipes")
 def render_pipes(num_pipes: int = 4, steps: int = 60, username: str = "ViniciusNoetzold"):
     p = registry.get("pipes")
@@ -1241,6 +1305,16 @@ async def render_fx_endpoint(
     elif engine == "cava":
         kwargs["theme"] = "cyberpunk"
         kwargs["bars_count"] = 36
+    elif engine == "doom_fire":
+        kwargs["cols"] = 56
+        kwargs["rows"] = 22
+        kwargs["frames_count"] = 12
+    elif engine == "synthwave_grid":
+        pass
+    elif engine == "game_of_life":
+        kwargs["cols"] = 50
+        kwargs["rows"] = 22
+        kwargs["frames_count"] = 14
     elif engine in ("ansi_cp437", "tetris_reveal"):
         demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "photo.jpg")
         upload_path = os.path.join(os.path.dirname(__file__), "_upload_temp.png")
