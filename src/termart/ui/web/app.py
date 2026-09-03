@@ -25,6 +25,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mezzold TermArt Studio v2.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -103,7 +104,18 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <p class="text-xs text-slate-400 mt-0.5">Motores Chafa (C) e Braille/ASCII (Go) integrados</p>
           </div>
 
-          <div>
+          <!-- Image Mode Switcher: Motor Único vs Comparar Vários Motores -->
+          <div class="flex p-1 bg-brand-dark rounded-xl border border-brand-border text-xs">
+            <button type="button" id="img-btn-single" onclick="setImageSelectionMode('single')" class="flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5">
+              <span>🖼️</span> <span>Motor Único</span>
+            </button>
+            <button type="button" id="img-btn-multi" onclick="setImageSelectionMode('multi')" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
+              <span>📑</span> <span>Comparar Motores (Grade)</span>
+            </button>
+          </div>
+
+          <!-- Single Engine Dropdown -->
+          <div id="img-engine-single-wrap">
             <label class="text-xs text-slate-400 block mb-1">Motor de Renderização</label>
             <select id="img-engine" onchange="toggleImageEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
               <optgroup label="Motores Principais & Chafa">
@@ -124,6 +136,67 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <option value="rainbow_wave">Rainbow Wave (Lolcat Espectro Arco-Íris Contínuo)</option>
               </optgroup>
             </select>
+          </div>
+
+          <!-- Multi Engine Selector Wrap -->
+          <div id="img-engine-multi-wrap" class="hidden flex flex-col gap-2 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-200 flex items-center gap-1">
+                <span>🎨</span> <span>Selecione Motores para Comparar</span>
+              </span>
+              <span id="img-batch-count" class="text-[11px] text-brand-400 font-bold bg-brand-dark px-2 py-0.5 rounded border border-brand-border font-mono">4 selecionados</span>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="flex flex-wrap gap-1">
+              <button type="button" onclick="selectImgPreset('recommended')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-brand-400 font-bold">⚡ Top 4 Recomendados</button>
+              <button type="button" onclick="selectImgPreset('all')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">🎨 Todos os 10</button>
+              <button type="button" onclick="selectImgPreset('clear')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-red-500 text-[10px] text-red-400">✕ Limpar</button>
+            </div>
+
+            <!-- Engine Checkboxes Grid -->
+            <div class="grid grid-cols-2 gap-1.5 p-1 border border-brand-border/60 rounded-lg bg-black/20">
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="chafa" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Chafa (Braille 256)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="rgb_ascii" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>RGB TrueColor</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="drawille" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Drawille (Subpixel)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="dither" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Dither (Floyd)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="jp2a" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>jp2a (ASCII B&W)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="halftone" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Halftone (Jornal)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="edge_art" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Edge Art (Mangá)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="glitch" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Glitch (VHS Cyber)</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="pixel_mosaic" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Pixel Mosaic</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="rainbow_wave" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Rainbow Wave</span>
+              </label>
+            </div>
           </div>
 
           <div id="rgb-options" class="flex flex-col gap-2 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
@@ -242,8 +315,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </label>
           </div>
 
-          <button onclick="generateImage()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <span>✨</span> <span>Renderizar Imagem com Motor Selecionado</span>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-brand-dark/40 rounded-lg border border-brand-border/60 text-xs select-none">
+            <input type="checkbox" id="img-disable-anim" class="w-4 h-4 accent-brand-500 rounded" onchange="syncGlobalAnimToggle('img')">
+            <span class="text-slate-200 font-medium">⏸️ Desativar todas as animações (Modo Leve / Economia de CPU)</span>
+          </label>
+
+          <button id="img-submit-btn" onclick="executeImageRender()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <span>✨</span> <span id="img-submit-label">Renderizar Imagem com Motor Selecionado</span>
           </button>
         </div>
 
@@ -294,7 +372,18 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <label class="text-xs text-slate-400 block mb-1">Texto do Banner ASCII (use \n para nova linha)</label>
               <textarea id="typo-text" rows="2" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">VINICIUS\nNOETZOLD</textarea>
             </div>
-            <div>
+            <!-- Typography Mode Switcher: Fonte Única vs Comparar Várias Fontes -->
+            <div class="flex p-1 bg-brand-dark rounded-xl border border-brand-border text-xs">
+              <button type="button" id="typo-btn-single" onclick="setTypoSelectionMode('single')" class="flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5">
+                <span>🔤</span> <span>Fonte Única</span>
+              </button>
+              <button type="button" id="typo-btn-multi" onclick="setTypoSelectionMode('multi')" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
+                <span>📑</span> <span>Comparar Fontes (Grade)</span>
+              </button>
+            </div>
+
+            <!-- Single Font Dropdown Wrap -->
+            <div id="typo-font-single-wrap">
               <label class="text-xs text-slate-400 block mb-1">Fonte FIGlet (30+ Estilos Curados)</label>
               <select id="typo-font" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
                 <optgroup label="👾 3D & Isométricas">
@@ -342,6 +431,159 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               </select>
             </div>
 
+            <!-- Multi Font Checkbox Grid Wrap -->
+            <div id="typo-font-multi-wrap" class="hidden flex flex-col gap-2 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-200 flex items-center gap-1">
+                  <span>🔤</span> <span>Selecione Fontes para Comparar</span>
+                </span>
+                <span id="typo-batch-count" class="text-[11px] text-brand-400 font-bold bg-brand-dark px-2 py-0.5 rounded border border-brand-border font-mono">6 selecionadas</span>
+              </div>
+
+              <!-- Category Presets -->
+              <div class="flex flex-wrap gap-1">
+                <button type="button" onclick="selectTypoPreset('popular')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-brand-400 font-bold">⚡ Populares</button>
+                <button type="button" onclick="selectTypoPreset('3d')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">👾 3D</button>
+                <button type="button" onclick="selectTypoPreset('cyber')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">⚡ Cyber</button>
+                <button type="button" onclick="selectTypoPreset('gothic')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">🔥 Heavy</button>
+                <button type="button" onclick="selectTypoPreset('graffiti')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">🎨 Graffiti</button>
+                <button type="button" onclick="selectTypoPreset('all')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">💻 Todas (32)</button>
+                <button type="button" onclick="selectTypoPreset('clear')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-red-500 text-[10px] text-red-400">✕ Limpar</button>
+              </div>
+
+              <!-- Fonts Checkbox Grid -->
+              <div class="max-h-48 overflow-y-auto grid grid-cols-2 gap-1.5 p-1.5 border border-brand-border/60 rounded-lg bg-black/30">
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="slant" checked class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Slant</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="isometric1" checked class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Isometric 1</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="doom" checked class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Doom</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="bloody" checked class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Bloody</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="graffiti" checked class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Graffiti</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="starwars" checked class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Star Wars</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="isometric2" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Isometric 2</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="isometric3" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Isometric 3</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="larry3d" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Larry 3D</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="banner3-D" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Banner 3D</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="shadow" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Shadow 3D</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="cyberlarge" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>CyberLarge</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="cybermedium" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>CyberMedium</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="speed" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Speed</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="cosmic" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Cosmic</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="poison" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Poison</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="gothic" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Gothic</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="colossal" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Colossal</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="sub-zero" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Sub-Zero</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="epic" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Epic</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="ogre" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Ogre</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="alligator" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Alligator</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="bulbhead" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Bulbhead</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="chunky" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Chunky</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="broadway" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Broadway</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="standard" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Standard</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="big" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Big</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="small" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Small</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="mini" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Mini</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="ghost" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Ghost</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="digital" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Digital</span>
+                </label>
+                <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                  <input type="checkbox" name="typo_batch_font" value="thin" class="accent-brand-500" onchange="updateTypoBatchCounter()">
+                  <span>Thin</span>
+                </label>
+              </div>
+            </div>
+
             <div>
               <label class="text-xs text-slate-400 block mb-1">Paleta de Cores & Gradiente</label>
               <select id="typo-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
@@ -383,8 +625,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </div>
           </div>
 
-          <button onclick="generate3d()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <span>🚀</span> <span>Renderizar Componente 3D / Tipografia</span>
+          <label class="flex items-center gap-2 cursor-pointer p-2 bg-brand-dark/40 rounded-lg border border-brand-border/60 text-xs select-none">
+            <input type="checkbox" id="typo-disable-anim" class="w-4 h-4 accent-brand-500 rounded" onchange="syncGlobalAnimToggle('typo')">
+            <span class="text-slate-200 font-medium">⏸️ Desativar todas as animações (Modo Leve / Economia de CPU)</span>
+          </label>
+
+          <button id="typo-submit-btn" onclick="execute3dRender()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <span>🚀</span> <span id="typo-submit-label">Renderizar Componente 3D / Tipografia</span>
           </button>
         </div>
 
@@ -786,13 +1033,20 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
     <!-- Right Column: Live Canvas & Preview -->
     <div class="lg:col-span-7 flex flex-col gap-4 lg:sticky lg:top-20">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="text-xs text-slate-400">Arte Renderizada:</span>
           <span id="preview-tag" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">termart.svg</span>
+          <span id="preview-count-badge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-semibold border border-brand-500/30">0 itens</span>
         </div>
-        <div class="flex gap-2">
-          <button onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
+        <div class="flex items-center gap-2">
+          <button id="btn-global-anim" onclick="toggleGlobalAnimations()" class="text-xs px-3 py-1.5 rounded-xl border border-brand-border bg-brand-card hover:bg-brand-border text-slate-300 font-semibold transition flex items-center gap-1.5 shadow" title="Ativar ou desativar todas as animações para economia de CPU">
+            <span id="global-anim-icon">✨</span> <span id="global-anim-label">Animações: ON</span>
+          </button>
+          <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/40 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 font-semibold transition flex items-center gap-1.5 shadow-lg shadow-purple-500/10">
+            <span>📦</span> <span>Baixar Todas (.ZIP)</span>
+          </button>
+          <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
             <span>⭳</span> <span>Baixar Arquivo</span>
           </button>
         </div>
@@ -1132,14 +1386,225 @@ Sleep 3s
       }
     }
 
+    let currentBatchResults = [];
+    let globalAnimationsDisabled = false;
+    let currentImageSelectionMode = 'single';
+    let currentTypoSelectionMode = 'single';
+
     function setPreview(content, filename, isImage = false) {
       currentSvg = content;
       currentFilename = filename;
+      currentBatchResults = [{ id: 'single', title: filename, filename: filename, svg: content }];
       document.getElementById('preview-tag').innerText = filename;
+      document.getElementById('preview-count-badge').classList.add('hidden');
+      document.getElementById('btn-download-zip').classList.add('hidden');
       if (isImage) {
         document.getElementById('svg-display').innerHTML = `<img src="${content}" alt="preview" class="max-w-full rounded-xl shadow-xl"/>`;
       } else {
         document.getElementById('svg-display').innerHTML = content;
+      }
+    }
+
+    function toggleGlobalAnimations() {
+      globalAnimationsDisabled = !globalAnimationsDisabled;
+      const icon = document.getElementById('global-anim-icon');
+      const label = document.getElementById('global-anim-label');
+      const chkImg = document.getElementById('img-disable-anim');
+      const chkTypo = document.getElementById('typo-disable-anim');
+
+      if (chkImg) chkImg.checked = globalAnimationsDisabled;
+      if (chkTypo) chkTypo.checked = globalAnimationsDisabled;
+
+      if (globalAnimationsDisabled) {
+        if (icon) icon.innerText = '⏸️';
+        if (label) label.innerText = 'Animações: OFF';
+        showToast('⏸️ Modo Leve: animações desativadas para economizar CPU!');
+      } else {
+        if (icon) icon.innerText = '✨';
+        if (label) label.innerText = 'Animações: ON';
+        showToast('✨ Animações ativadas em 60 FPS!');
+      }
+    }
+
+    function syncGlobalAnimToggle(src) {
+      let isChecked = false;
+      if (src === 'img') isChecked = document.getElementById('img-disable-anim').checked;
+      else if (src === 'typo') isChecked = document.getElementById('typo-disable-anim').checked;
+
+      globalAnimationsDisabled = isChecked;
+      const icon = document.getElementById('global-anim-icon');
+      const label = document.getElementById('global-anim-label');
+      const chkImg = document.getElementById('img-disable-anim');
+      const chkTypo = document.getElementById('typo-disable-anim');
+
+      if (chkImg) chkImg.checked = isChecked;
+      if (chkTypo) chkTypo.checked = isChecked;
+
+      if (isChecked) {
+        if (icon) icon.innerText = '⏸️';
+        if (label) label.innerText = 'Animações: OFF';
+      } else {
+        if (icon) icon.innerText = '✨';
+        if (label) label.innerText = 'Animações: ON';
+      }
+    }
+
+    function renderBatchResultsGrid(title, results) {
+      currentBatchResults = results;
+      if (!results || results.length === 0) {
+        document.getElementById('svg-display').innerHTML = '<div class="text-slate-500 text-sm">Nenhum resultado gerado.</div>';
+        return;
+      }
+
+      document.getElementById('preview-tag').innerText = `${results.length} itens gerados`;
+      const badge = document.getElementById('preview-count-badge');
+      badge.innerText = `${results.length} blocos`;
+      badge.classList.remove('hidden');
+
+      document.getElementById('btn-download-zip').classList.remove('hidden');
+
+      currentSvg = results[0].svg;
+      currentFilename = results[0].filename;
+
+      let html = `<div class="w-full flex flex-col gap-4">`;
+      html += `<div class="text-xs text-slate-400 flex items-center justify-between border-b border-brand-border/60 pb-2">`;
+      html += `<span><strong>${title}</strong> &bull; Escolha o que mais gostou e baixe diretamente!</span>`;
+      html += `<span class="text-brand-400 font-bold font-mono">${results.length} resultados comparados</span>`;
+      html += `</div>`;
+      
+      html += `<div class="grid grid-cols-1 xl:grid-cols-2 gap-4 w-full">`;
+      results.forEach((item, idx) => {
+        html += `
+          <div class="rounded-xl border border-brand-border bg-brand-dark/90 hover:border-brand-500/80 transition-all p-3 flex flex-col gap-2.5 shadow-xl group">
+            <div class="flex items-center justify-between border-b border-brand-border/60 pb-2">
+              <div class="flex items-center gap-2 overflow-hidden">
+                <span class="font-bold text-white text-xs truncate">${item.title}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-mono font-semibold">${item.tag || 'Arte'}</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <button onclick="copySingleBatchSvg(${idx})" class="p-1 px-2 text-slate-400 hover:text-white rounded bg-brand-card border border-brand-border text-[11px] transition" title="Copiar código SVG">
+                  📋 Copiar
+                </button>
+                <button onclick="downloadSingleBatchSvg(${idx})" class="px-2.5 py-1 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow">
+                  <span>⭳</span> <span>Baixar Este</span>
+                </button>
+              </div>
+            </div>
+            <div class="w-full flex items-center justify-center overflow-x-auto bg-[#090d14] rounded-lg p-2 min-h-[160px] max-h-[420px] overflow-y-auto [&>svg]:max-w-full [&>svg]:h-auto">
+              ${item.svg}
+            </div>
+          </div>
+        `;
+      });
+      html += `</div></div>`;
+
+      document.getElementById('svg-display').innerHTML = html;
+      showToast(`🎉 ${results.length} variações renderizadas na grade!`);
+    }
+
+    function downloadSingleBatchSvg(idx) {
+      const item = currentBatchResults[idx];
+      if (!item) return;
+      const blob = new Blob([item.svg], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = item.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`⭳ Baixando ${item.filename}!`);
+    }
+
+    function copySingleBatchSvg(idx) {
+      const item = currentBatchResults[idx];
+      if (!item) return;
+      navigator.clipboard.writeText(item.svg).then(() => {
+        showToast(`📋 Código SVG de "${item.title}" copiado!`);
+      });
+    }
+
+    async function downloadAllAsZip() {
+      if (!currentBatchResults || currentBatchResults.length === 0) return;
+      showToast('📦 Empacotando ' + currentBatchResults.length + ' arquivos em .ZIP...');
+      if (typeof JSZip === 'undefined') {
+        alert('Biblioteca JSZip carregando... Tente novamente em alguns segundos.');
+        return;
+      }
+      try {
+        const zip = new JSZip();
+        currentBatchResults.forEach((item, idx) => {
+          const name = item.filename || `arte-${idx+1}.svg`;
+          zip.file(name, item.svg);
+        });
+        const blob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'termart-comparativo-pacote.zip';
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('🎉 Arquivo ZIP baixado com sucesso!');
+      } catch (err) {
+        showToast('Erro ao criar ZIP: ' + err.message);
+      }
+    }
+
+    // --- Image Multi-Engine Selection Logic ---
+    function setImageSelectionMode(mode) {
+      currentImageSelectionMode = mode;
+      const isMulti = (mode === 'multi');
+      document.getElementById('img-btn-single').className = isMulti 
+        ? "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5"
+        : "flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5";
+      document.getElementById('img-btn-multi').className = isMulti 
+        ? "flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5"
+        : "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+
+      document.getElementById('img-engine-single-wrap').classList.toggle('hidden', isMulti);
+      document.getElementById('img-engine-multi-wrap').classList.toggle('hidden', !isMulti);
+
+      updateImgBatchCounter();
+    }
+
+    const IMG_PRESETS = {
+      recommended: ['chafa', 'rgb_ascii', 'drawille', 'dither'],
+      all: ['chafa', 'rgb_ascii', 'drawille', 'dither', 'jp2a', 'halftone', 'edge_art', 'glitch', 'pixel_mosaic', 'rainbow_wave']
+    };
+
+    function selectImgPreset(type) {
+      const checkboxes = document.querySelectorAll('input[name="img_batch_eng"]');
+      if (type === 'clear') {
+        checkboxes.forEach(cb => cb.checked = false);
+      } else {
+        const allowed = new Set(IMG_PRESETS[type] || []);
+        checkboxes.forEach(cb => {
+          cb.checked = allowed.has(cb.value);
+        });
+      }
+      updateImgBatchCounter();
+    }
+
+    function updateImgBatchCounter() {
+      const selected = document.querySelectorAll('input[name="img_batch_eng"]:checked');
+      const count = selected.length;
+      const countEl = document.getElementById('img-batch-count');
+      if (countEl) countEl.innerText = `${count} selecionados`;
+
+      const submitLabel = document.getElementById('img-submit-label');
+      if (submitLabel) {
+        if (currentImageSelectionMode === 'multi') {
+          submitLabel.innerText = `Comparar ${count} Motores na Grade`;
+        } else {
+          submitLabel.innerText = 'Renderizar Imagem com Motor Selecionado';
+        }
+      }
+    }
+
+    async function executeImageRender() {
+      if (currentImageSelectionMode === 'multi') {
+        await generateImageBatch();
+      } else {
+        await generateImage();
       }
     }
 
@@ -1171,13 +1636,118 @@ Sleep 3s
       }
       const animMode = document.getElementById('img-anim-mode').value;
       const scanline = document.getElementById('img-scanline').checked;
-      formData.append('anim_mode', animMode);
-      formData.append('scanline', scanline ? 'true' : 'false');
+      const disableAnim = globalAnimationsDisabled || document.getElementById('img-disable-anim').checked;
+
+      formData.append('anim_mode', disableAnim ? 'none' : animMode);
+      formData.append('scanline', (scanline && !disableAnim) ? 'true' : 'false');
 
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Renderizando imagem com motor ' + engine + '...</div>';
       const res = await fetch('/api/render/image', { method: 'POST', body: formData });
       const svg = await res.text();
       setPreview(svg, `${engine}-art.svg`);
+    }
+
+    async function generateImageBatch() {
+      const selected = Array.from(document.querySelectorAll('input[name="img_batch_eng"]:checked')).map(cb => cb.value);
+      if (selected.length === 0) {
+        showToast('⚠️ Selecione ao menos 1 motor de imagem!');
+        return;
+      }
+      const user = document.getElementById('img-user').value;
+      const cols = (document.getElementById('img-cols-input') ? document.getElementById('img-cols-input').value : document.getElementById('img-cols').value) || "110";
+      const fileInput = document.getElementById('img-file');
+      const animMode = document.getElementById('img-anim-mode').value;
+      const scanline = document.getElementById('img-scanline').checked;
+      const disableAnim = globalAnimationsDisabled || document.getElementById('img-disable-anim').checked;
+
+      const formData = new FormData();
+      formData.append('engines', selected.join(','));
+      formData.append('username', user);
+      formData.append('cols', cols);
+      formData.append('color_mode', document.getElementById('rgb-mode').value);
+      formData.append('anim_mode', animMode);
+      formData.append('scanline', scanline ? 'true' : 'false');
+      formData.append('disable_anim', disableAnim ? 'true' : 'false');
+
+      if (activeImageFile) {
+        formData.append('file', activeImageFile);
+      } else if (fileInput.files.length > 0) {
+        formData.append('file', fileInput.files[0]);
+      }
+
+      document.getElementById('svg-display').innerHTML = `<div class="text-slate-400 text-sm animate-pulse">Renderizando imagem através de ${selected.length} motores simultaneamente...</div>`;
+
+      const res = await fetch('/api/render/image_batch', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.status === 'success') {
+        renderBatchResultsGrid("Comparativo de Motores de Imagem", data.results);
+      } else {
+        document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message || 'Erro na renderização'}</div>`;
+      }
+    }
+
+    // --- Typography Multi-Font Selection Logic ---
+    function setTypoSelectionMode(mode) {
+      currentTypoSelectionMode = mode;
+      const isMulti = (mode === 'multi');
+      document.getElementById('typo-btn-single').className = isMulti 
+        ? "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5"
+        : "flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5";
+      document.getElementById('typo-btn-multi').className = isMulti 
+        ? "flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5"
+        : "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+
+      document.getElementById('typo-font-single-wrap').classList.toggle('hidden', isMulti);
+      document.getElementById('typo-font-multi-wrap').classList.toggle('hidden', !isMulti);
+
+      updateTypoBatchCounter();
+    }
+
+    const TYPO_PRESETS = {
+      popular: ['slant', 'isometric1', 'doom', 'bloody', 'graffiti', 'starwars'],
+      '3d': ['isometric1', 'isometric2', 'isometric3', 'larry3d', 'banner3-D', 'shadow'],
+      cyber: ['slant', 'cyberlarge', 'cybermedium', 'speed', 'starwars', 'cosmic'],
+      gothic: ['doom', 'bloody', 'poison', 'gothic', 'colossal', 'sub-zero', 'epic'],
+      graffiti: ['graffiti', 'ogre', 'alligator', 'bulbhead', 'chunky', 'broadway'],
+      all: ['slant', 'isometric1', 'isometric2', 'isometric3', 'larry3d', 'banner3-D', 'shadow', 'cyberlarge', 'cybermedium', 'speed', 'starwars', 'cosmic', 'doom', 'bloody', 'poison', 'gothic', 'colossal', 'sub-zero', 'epic', 'graffiti', 'ogre', 'alligator', 'bulbhead', 'chunky', 'broadway', 'standard', 'big', 'small', 'mini', 'ghost', 'digital', 'thin']
+    };
+
+    function selectTypoPreset(cat) {
+      const checkboxes = document.querySelectorAll('input[name="typo_batch_font"]');
+      if (cat === 'clear') {
+        checkboxes.forEach(cb => cb.checked = false);
+      } else {
+        const allowed = new Set(TYPO_PRESETS[cat] || []);
+        checkboxes.forEach(cb => {
+          cb.checked = allowed.has(cb.value);
+        });
+      }
+      updateTypoBatchCounter();
+    }
+
+    function updateTypoBatchCounter() {
+      const selected = document.querySelectorAll('input[name="typo_batch_font"]:checked');
+      const count = selected.length;
+      const countEl = document.getElementById('typo-batch-count');
+      if (countEl) countEl.innerText = `${count} selecionadas`;
+
+      const submitLabel = document.getElementById('typo-submit-label');
+      if (submitLabel) {
+        if (currentTypoSelectionMode === 'multi') {
+          submitLabel.innerText = `Comparar ${count} Fontes na Grade`;
+        } else {
+          submitLabel.innerText = 'Renderizar Componente 3D / Tipografia';
+        }
+      }
+    }
+
+    async function execute3dRender() {
+      const mode = document.getElementById('mode-3d').value;
+      if (mode === 'typography' && currentTypoSelectionMode === 'multi') {
+        await generateTypoBatch();
+      } else {
+        await generate3d();
+      }
     }
 
     async function generate3d() {
@@ -1200,9 +1770,44 @@ Sleep 3s
         const theme = document.getElementById('typo-theme').value;
         const animMode = document.getElementById('typo-anim-mode').value;
         const scanline = document.getElementById('typo-scanline').checked;
-        const res = await fetch(`/api/render/typography?text=${encodeURIComponent(text)}&font=${encodeURIComponent(font)}&theme=${encodeURIComponent(theme)}&anim_mode=${encodeURIComponent(animMode)}&scanline=${scanline}`);
+        const disableAnim = globalAnimationsDisabled || document.getElementById('typo-disable-anim').checked;
+        const res = await fetch(`/api/render/typography?text=${encodeURIComponent(text)}&font=${encodeURIComponent(font)}&theme=${encodeURIComponent(theme)}&anim_mode=${encodeURIComponent(disableAnim ? 'none' : animMode)}&scanline=${(scanline && !disableAnim)}`);
         const svg = await res.text();
         setPreview(svg, 'ascii-typography.svg');
+      }
+    }
+
+    async function generateTypoBatch() {
+      const selected = Array.from(document.querySelectorAll('input[name="typo_batch_font"]:checked')).map(cb => cb.value);
+      if (selected.length === 0) {
+        showToast('⚠️ Selecione ao menos 1 fonte FIGlet!');
+        return;
+      }
+      const text = document.getElementById('typo-text').value;
+      const theme = document.getElementById('typo-theme').value;
+      const animMode = document.getElementById('typo-anim-mode').value;
+      const scanline = document.getElementById('typo-scanline').checked;
+      const disableAnim = globalAnimationsDisabled || document.getElementById('typo-disable-anim').checked;
+
+      document.getElementById('svg-display').innerHTML = `<div class="text-slate-400 text-sm animate-pulse">Renderizando ${selected.length} fontes FIGlet simultaneamente...</div>`;
+
+      const res = await fetch('/api/render/typography_batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text,
+          fonts: selected,
+          theme,
+          anim_mode: animMode,
+          scanline,
+          disable_anim: disableAnim
+        })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        renderBatchResultsGrid("Comparativo de Tipografias ASCII Slant & FIGlet", data.results);
+      } else {
+        document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message || 'Erro na renderização'}</div>`;
       }
     }
 
@@ -1488,6 +2093,54 @@ def render_typography(
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
 
+@app.post("/api/render/typography_batch")
+def render_typography_batch(payload: dict = Body(...)):
+    text = payload.get("text", "VINICIUS\nNOETZOLD")
+    fonts = payload.get("fonts", ["slant", "isometric1", "doom"])
+    theme = payload.get("theme", "cyberpunk")
+    username = payload.get("username", "ViniciusNoetzold")
+    anim_mode = payload.get("anim_mode", "oscillate")
+    scanline = payload.get("scanline", False)
+    disable_anim = payload.get("disable_anim", False)
+    
+    if disable_anim:
+        anim_mode = "none"
+        scanline = False
+
+    p = registry.get("typography")
+    results = []
+    
+    for font_name in fonts[:35]:
+        try:
+            tmp = os.path.join(tempfile.gettempdir(), f"_typo_batch_{font_name}.svg")
+            p.run(
+                text=text,
+                font_name=font_name,
+                theme=theme,
+                out_svg=tmp,
+                username=username,
+                anim_mode=anim_mode,
+                scanline=scanline
+            )
+            with open(tmp, "r", encoding="utf-8") as f:
+                svg = f.read()
+            results.append({
+                "id": font_name,
+                "title": font_name.title(),
+                "tag": "FIGlet",
+                "filename": f"typo-{font_name}-{theme}.svg",
+                "svg": svg
+            })
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except Exception:
+            pass
+
+    return {
+        "status": "success",
+        "results": results
+    }
+
 @app.get("/api/render/heatmap")
 def render_heatmap(username: str = "ViniciusNoetzold"):
     p = registry.get("heatmap")
@@ -1638,6 +2291,93 @@ async def render_image_upload(
     with open(out_svg, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
+
+@app.post("/api/render/image_batch")
+async def render_image_batch(
+    engines: str = Form("chafa,rgb_ascii,drawille,dither"),
+    username: str = Form("ViniciusNoetzold"),
+    cols: int = Form(74),
+    color_mode: str = Form("rgb"),
+    anim_mode: str = Form("oscillate"),
+    scanline: str = Form("false"),
+    disable_anim: str = Form("false"),
+    file: UploadFile = File(None)
+):
+    upload_path = os.path.join(tempfile.gettempdir(), "_upload_batch_temp.png")
+    if file and hasattr(file, "read") and getattr(file, "filename", ""):
+        content = await file.read()
+        with open(upload_path, "wb") as f:
+            f.write(content)
+    else:
+        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "photo.jpg")
+        with open(demo_src, "rb") as sf, open(upload_path, "wb") as df:
+            df.write(sf.read())
+
+    is_disable = (disable_anim.lower() == "true")
+    if is_disable:
+        anim_mode = "none"
+        is_scan = False
+    else:
+        is_scan = (scanline.lower() == "true")
+
+    engine_list = [e.strip() for e in engines.split(",") if e.strip()]
+    results = []
+
+    ENGINE_TITLES = {
+        "chafa": ("Chafa", "Braille 256"),
+        "rgb_ascii": ("RGB ASCII", "TrueColor 24-bit"),
+        "drawille": ("Drawille", "Subpixel 2x4"),
+        "dither": ("Dither", "Floyd-Steinberg"),
+        "jp2a": ("JP2A", "ASCII B&W"),
+        "halftone": ("Halftone", "Retícula Vintage"),
+        "edge_art": ("Edge Art", "Sobel Mangá"),
+        "glitch": ("Glitch Cyberpunk", "VHS Corrupção"),
+        "pixel_mosaic": ("Pixel Mosaic", "Arcade 8-bit"),
+        "palette_swap": ("Palette Swap", "Catppuccin/Nord"),
+        "rainbow_wave": ("Rainbow Wave", "Lolcat Arco-Íris")
+    }
+
+    for eng in engine_list[:12]:
+        p = registry.get(eng)
+        if not p:
+            continue
+        try:
+            tmp = os.path.join(tempfile.gettempdir(), f"_img_batch_{eng}.svg")
+            kwargs = {
+                "image_path": upload_path,
+                "out_svg": tmp,
+                "cols": cols,
+                "username": username,
+                "anim_mode": anim_mode,
+                "scanline": is_scan
+            }
+            if eng in ("rgb_ascii", "signature", "drawille", "jp2a"):
+                kwargs["color_mode"] = color_mode
+            elif eng == "chafa":
+                kwargs["symbols"] = "braille"
+                kwargs["colors"] = "256"
+
+            p.run(**kwargs)
+            with open(tmp, "r", encoding="utf-8") as f:
+                svg = f.read()
+
+            title_info = ENGINE_TITLES.get(eng, (eng.title(), "Filtro"))
+            results.append({
+                "id": eng,
+                "title": title_info[0],
+                "tag": title_info[1],
+                "filename": f"{eng}-{cols}cols.svg",
+                "svg": svg
+            })
+            if os.path.exists(tmp):
+                os.remove(tmp)
+        except Exception:
+            pass
+
+    return {
+        "status": "success",
+        "results": results
+    }
 
 @app.post("/api/render/fx")
 async def render_fx_endpoint(

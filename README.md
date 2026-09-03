@@ -141,6 +141,8 @@ python termstudio.py
 * **Seletor de Motores:** Alterne instantaneamente entre Drawille, Dither, Glitch, Pixel Mosaic, Chafa, etc.
 * **Aba Screensavers & FX:** Escolha entre The Matrix, cbonsai, Asciiquarium, Donut 3D, CAVA, Doom Fire, Synthwave, Game of Life e gere SVGs em 1 clique.
 * **Aba Stats & Widgets:** Gere cartões de Pokémon, Previsão do Tempo, Relógio LED, Tabuleiro de Xadrez, Árvore de Arquivos e Heatmaps.
+* **Comparador em Grade (Multi-Seleção):** Compare múltiplos motores de imagem (*Chafa, RGB ASCII, Drawille, Dither, Halftone, etc.*) ou dezenas de fontes tipográficas FIGlet (*Slant, Isometric, Doom, Bloody, etc.*) simultaneamente lado a lado em blocos responsivos! Cada bloco possui botão individual **⭳ Baixar Este** e **📋 Copiar**, além de exportação completa do pacote em **.ZIP**.
+* **Modo Leve (Economia de CPU):** Ative ou desative todas as animações com 1 clique para renderização estática ultrarrápida e navegação suave sem sobrecarregar a máquina.
 * **Gravador VHS & AGG:** Editor visual de fitas `.tape` com inserção rápida de comandos, simulação animada 60fps em SVG e renderização ultrarrápida de gravações `.cast` em GIFs via `agg` (Rust).
 * **Download Direto:** Baixe o arquivo SVG ou GIF gerado pronto para colocar no seu README do GitHub.
 

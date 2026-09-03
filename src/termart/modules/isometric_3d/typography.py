@@ -177,31 +177,35 @@ class TypographyPlugin(BasePlugin):
                 f'<text xml:space="preserve" x="{actual_canvas_w/2}" y="{y:.1f}" fill="{col}" '
                 f'font-weight="bold" font-size="{font_size:.1f}" text-anchor="middle">{safe_line}</text>'
             )
-            clip_id = f"clp_{clip_pfx}_{ry}"
-            parts.append(
-                f'<clipPath id="{clip_id}"><rect x="0" y="{row_top:.1f}" height="{line_spacing*1.15:.1f}" width="0">'
-                f'<animate attributeName="width" from="0" to="{actual_canvas_w}" begin="{delay:.3f}s" dur="0.08s" fill="freeze"/>'
-                f'</rect></clipPath>'
-            )
-            parts.append(f'<g clip-path="url(#{clip_id})">{text_el}</g>')
-            if line.strip():
+            if anim_mode == "none":
+                parts.append(text_el)
+            else:
+                clip_id = f"clp_{clip_pfx}_{ry}"
                 parts.append(
-                    f'<rect y="{row_top+2:.1f}" width="8" height="{line_spacing-2:.1f}" fill="{col}" opacity="0">'
-                    f'<animate attributeName="x" from="{pad_x}" to="{actual_canvas_w-pad_x}" begin="{delay:.3f}s" dur="0.08s" fill="freeze"/>'
-                    f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
-                    f'<set attributeName="opacity" to="0" begin="{delay+0.08:.3f}s"/></rect>'
+                    f'<clipPath id="{clip_id}"><rect x="0" y="{row_top:.1f}" height="{line_spacing*1.15:.1f}" width="0">'
+                    f'<animate attributeName="width" from="0" to="{actual_canvas_w}" begin="{delay:.3f}s" dur="0.08s" fill="freeze"/>'
+                    f'</rect></clipPath>'
                 )
+                parts.append(f'<g clip-path="url(#{clip_id})">{text_el}</g>')
+                if line.strip():
+                    parts.append(
+                        f'<rect y="{row_top+2:.1f}" width="8" height="{line_spacing-2:.1f}" fill="{col}" opacity="0">'
+                        f'<animate attributeName="x" from="{pad_x}" to="{actual_canvas_w-pad_x}" begin="{delay:.3f}s" dur="0.08s" fill="freeze"/>'
+                        f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
+                        f'<set attributeName="opacity" to="0" begin="{delay+0.08:.3f}s"/></rect>'
+                    )
 
         parts.append(get_animation_close(clip_pfx, anim_mode, art_w=actual_canvas_w))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, actual_canvas_w, actual_canvas_h, titlebar_h, accent=theme_accent))
 
         bot_y = actual_canvas_h - 16
         parts.append(f'<line x1="0" y1="{actual_canvas_h-36}" x2="{actual_canvas_w}" y2="{actual_canvas_h-36}" stroke="#252d3d"/>')
+        cursor_anim = '<animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.51;1" dur="1s" repeatCount="indefinite"/>' if anim_mode != "none" else ''
         parts.append(
             f'<text x="{pad_x}" y="{bot_y}" fill="#7d8590" font-size="12">'
             f'{html.escape(username)}@github:~$ <tspan fill="#c9d1d9">echo $STUDIO</tspan> '
             f'<tspan fill="{theme_accent}" font-weight="bold">{html.escape(studio)}</tspan>'
-            f'<tspan fill="#58a6ff"> █<animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.5;0.51;1" dur="1s" repeatCount="indefinite"/></tspan>'
+            f'<tspan fill="#58a6ff"> █{cursor_anim}</tspan>'
             f'</text>'
         )
         parts.append('</svg>')
