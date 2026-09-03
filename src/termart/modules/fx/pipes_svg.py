@@ -74,6 +74,9 @@ class PipesPlugin(BasePlugin):
         directions = {'N': (0, -1), 'S': (0, 1), 'E': (1, 0), 'W': (-1, 0)}
         pipe_paths = []
 
+        cycle_dur = 8.5
+        t_draw = 6.0
+
         for p_idx in range(num_pipes):
             px = random.randint(5, cols - 6)
             py = random.randint(3, rows - 4)
@@ -96,18 +99,33 @@ class PipesPlugin(BasePlugin):
                 # SVG coordinates
                 sx = 20 + px * cell_w + cell_w / 2
                 sy = titlebar_h + 20 + py * cell_h + cell_h * 0.8
-                delay = step * 0.06 + p_idx * 0.2
+                t_appear = (step / max(steps - 1, 1)) * t_draw + (p_idx * 0.08)
 
-                pipe_paths.append((sx, sy, ch, col, delay))
+                pipe_paths.append((sx, sy, ch, col, t_appear))
                 px, py = nx, ny
                 p_dir = next_dir
 
-        # Render animated pipe glyphs
-        for sx, sy, ch, col, delay in pipe_paths:
+        max_t = max((t for _, _, _, _, t in pipe_paths), default=1.0)
+        scale_t = t_draw / max(max_t, 0.001)
+
+        # Render animated pipe glyphs in infinite screensaver loop
+        for sx, sy, ch, col, t_appear in pipe_paths:
+            actual_t = t_appear * scale_t
+            f = actual_t / cycle_dur
+            if f <= 0.003:
+                kt = "0; 0.84; 0.94; 1"
+                vals = "1; 1; 0; 0"
+            else:
+                k1 = f
+                k2 = min(0.83, f + 0.01)
+                kt = f"0; {k1:.3f}; {k2:.3f}; 0.84; 0.94; 1"
+                vals = "0; 0; 1; 1; 0; 0"
+
             parts.append(
                 f'<text x="{sx:.1f}" y="{sy:.1f}" fill="{col}" font-size="{cell_h*1.1:.1f}" '
                 f'text-anchor="middle" opacity="0">'
-                f'<animate attributeName="opacity" values="0;1" begin="{delay:.2f}s" dur="0.05s" fill="freeze"/>'
+                f'<animate attributeName="opacity" values="{vals}" keyTimes="{kt}" '
+                f'dur="{cycle_dur:.1f}s" repeatCount="indefinite"/>'
                 f'{html.escape(ch)}</text>'
             )
 
