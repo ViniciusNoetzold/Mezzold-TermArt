@@ -85,7 +85,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <span>🧪</span> <span>Screensavers & Retro FX</span>
       </button>
       <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🎬</span> <span>Gravador VHS (.tape)</span>
+        <span>🎬</span> <span>Gravador VHS & AGG</span>
       </button>
     </div>
   </div>
@@ -603,34 +603,180 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </button>
         </div>
 
-        <!-- ================= TAB 5: GRAVADOR VHS ================= -->
+        <!-- ================= TAB 5: GRAVADOR VHS & AGG ================= -->
         <div id="tab-vhs" class="tab-content hidden flex flex-col gap-4">
-          <div class="border-b border-brand-border pb-2">
-            <h2 class="font-bold text-white text-base flex items-center gap-2">🎬 Gravador de Terminal VHS</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Motor Go do charmbracelet/vhs para gravações de alta fidelidade</p>
+          <div class="border-b border-brand-border pb-2 flex justify-between items-start">
+            <div>
+              <h2 class="font-bold text-white text-base flex items-center gap-2">🎬 Gravador de Terminal Studio</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Automação com VHS (Go) & Renderização ultrarrápida com AGG (Rust)</p>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono font-bold">
+              vhs + agg ativos
+            </span>
           </div>
 
-          <div>
-            <label class="text-xs text-slate-400 block mb-1">Carregar Preset de Fita (.tape)</label>
-            <select id="vhs-preset" onchange="loadVhsPreset()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
-              <option value="neofetch">Preset: Apresentação Neofetch Terminal</option>
-              <option value="pipes">Preset: Execução de Pipes.sh no Bash</option>
-              <option value="mezzold">Preset: Mezzold Studios Signature Reveal</option>
-              <option value="custom">Script Customizado</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="text-xs text-slate-400 block mb-1">Conteúdo da Fita VHS (.tape)</label>
-            <textarea id="vhs-tape" rows="8" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed"></textarea>
-          </div>
-
-          <div class="flex gap-2">
-            <button onclick="downloadTape()" class="flex-1 py-2 bg-brand-dark border border-brand-border hover:bg-brand-border text-slate-300 font-bold rounded-xl text-xs transition">
-              Baixar .tape ⭳
+          <!-- Engine Switcher: VHS Tape vs Asciinema AGG -->
+          <div class="flex p-1 bg-brand-dark rounded-xl border border-brand-border text-xs">
+            <button id="vhs-subtab-btn-tape" onclick="switchVhsSubTab('tape')" class="flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5">
+              <span>📼</span> <span>Fita VHS (.tape)</span>
             </button>
-            <button onclick="compileVhs()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition">
-              Compilar com VHS ⚙️
+            <button id="vhs-subtab-btn-agg" onclick="switchVhsSubTab('agg')" class="flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5">
+              <span>🦀</span> <span>Asciinema AGG (.cast)</span>
+            </button>
+          </div>
+
+          <!-- SUB-TAB 1: VHS TAPE STUDIO -->
+          <div id="vhs-view-tape" class="flex flex-col gap-3.5">
+            <!-- Preset Selector -->
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Carregar Preset de Demonstração (.tape)</label>
+              <select id="vhs-preset" onchange="loadVhsPreset()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="showcase">⚡ Preset: Showcase Geral Mezzold TermArt (CLI Tour)</option>
+                <option value="bonsai">🌸 Preset: cbonsai Árvore Japonesa Crescendo ao Vivo</option>
+                <option value="matrix">🟢 Preset: The Matrix Cascata de Código Katakana</option>
+                <option value="donut">🍩 Preset: Donut 3D Rotativo em C (Andy Sloane)</option>
+                <option value="neofetch">💻 Preset: Neofetch & Git Stats Terminal Card</option>
+                <option value="pokemon">🎮 Preset: Pokémon RPG Colorscript (Gengar Lv.100)</option>
+                <option value="coffee">☕ Preset: Dev Coffee Typing Routine</option>
+                <option value="custom">🛠️ Script Customizado do Usuário</option>
+              </select>
+            </div>
+
+            <!-- Visual Setting Bar (Synced into tape) -->
+            <div class="p-2.5 rounded-xl bg-brand-dark/50 border border-brand-border flex flex-col gap-2 text-xs">
+              <span class="text-[11px] font-bold text-slate-300">Configuração Rápida da Fita</span>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-slate-400 block mb-0.5">Tema do Terminal</label>
+                  <select id="vhs-cfg-theme" onchange="applyVhsConfig()" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                    <option value="Catppuccin Macchiato" selected>Catppuccin Macchiato</option>
+                    <option value="Dracula">Dracula</option>
+                    <option value="Nord">Nord</option>
+                    <option value="TokyoNight">TokyoNight</option>
+                    <option value="Monokai">Monokai</option>
+                    <option value="Cyberpunk">Cyberpunk Neon</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block mb-0.5">Formato de Saída</label>
+                  <select id="vhs-cfg-ext" onchange="applyVhsConfig()" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                    <option value=".gif" selected>Animação GIF (.gif)</option>
+                    <option value=".mp4">Vídeo MP4 (.mp4)</option>
+                    <option value=".webm">Vídeo WebM (.webm)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-[10px] text-slate-400 block mb-0.5">Tamanho da Fonte</label>
+                  <select id="vhs-cfg-fontsize" onchange="applyVhsConfig()" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                    <option value="14">14 px (Compacto)</option>
+                    <option value="16" selected>16 px (Equilibrado)</option>
+                    <option value="18">18 px (Grande)</option>
+                    <option value="20">20 px (Extra Grande)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 block mb-0.5">Resolução do Terminal</label>
+                  <select id="vhs-cfg-res" onchange="applyVhsConfig()" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                    <option value="800 420" selected>800 x 420 (Padrão)</option>
+                    <option value="850 450">850 x 450 (Médio)</option>
+                    <option value="1000 500">1000 x 500 (Widescreen)</option>
+                    <option value="1280 720">1280 x 720 (HD 720p)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Snippets Inserter Chips -->
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Inserir Comandos Rápidos na Fita</label>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="insertVhsSnippet('type')" class="px-2 py-1 rounded-lg bg-brand-dark border border-brand-border hover:border-brand-500 text-[11px] text-slate-300 font-mono transition">⌨️ +Type</button>
+                <button type="button" onclick="insertVhsSnippet('sleep')" class="px-2 py-1 rounded-lg bg-brand-dark border border-brand-border hover:border-brand-500 text-[11px] text-slate-300 font-mono transition">⏱️ +Sleep 500ms</button>
+                <button type="button" onclick="insertVhsSnippet('enter')" class="px-2 py-1 rounded-lg bg-brand-dark border border-brand-border hover:border-brand-500 text-[11px] text-slate-300 font-mono transition">↵ +Enter</button>
+                <button type="button" onclick="insertVhsSnippet('clear')" class="px-2 py-1 rounded-lg bg-brand-dark border border-brand-border hover:border-brand-500 text-[11px] text-slate-300 font-mono transition">🧹 +Clear</button>
+                <button type="button" onclick="insertVhsSnippet('ctrl_c')" class="px-2 py-1 rounded-lg bg-brand-dark border border-brand-border hover:border-brand-500 text-[11px] text-slate-300 font-mono transition">🛑 +Ctrl+C</button>
+                <button type="button" onclick="insertVhsSnippet('backspace')" class="px-2 py-1 rounded-lg bg-brand-dark border border-brand-border hover:border-brand-500 text-[11px] text-slate-300 font-mono transition">⌫ +Backspace</button>
+              </div>
+            </div>
+
+            <!-- Tape Codearea -->
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs text-slate-400">Editor da Fita VHS (.tape)</label>
+                <span id="vhs-lines-count" class="text-[10px] text-slate-500 font-mono">10 linhas</span>
+              </div>
+              <textarea id="vhs-tape" rows="8" oninput="updateTapeLines()" class="w-full bg-brand-dark border border-brand-border focus:border-brand-500 rounded-lg p-2.5 text-slate-200 text-xs leading-relaxed font-mono resize-y"></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="simulateVhs()" class="py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg">
+                <span>▶️</span> <span>Simular Execução (SVG)</span>
+              </button>
+              <button onclick="compileVhs()" class="py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg">
+                <span>⚙️</span> <span>Compilar GIF Real (VHS)</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="downloadTape()" class="py-2 bg-brand-dark border border-brand-border hover:bg-brand-border text-slate-300 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                <span>⭳</span> <span>Baixar .tape</span>
+              </button>
+              <button onclick="copyTapeScript()" class="py-2 bg-brand-dark border border-brand-border hover:bg-brand-border text-slate-300 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                <span>📋</span> <span>Copiar Script</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 2: ASCIINEMA AGG STUDIO -->
+          <div id="vhs-view-agg" class="hidden flex flex-col gap-3.5">
+            <div class="p-3 rounded-xl bg-brand-dark/50 border border-brand-border flex flex-col gap-2 text-xs">
+              <div class="flex items-center gap-2 text-slate-300 font-bold">
+                <span>🦀</span> <span>asciinema/agg (Rust Compiler)</span>
+              </div>
+              <p class="text-[11px] text-slate-400">Renderiza arquivos de gravação terminal <code class="text-brand-400 font-mono">.cast</code> em GIFs otimizados com anti-aliasing e aceleração nativa.</p>
+            </div>
+
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Arquivo de Entrada (.cast)</label>
+              <select id="agg-cast-select" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="demo">Terminal Session Demo (Mezzold TermArt Tour)</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Tema</label>
+                <select id="agg-theme" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                  <option value="dracula" selected>Dracula</option>
+                  <option value="monokai">Monokai</option>
+                  <option value="nord">Nord</option>
+                  <option value="solarized-dark">Solarized Dark</option>
+                  <option value="gruvbox-dark">Gruvbox Dark</option>
+                  <option value="kanagawa">Kanagawa</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Velocidade</label>
+                <select id="agg-speed" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                  <option value="1.0" selected>1.0x (Normal)</option>
+                  <option value="1.5">1.5x (Rápido)</option>
+                  <option value="2.0">2.0x (Turbo)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-1">Fonte (px)</label>
+                <select id="agg-fontsize" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+                  <option value="14" selected>14 px</option>
+                  <option value="16">16 px</option>
+                  <option value="18">18 px</option>
+                </select>
+              </div>
+            </div>
+
+            <button onclick="compileAgg()" class="mt-2 w-full py-2.5 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+              <span>🦀</span> <span>Renderizar GIF com AGG (Rust Engine)</span>
             </button>
           </div>
         </div>
@@ -850,6 +996,50 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     });
 
     const VHS_PRESETS = {
+      showcase: `Output mezzold_showcase.gif
+Set FontSize 16
+Set Width 850
+Set Height 440
+Set Theme "Catppuccin Macchiato"
+
+Type "python termart.py text --text 'MEZZOLD' --font slant --theme cyberpunk"
+Sleep 600ms
+Enter
+Sleep 3s
+`,
+      bonsai: `Output bonsai_growth.gif
+Set FontSize 14
+Set Width 800
+Set Height 420
+Set Theme "TokyoNight"
+
+Type "python termart.py cbonsai --type sakura --out sakura.svg"
+Sleep 500ms
+Enter
+Sleep 4s
+`,
+      matrix: `Output matrix_rain.gif
+Set FontSize 14
+Set Width 800
+Set Height 420
+Set Theme "Cyberpunk"
+
+Type "python termart.py cmatrix --color matrix_green --cols 55"
+Sleep 500ms
+Enter
+Sleep 4s
+`,
+      donut: `Output donut_3d.gif
+Set FontSize 14
+Set Width 800
+Set Height 420
+Set Theme "Dracula"
+
+Type "python termart.py donut --theme cyberpunk"
+Sleep 500ms
+Enter
+Sleep 4s
+`,
       neofetch: `Output neofetch.gif
 Set FontSize 16
 Set Width 800
@@ -861,25 +1051,40 @@ Sleep 500ms
 Enter
 Sleep 3s
 `,
-      pipes: `Output pipes.gif
-Set FontSize 14
-Set Width 800
-Set Height 400
-Set Theme "TokyoNight"
-
-Type "./pipes.sh -p 4 -t 1 -R"
-Sleep 500ms
-Enter
-Sleep 4s
-`,
-      mezzold: `Output mezzold.gif
+      pokemon: `Output pokemon_battle.gif
 Set FontSize 16
-Set Width 850
-Set Height 400
+Set Width 800
+Set Height 420
 Set Theme "Dracula"
 
-Type "python termart.py text --text 'MEZZOLD\\nSTUDIOS' --font slant"
+Type "python termart.py pokemon --pokemon gengar"
+Sleep 500ms
+Enter
+Sleep 3s
+`,
+      coffee: `Output dev_coffee.gif
+Set FontSize 16
+Set Width 800
+Set Height 420
+Set Theme "Nord"
+
+Type "echo '☕ Brewing artisanal dark roast...'"
 Sleep 600ms
+Enter
+Sleep 1s
+Type "git status && git commit -m 'feat: clean terminal aesthetic'"
+Sleep 800ms
+Enter
+Sleep 3s
+`,
+      custom: `Output custom_run.gif
+Set FontSize 16
+Set Width 800
+Set Height 420
+Set Theme "Catppuccin Macchiato"
+
+Type "python termart.py --help"
+Sleep 500ms
 Enter
 Sleep 3s
 `
@@ -923,6 +1128,7 @@ Sleep 3s
       const p = document.getElementById('vhs-preset').value;
       if (VHS_PRESETS[p]) {
         document.getElementById('vhs-tape').value = VHS_PRESETS[p];
+        if (typeof updateTapeLines === 'function') updateTapeLines();
       }
     }
 
@@ -1083,6 +1289,76 @@ Sleep 3s
       setPreview(svg, `${fx}.svg`);
     }
 
+    function switchVhsSubTab(subTab) {
+      const isTape = (subTab === 'tape');
+      document.getElementById('vhs-view-tape').classList.toggle('hidden', !isTape);
+      document.getElementById('vhs-view-agg').classList.toggle('hidden', isTape);
+
+      const btnTape = document.getElementById('vhs-subtab-btn-tape');
+      const btnAgg = document.getElementById('vhs-subtab-btn-agg');
+
+      if (isTape) {
+        btnTape.className = "flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5";
+        btnAgg.className = "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+      } else {
+        btnAgg.className = "flex-1 py-1.5 rounded-lg font-bold bg-brand-600 text-white transition flex items-center justify-center gap-1.5";
+        btnTape.className = "flex-1 py-1.5 rounded-lg font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-1.5";
+      }
+    }
+
+    function insertVhsSnippet(snippet) {
+      const area = document.getElementById('vhs-tape');
+      let textToInsert = "";
+      if (snippet === 'type') textToInsert = 'Type "python termart.py pipes"\n';
+      else if (snippet === 'sleep') textToInsert = 'Sleep 500ms\n';
+      else if (snippet === 'enter') textToInsert = 'Enter\n';
+      else if (snippet === 'clear') textToInsert = 'Hide\nType "clear"\nEnter\nShow\n';
+      else if (snippet === 'ctrl_c') textToInsert = 'Ctrl+C\n';
+      else if (snippet === 'backspace') textToInsert = 'Backspace 5\n';
+
+      area.value += (area.value.endsWith('\n') ? '' : '\n') + textToInsert;
+      updateTapeLines();
+      showToast(`Comando inserido: ${snippet}`);
+    }
+
+    function applyVhsConfig() {
+      const theme = document.getElementById('vhs-cfg-theme').value;
+      const ext = document.getElementById('vhs-cfg-ext').value;
+      const fs = document.getElementById('vhs-cfg-fontsize').value;
+      const [w, h] = document.getElementById('vhs-cfg-res').value.split(' ');
+
+      let val = document.getElementById('vhs-tape').value;
+      
+      // Update Output
+      val = val.replace(/^Output\s+\S+/m, `Output recording${ext}`);
+      // Update Set Theme
+      val = val.replace(/^Set\s+Theme\s+".*"/m, `Set Theme "${theme}"`);
+      // Update Set FontSize
+      val = val.replace(/^Set\s+FontSize\s+\d+/m, `Set FontSize ${fs}`);
+      // Update Set Width
+      val = val.replace(/^Set\s+Width\s+\d+/m, `Set Width ${w}`);
+      // Update Set Height
+      val = val.replace(/^Set\s+Height\s+\d+/m, `Set Height ${h}`);
+
+      document.getElementById('vhs-tape').value = val;
+      updateTapeLines();
+      showToast('⚡ Configurações aplicadas na Fita!');
+    }
+
+    function updateTapeLines() {
+      const tape = document.getElementById('vhs-tape').value;
+      const count = tape.split('\n').filter(l => l.trim().length > 0).length;
+      const el = document.getElementById('vhs-lines-count');
+      if (el) el.innerText = `${count} instruções`;
+    }
+
+    function copyTapeScript() {
+      const tape = document.getElementById('vhs-tape').value;
+      navigator.clipboard.writeText(tape).then(() => {
+        showToast('📋 Script .tape copiado para a Área de Transferência!');
+      });
+    }
+
     function downloadTape() {
       const tape = document.getElementById('vhs-tape').value;
       const blob = new Blob([tape], { type: 'text/plain' });
@@ -1094,17 +1370,60 @@ Sleep 3s
       URL.revokeObjectURL(url);
     }
 
-    async function compileVhs() {
+    async function simulateVhs() {
       const tape = document.getElementById('vhs-tape').value;
-      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Compilando fita com VHS (charmbracelet/vhs)...</div>';
+      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Simulando execução do terminal em 60fps...</div>';
       const res = await fetch('/api/vhs/compile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tape })
+        body: JSON.stringify({ tape, compile_real: false })
       });
       const data = await res.json();
       if (data.status === 'success') {
-        setPreview(data.preview_svg, 'vhs-terminal-preview.svg');
+        setPreview(data.preview_svg, 'vhs-session-sim.svg');
+        showToast('▶️ Simulação de terminal renderizada em 60 FPS!');
+      } else {
+        document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message}</div>`;
+      }
+    }
+
+    async function compileVhs() {
+      const tape = document.getElementById('vhs-tape').value;
+      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Invocando charmbracelet/vhs nativo para gravação...</div>';
+      const res = await fetch('/api/vhs/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tape, compile_real: true })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        if (data.gif_data) {
+          setPreview(data.gif_data, 'vhs-recording.gif', true);
+          showToast('🎉 GIF compilado com sucesso pelo VHS Engine!');
+        } else {
+          setPreview(data.preview_svg, 'vhs-session-sim.svg');
+          showToast('▶️ Simulação SVG interativa pronta!');
+        }
+      } else {
+        document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message}</div>`;
+      }
+    }
+
+    async function compileAgg() {
+      const theme = document.getElementById('agg-theme').value;
+      const speed = document.getElementById('agg-speed').value;
+      const fontSize = document.getElementById('agg-fontsize').value;
+
+      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Compilando .cast com asciinema/agg (Rust Engine)...</div>';
+      const res = await fetch('/api/agg/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme, speed, font_size: fontSize })
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setPreview(data.gif_data, data.filename, true);
+        showToast('🦀 GIF compilado em alta velocidade pelo AGG!');
       } else {
         document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message}</div>`;
       }
@@ -1420,36 +1739,66 @@ async def api_animate_svg(
 @app.post("/api/vhs/compile")
 def compile_vhs_tape(payload: dict = Body(...)):
     tape_content = payload.get("tape", "")
-    tmp_dir = tempfile.mkdtemp(prefix="vhs_")
-    tape_path = os.path.join(tmp_dir, "script.tape")
-    with open(tape_path, "w", encoding="utf-8") as f:
-        f.write(tape_content)
-
-    bin_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "bin"))
-    vhs_bin = os.path.join(bin_dir, "vhs.exe" if os.name == "nt" else "vhs")
+    compile_real = payload.get("compile_real", False)
     
-    # Generate terminal preview SVG
-    preview_svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="800" height="380" viewBox="0 0 800 380" font-family="monospace">
-      <rect width="800" height="380" rx="12" fill="#111722"/>
-      <rect x="0.5" y="0.5" width="799" height="379" rx="12" fill="none" stroke="#30363d"/>
-      <line x1="0" y1="32" x2="800" y2="32" stroke="#30363d"/>
-      <circle cx="18" cy="16" r="5" fill="#ff5f56"/>
-      <circle cx="34" cy="16" r="5" fill="#ffbd2e"/>
-      <circle cx="50" cy="16" r="5" fill="#27c93f"/>
-      <text x="400" y="20" fill="#7d8590" font-size="12" text-anchor="middle">vhs@terminal: ~$ vhs script.tape</text>
-      <text x="24" y="65" fill="#22d3ee" font-size="13">Tape compiled successfully with charmbracelet/vhs!</text>
-      <text x="24" y="90" fill="#7d8590" font-size="12">Script instructions parsed:</text>
-    """
-    lines = tape_content.splitlines()[:12]
-    for i, line in enumerate(lines):
-        preview_svg += f'<text x="24" y="{120 + i * 20}" fill="#f0f6fc" font-size="12">&gt; {line}</text>'
-    preview_svg += "</svg>"
+    p = registry.get("vhs_recorder")
+    preview_svg = p.render_simulation_svg(tape_content)
+    
+    gif_data = None
+    if compile_real and p.has_binary():
+        tmp_dir = tempfile.mkdtemp(prefix="vhs_")
+        tape_path = os.path.join(tmp_dir, "script.tape")
+        with open(tape_path, "w", encoding="utf-8") as f:
+            f.write(tape_content)
+        
+        try:
+            subprocess.run([p.bin_path, "script.tape"], cwd=tmp_dir, capture_output=True, text=True, timeout=30)
+            for f in os.listdir(tmp_dir):
+                if f.endswith(".gif") and os.path.getsize(os.path.join(tmp_dir, f)) > 0:
+                    import base64
+                    with open(os.path.join(tmp_dir, f), "rb") as gf:
+                        gif_data = f"data:image/gif;base64,{base64.b64encode(gf.read()).decode('ascii')}"
+                    break
+        except Exception:
+            pass
 
     return {
         "status": "success",
-        "message": "VHS tape validated and ready.",
-        "preview_svg": preview_svg
+        "message": "Fita processada com sucesso!",
+        "preview_svg": preview_svg,
+        "gif_data": gif_data
     }
+
+@app.post("/api/agg/compile")
+def compile_agg_cast(payload: dict = Body(...)):
+    theme = payload.get("theme", "dracula")
+    font_size = int(payload.get("font_size", 14))
+    speed = float(payload.get("speed", 1.0))
+    
+    cast_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "demo.cast"))
+    tmp_dir = tempfile.mkdtemp(prefix="agg_")
+    out_gif = os.path.join(tmp_dir, "agg_output.gif")
+    
+    p = registry.get("agg_generator")
+    if not p.has_binary():
+        return {"status": "error", "message": "bin/agg.exe não encontrado"}
+    
+    cmd = [p.bin_path, cast_path, out_gif, "--theme", theme, "--font-size", str(font_size), "--speed", str(speed)]
+    try:
+        subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if os.path.exists(out_gif) and os.path.getsize(out_gif) > 0:
+            import base64
+            with open(out_gif, "rb") as gf:
+                gif_data = f"data:image/gif;base64,{base64.b64encode(gf.read()).decode('ascii')}"
+            return {
+                "status": "success",
+                "gif_data": gif_data,
+                "filename": f"agg-{theme}.gif"
+            }
+        else:
+            return {"status": "error", "message": "Falha na compilação do arquivo .cast com AGG"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 def launch_studio(port: int = 7860):
     url = f"http://localhost:{port}"
