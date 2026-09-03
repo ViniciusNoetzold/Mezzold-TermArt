@@ -165,9 +165,30 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <input id="img-cols" type="range" min="40" max="110" value="74" class="w-full accent-brand-500" oninput="document.getElementById('img-cols-val').innerText = this.value">
           </div>
 
+          <!-- Interactive Image Drop & Paste Zone -->
           <div>
-            <label class="text-xs text-slate-400 block mb-1">Foto / Imagem (Opcional - usa demo se vazio)</label>
-            <input id="img-file" type="file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-border file:text-white hover:file:bg-brand-600">
+            <label class="text-xs text-slate-400 block mb-1.5 flex justify-between items-center">
+              <span>Foto / Imagem (Opcional)</span>
+              <span class="text-[10px] text-brand-400 bg-brand-dark px-1.5 py-0.5 rounded border border-brand-border">Ctrl + V Suportado</span>
+            </label>
+            <div id="img-dropzone" onclick="document.getElementById('img-file').click()" class="border-2 border-dashed border-brand-border hover:border-brand-500 rounded-xl p-3.5 text-center cursor-pointer transition-all bg-brand-dark/30 hover:bg-brand-dark/60 flex flex-col items-center justify-center gap-1 group">
+              <span class="text-2xl group-hover:scale-110 transition-transform">📋</span>
+              <span class="text-xs text-slate-200 font-medium">Arraste uma imagem ou aperte <kbd class="px-1.5 py-0.5 bg-brand-dark border border-brand-border rounded text-[10px] text-brand-400 font-mono">Ctrl + V</kbd></span>
+              <span class="text-[10px] text-slate-400">Ou clique para escolher do PC (PNG, JPG, WEBP)</span>
+              <input id="img-file" type="file" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+              
+              <!-- Loaded / Pasted image preview card -->
+              <div id="img-loaded-card" class="hidden mt-2 flex items-center gap-2.5 p-2 bg-brand-dark/95 rounded-lg border border-brand-500/50 text-xs text-slate-200 w-full justify-between" onclick="event.stopPropagation()">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <img id="img-loaded-thumb" src="" class="w-8 h-8 rounded object-cover border border-brand-border flex-shrink-0">
+                  <div class="flex flex-col text-left overflow-hidden">
+                    <span id="img-loaded-name" class="font-bold text-[11px] text-brand-400 truncate">imagem_colada.png</span>
+                    <span id="img-loaded-size" class="text-[10px] text-slate-400">Pronta para renderizar</span>
+                  </div>
+                </div>
+                <button type="button" onclick="clearLoadedImage(event)" title="Remover imagem" class="p-1 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded transition text-sm">✕</button>
+              </div>
+            </div>
           </div>
 
           <!-- Animation Controls Suite -->
@@ -316,13 +337,31 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <p class="text-xs text-slate-400 mt-0.5">Importe qualquer arquivo .svg e aplique efeitos dinâmicos em 60fps</p>
           </div>
 
+          <!-- Interactive SVG Drop & Paste Zone -->
           <div>
-            <label class="text-xs text-slate-400 block mb-1">Selecionar Arquivo SVG do Computador</label>
-            <input id="import-svg-file" type="file" accept=".svg" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-border file:text-white hover:file:bg-brand-600">
+            <label class="text-xs text-slate-400 block mb-1.5 flex justify-between items-center">
+              <span>Arquivo SVG</span>
+              <span class="text-[10px] text-brand-400 bg-brand-dark px-1.5 py-0.5 rounded border border-brand-border">Arraste ou Ctrl + V</span>
+            </label>
+            <div id="svg-dropzone" onclick="document.getElementById('import-svg-file').click()" class="border-2 border-dashed border-brand-border hover:border-brand-500 rounded-xl p-3.5 text-center cursor-pointer transition-all bg-brand-dark/30 hover:bg-brand-dark/60 flex flex-col items-center justify-center gap-1 group">
+              <span class="text-2xl group-hover:scale-110 transition-transform">⚡</span>
+              <span class="text-xs text-slate-200 font-medium">Arraste seu arquivo <span class="text-brand-400 font-bold">.svg</span> aqui ou cole com <kbd class="px-1.5 py-0.5 bg-brand-dark border border-brand-border rounded text-[10px] text-brand-400 font-mono">Ctrl + V</kbd></span>
+              <span class="text-[10px] text-slate-400">Ou clique para selecionar um arquivo .svg do PC</span>
+              <input id="import-svg-file" type="file" accept=".svg" class="hidden" onchange="handleSvgFileSelect(event)">
+
+              <!-- SVG loaded preview badge -->
+              <div id="svg-loaded-card" class="hidden mt-2 flex items-center gap-2 p-2 bg-brand-dark/95 rounded-lg border border-brand-500/50 text-xs text-slate-200 w-full justify-between" onclick="event.stopPropagation()">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <span class="text-base">📄</span>
+                  <span id="svg-loaded-name" class="font-bold text-[11px] text-brand-400 truncate">arquivo.svg</span>
+                </div>
+                <button type="button" onclick="clearLoadedSvg(event)" title="Remover SVG" class="p-1 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded transition text-sm">✕</button>
+              </div>
+            </div>
           </div>
 
           <div>
-            <label class="text-xs text-slate-400 block mb-1">Ou Cole o Código SVG Diretamente (Opcional)</label>
+            <label class="text-xs text-slate-400 block mb-1">Ou Cole o Código SVG Diretamente</label>
             <textarea id="import-svg-code" rows="3" placeholder="<svg ...> ... </svg>" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono"></textarea>
           </div>
 
@@ -446,9 +485,170 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
   </main>
 
+  <!-- Floating Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none px-4 py-2.5 rounded-xl bg-brand-dark/95 border border-brand-500 shadow-2xl text-xs font-semibold text-white flex items-center gap-2">
+    <span id="toast-msg">Mensagem</span>
+  </div>
+
   <script>
     let currentSvg = "";
     let currentFilename = "termart.svg";
+    let activeImageFile = null;
+    let activeSvgFile = null;
+
+    function showToast(msg, duration = 3200) {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toast-msg');
+      if (!toast || !msgEl) return;
+      msgEl.innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, duration);
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) setLoadedImage(file);
+    }
+
+    function setLoadedImage(file) {
+      activeImageFile = file;
+      const card = document.getElementById('img-loaded-card');
+      const thumb = document.getElementById('img-loaded-thumb');
+      const name = document.getElementById('img-loaded-name');
+      const size = document.getElementById('img-loaded-size');
+      
+      name.innerText = file.name || 'imagem_clipboard.png';
+      const kb = Math.round(file.size / 1024);
+      size.innerText = `${kb} KB • Pronta para renderizar`;
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        thumb.src = ev.target.result;
+        card.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearLoadedImage(e) {
+      if (e) e.stopPropagation();
+      activeImageFile = null;
+      document.getElementById('img-file').value = '';
+      document.getElementById('img-loaded-card').classList.add('hidden');
+      showToast('Imagem removida.');
+    }
+
+    function handleSvgFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) setLoadedSvg(file);
+    }
+
+    function setLoadedSvg(file) {
+      activeSvgFile = file;
+      const card = document.getElementById('svg-loaded-card');
+      const name = document.getElementById('svg-loaded-name');
+      name.innerText = file.name || 'arquivo_clipboard.svg';
+      card.classList.remove('hidden');
+
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        document.getElementById('import-svg-code').value = ev.target.result;
+      };
+      reader.readAsText(file);
+    }
+
+    function clearLoadedSvg(e) {
+      if (e) e.stopPropagation();
+      activeSvgFile = null;
+      document.getElementById('import-svg-file').value = '';
+      document.getElementById('svg-loaded-card').classList.add('hidden');
+      document.getElementById('import-svg-code').value = '';
+      showToast('Arquivo SVG removido.');
+    }
+
+    function setupSingleDropzone(zoneId, onFile) {
+      const zone = document.getElementById(zoneId);
+      if (!zone) return;
+
+      ['dragenter', 'dragover'].forEach(name => {
+        zone.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.add('border-brand-500', 'bg-brand-dark/70', 'scale-[1.01]');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(name => {
+        zone.addEventListener(name, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.remove('border-brand-500', 'bg-brand-dark/70', 'scale-[1.01]');
+        }, false);
+      });
+
+      zone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt.files && dt.files.length > 0) {
+          onFile(dt.files[0]);
+        }
+      }, false);
+    }
+
+    function setupDropzones() {
+      setupSingleDropzone('img-dropzone', (file) => {
+        if (file.type.startsWith('image/')) {
+          setLoadedImage(file);
+          showToast('📥 Imagem carregada via arrasto!');
+        } else {
+          showToast('⚠️ Por favor, solte um arquivo de imagem válido');
+        }
+      });
+
+      setupSingleDropzone('svg-dropzone', (file) => {
+        if (file.name.endsWith('.svg') || file.type.includes('svg')) {
+          setLoadedSvg(file);
+          showToast('📥 SVG carregado via arrasto!');
+        } else {
+          showToast('⚠️ Por favor, solte um arquivo .svg válido');
+        }
+      });
+    }
+
+    // Global Window Paste Listener (Ctrl+V)
+    window.addEventListener('paste', (e) => {
+      const activeEl = document.activeElement;
+      const isTextarea = activeEl && activeEl.tagName === 'TEXTAREA';
+
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      let foundImage = false;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            foundImage = true;
+            setLoadedImage(file);
+            switchTab('image');
+            showToast('📋 Imagem do Clipboard colada com sucesso (Ctrl+V)!');
+            break;
+          }
+        }
+      }
+
+      if (!foundImage && !isTextarea) {
+        const text = e.clipboardData.getData('text');
+        if (text && text.trim().startsWith('<svg') && text.trim().includes('</svg>')) {
+          document.getElementById('import-svg-code').value = text;
+          switchTab('animator');
+          showToast('⚡ Código SVG colado do Clipboard!');
+        }
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setupDropzones();
+    });
 
     const VHS_PRESETS = {
       neofetch: `Output neofetch.gif
@@ -549,7 +749,9 @@ Sleep 3s
         formData.append('braille', document.getElementById('sig-braille').checked ? 'true' : 'false');
       }
 
-      if (fileInput.files.length > 0) {
+      if (activeImageFile) {
+        formData.append('file', activeImageFile);
+      } else if (fileInput.files.length > 0) {
         formData.append('file', fileInput.files[0]);
       }
       const animMode = document.getElementById('img-anim-mode').value;
@@ -609,12 +811,14 @@ Sleep 3s
       formData.append('scanline', scanline ? 'true' : 'false');
       formData.append('wrap_terminal', wrapTerm ? 'true' : 'false');
 
-      if (fileInput.files.length > 0) {
+      if (activeSvgFile) {
+        formData.append('file', activeSvgFile);
+      } else if (fileInput.files.length > 0) {
         formData.append('file', fileInput.files[0]);
       } else if (textCode) {
         formData.append('svg_code', textCode);
       } else {
-        alert('Por favor, selecione um arquivo .svg ou cole o código SVG no campo de texto!');
+        alert('Por favor, selecione um arquivo .svg, cole uma imagem/SVG com Ctrl+V ou digite o código!');
         return;
       }
 
