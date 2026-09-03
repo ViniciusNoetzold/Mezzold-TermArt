@@ -82,6 +82,16 @@ def cmd_qr(args):
     res = p.run(url=args.url, label=args.label, out_svg=args.out, color_scheme=args.color, username=args.username)
     print(f"[TermArt] ✓ QR Badge generated: {res.get('output_path')}")
 
+def cmd_donut(args):
+    p = registry.get("donut_3d")
+    res = p.run(out_svg=args.out, theme=args.theme, username=args.username)
+    print(f"[TermArt] ✓ 3D Donut generated: {res.get('output_path')}")
+
+def cmd_cava(args):
+    p = registry.get("cava")
+    res = p.run(out_svg=args.out, bars_count=args.bars, theme=args.theme, username=args.username)
+    print(f"[TermArt] ✓ CAVA visualizer generated: {res.get('output_path')}")
+
 def cmd_portrait(args):
     p = registry.get("portrait")
     res = p.run(image_path=args.image, out_svg=args.out, username=args.username, full_name=args.name, cols=args.cols, braille=args.braille)
@@ -294,6 +304,21 @@ def main():
     qr_p.add_argument("--color", default="cyber_cyan", choices=["cyber_cyan", "matrix", "sunset", "mono"])
     qr_p.add_argument("--username", default="developer")
     qr_p.set_defaults(func=cmd_qr)
+
+    # donut
+    do_p = sub.add_parser("donut", help="Generate Andy Sloane's 3D rotating ASCII Donut SVG")
+    do_p.add_argument("--out", default="donut_3d.svg")
+    do_p.add_argument("--theme", default="cyberpunk", choices=["cyberpunk", "matrix", "tokyo", "sunset"])
+    do_p.add_argument("--username", default="developer")
+    do_p.set_defaults(func=cmd_donut)
+
+    # cava
+    ca_p = sub.add_parser("cava", help="Generate CAVA audio spectrum bar visualizer animated SVG")
+    ca_p.add_argument("--out", default="cava.svg")
+    ca_p.add_argument("--bars", type=int, default=36)
+    ca_p.add_argument("--theme", default="cyberpunk", choices=["cyberpunk", "matrix", "sunset", "ocean"])
+    ca_p.add_argument("--username", default="audiophile")
+    ca_p.set_defaults(func=cmd_cava)
 
     # studio
     tu_p = sub.add_parser("studio", help="Launch interactive Web Studio UI")

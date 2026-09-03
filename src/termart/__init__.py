@@ -13,11 +13,11 @@ from .modules.image import (
     edge_art, glitch_art, pixel_mosaic, palette_swap
 )
 from .modules.profile import heatmap, neofetch, stats_card
-from .modules.isometric_3d import wordmark_3d, city_3d, typography
+from .modules.isometric_3d import wordmark_3d, city_3d, typography, donut_3d
 from .modules.recorder import vhs_recorder, agg_generator
 from .modules.fx import (
     pipes_svg, cmatrix_svg, cbonsai_svg, asciiquarium_svg,
-    cowsay_svg, tetris_reveal, ansi_cp437, qr_badge
+    cowsay_svg, tetris_reveal, ansi_cp437, qr_badge, cava_bars
 )
 from .modules.animator import svg_importer
 

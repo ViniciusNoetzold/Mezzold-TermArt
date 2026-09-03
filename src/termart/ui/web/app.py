@@ -442,6 +442,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="cowsay">🐮 Cowsay (Balão de Fala Unix com Mascotes)</option>
               <option value="ansi_cp437">💾 BBS CP437 (Arte Teletext Anos 90 IBM PC VGA)</option>
               <option value="qr_badge">📱 QR Code Badge (Crachá de Terminal Escaneável)</option>
+              <option value="donut_3d">🍩 Donut 3D (Andy Sloane Torus Giratório 3D)</option>
+              <option value="cava">📊 CAVA Visualizer (Equalizador de Áudio Rítmico)</option>
             </select>
           </div>
 
@@ -1233,6 +1235,12 @@ async def render_fx_endpoint(
         kwargs["url"] = url
         kwargs["label"] = label
         kwargs["color_scheme"] = color_scheme
+    elif engine == "donut_3d":
+        kwargs["theme"] = "cyberpunk"
+        kwargs["frames_count"] = 16
+    elif engine == "cava":
+        kwargs["theme"] = "cyberpunk"
+        kwargs["bars_count"] = 36
     elif engine in ("ansi_cp437", "tetris_reveal"):
         demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "photo.jpg")
         upload_path = os.path.join(os.path.dirname(__file__), "_upload_temp.png")
