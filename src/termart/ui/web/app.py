@@ -2609,6 +2609,9 @@ def render_stats(username: str = "ViniciusNoetzold"):
 
 @app.get("/api/render/pokemon")
 def render_pokemon(pokemon: str = "gengar", shiny: bool = False, level: int = 100, username: str = "trainer_vini"):
+    import importlib
+    from ...modules.profile import pokemon_card
+    importlib.reload(pokemon_card)
     p = registry.get("pokemon_card")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_pk.svg")
     p.run(pokemon=pokemon, shiny=shiny, level=level, out_svg=tmp, username=username)

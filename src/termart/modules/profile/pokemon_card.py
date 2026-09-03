@@ -1,301 +1,146 @@
 """
-Mezzold TermArt - Pokemon Colorscript Terminal Card Module
-Renders authentic retro 8-bit/16-bit RPG Pokemon battle cards with TrueColor block sprites,
-shiny variations, level badges, HP meters, and Pokedex lore descriptions in pure SVG.
-Inspired by phisch/pokemon-colorscripts.
+Mezzold TermArt - Pokemon Holographic Terminal RPG Card Module
+Renders elite cyberpunk Holo-Deck battle cards with high-density TrueColor ASCII/Braille artwork,
+combat stat telemetry (ATK/DEF/SPD), dynamic HP gauges, shiny variations, and Pokedex lore in pure SVG.
 """
 import os
 import html
+import xml.etree.ElementTree as ET
 from typing import Dict, Any, List
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
 
 POKEMON_DATA = {
     "gengar": {
-        "name": "GENGAR", "dex": "#0094", "type": "GHOST / POISON", "hp": 260,
-        "primary": "#b085f5", "secondary": "#ff2a55",
-        "shiny_primary": "#f1f5f9", "shiny_secondary": "#a855f7",
-        "desc": "Hiding in the shadows, it absorbs warmth from its surroundings.",
-        "sprite": [
-            "         .---.        ",
-            "        /     \\   /\\  ",
-            "  /\\   | () () | /  \\ ",
-            " /  \\  |   ▼   |/    \\",
-            "/    \\  \\ ___ /       ",
-            "|      /`     `\\      ",
-            " \\____/  (o) (o) \\____",
-            "      |  \\___/  |     ",
-            "      \\         /     ",
-            "     /`---...---'\\    ",
-            "    / /|  | |  |\\ \\   ",
-            "    `-'-' `-'-' `-'-' "
-        ]
+        "name": "GENGAR", "dex": "#0094", "type": "GHOST / POISON", "species": "Shadow Pokémon", "gen": "GEN I",
+        "atk": 130, "def": 60, "spd": 110, "base_hp": 260, "ability": "Cursed Body", "move": "Shadow Ball",
+        "primary": "#a855f7", "secondary": "#ec4899", "shiny_primary": "#e2e8f0", "shiny_secondary": "#c084fc",
+        "desc": "Hiding in the shadows, it absorbs warmth from its surroundings and stalks its prey."
     },
     "pikachu": {
-        "name": "PIKACHU", "dex": "#0025", "type": "ELECTRIC", "hp": 210,
-        "primary": "#ffdd00", "secondary": "#ff3333",
-        "shiny_primary": "#f97316", "shiny_secondary": "#ef4444",
-        "desc": "Stores electricity in its red cheek sacs and unleashes lightning bolts.",
-        "sprite": [
-            "  \\ \\            / /  ",
-            "   \\ \\          / /   ",
-            "    \\ \\.-''''-./ /    ",
-            "     /          \\     ",
-            "    |  (o)  (o)  |    ",
-            "    | (●) ▼ (●) |     ",
-            "     \\   ww    /      ",
-            "    /`--....--'\\  /\\  ",
-            "   / /|      |\\ \\/ /  ",
-            "  (_/_|      |_\\__/   ",
-            "     /   ..   \\       ",
-            "     `--'  `--'       "
-        ]
+        "name": "PIKACHU", "dex": "#0025", "type": "ELECTRIC", "species": "Mouse Pokémon", "gen": "GEN I",
+        "atk": 55, "def": 40, "spd": 90, "base_hp": 210, "ability": "Static", "move": "Volt Tackle",
+        "primary": "#eab308", "secondary": "#ef4444", "shiny_primary": "#f97316", "shiny_secondary": "#dc2626",
+        "desc": "Stores electricity in its red cheek sacs and unleashes crackling lightning bolts."
     },
     "charizard": {
-        "name": "CHARIZARD", "dex": "#0006", "type": "FIRE / FLYING", "hp": 297,
-        "primary": "#ff7722", "secondary": "#00e5ff",
-        "shiny_primary": "#27272a", "shiny_secondary": "#dc2626",
-        "desc": "Spits fire intense enough to melt boulders. Flying high seeking strong foes.",
-        "sprite": [
-            "    /\\              /\\    ",
-            "   /  \\_          _/  \\   ",
-            "  / /\\  \\.-''''-./  /\\ \\  ",
-            " / /  \\/  (o)(o) \\/  \\ \\ ",
-            " \\ \\   |    ▼    |   / / ",
-            "  \\ \\   \\  ==   /   / /  ",
-            "   \\ \\_ /`--..--'\\ _/ /   ",
-            "    \\__||  🔥   ||__/     ",
-            "       /  /\\  /\\  \\       ",
-            "      /__/  \\/  \\__\\      "
-        ]
+        "name": "CHARIZARD", "dex": "#0006", "type": "FIRE / FLYING", "species": "Flame Pokémon", "gen": "GEN I",
+        "atk": 109, "def": 78, "spd": 100, "base_hp": 297, "ability": "Blaze", "move": "Blast Burn",
+        "primary": "#f97316", "secondary": "#06b6d4", "shiny_primary": "#334155", "shiny_secondary": "#dc2626",
+        "desc": "Spits fire intense enough to melt boulders. Flies high seeking ever stronger foes."
     },
     "blastoise": {
-        "name": "BLASTOISE", "dex": "#0009", "type": "WATER", "hp": 298,
-        "primary": "#38bdf8", "secondary": "#a16207",
-        "shiny_primary": "#818cf8", "shiny_secondary": "#059669",
-        "desc": "The rocket cannons on its shell fire high-speed water jets that punch through steel.",
-        "sprite": [
-            "   [==]        [==]   ",
-            "   |  | .----. |  |   ",
-            "   /`'./      \\.'`\\   ",
-            "  /  / (o)  (o) \\  \\  ",
-            "  |  |    ▼     |  |  ",
-            "   \\  \\  ====  /  /   ",
-            "  /`'--'------'--'`\\  ",
-            " / (___)      (___) \\ ",
-            " |  |   💧💧   |  | ",
-            " `'-..________..--'`  "
-        ]
+        "name": "BLASTOISE", "dex": "#0009", "type": "WATER", "species": "Shellfish Pokémon", "gen": "GEN I",
+        "atk": 85, "def": 120, "spd": 78, "base_hp": 298, "ability": "Torrent", "move": "Hydro Cannon",
+        "primary": "#0284c7", "secondary": "#d97706", "shiny_primary": "#818cf8", "shiny_secondary": "#059669",
+        "desc": "The rocket cannons on its heavy shell fire high-speed water jets that punch through steel."
     },
     "venusaur": {
-        "name": "VENUSAUR", "dex": "#0003", "type": "GRASS / POISON", "hp": 300,
-        "primary": "#34d399", "secondary": "#f43f5e",
-        "shiny_primary": "#a3e635", "shiny_secondary": "#fbbf24",
-        "desc": "A bewitching aroma wafts from its blooming flower, soothing battling foes.",
-        "sprite": [
-            "      _.-🌸-._        ",
-            "    .'  / | \\  '.     ",
-            "   /---'--'--'---\\    ",
-            "   |  (o)    (o)  |   ",
-            "   |      ▼       |   ",
-            "    \\    ====    /    ",
-            "   /`'----------'`\\   ",
-            "  /  /|  🍃🍃  |\\  \\  ",
-            "  `'-'-'------'-'-'`  "
-        ]
+        "name": "VENUSAUR", "dex": "#0003", "type": "GRASS / POISON", "species": "Seed Pokémon", "gen": "GEN I",
+        "atk": 100, "def": 100, "spd": 80, "base_hp": 300, "ability": "Overgrow", "move": "Frenzy Plant",
+        "primary": "#10b981", "secondary": "#f43f5e", "shiny_primary": "#a3e635", "shiny_secondary": "#fbbf24",
+        "desc": "A bewitching aroma wafts from its blooming flower, soothing battling foes in sunlight."
     },
     "mewtwo": {
-        "name": "MEWTWO", "dex": "#0150", "type": "PSYCHIC", "hp": 316,
-        "primary": "#d1c4e9", "secondary": "#7e57c2",
-        "shiny_primary": "#e9d5ff", "shiny_secondary": "#22c55e",
-        "desc": "A legendary Pokémon created by genetic manipulation. Highly intelligent.",
-        "sprite": [
-            "        .---.         ",
-            "       /     \\        ",
-            "      | () () |       ",
-            "      |   ▼   |       ",
-            "       \\ === /        ",
-            "     .-'`---'`-.      ",
-            "    /  /|   |\\  \\  _  ",
-            "   |  | | 🔮| |  |/ ) ",
-            "    \\ \\_|   |_/ /' /  ",
-            "     `--|___|--'--'   "
-        ]
+        "name": "MEWTWO", "dex": "#0150", "type": "PSYCHIC", "species": "Genetic Pokémon", "gen": "GEN I",
+        "atk": 154, "def": 90, "spd": 130, "base_hp": 322, "ability": "Pressure", "move": "Psystrike",
+        "primary": "#c084fc", "secondary": "#38bdf8", "shiny_primary": "#4ade80", "shiny_secondary": "#a855f7",
+        "desc": "A Pokémon created by recombining Mew's genes. Possesses the ultimate savage combat psychic powers."
     },
     "rayquaza": {
-        "name": "RAYQUAZA", "dex": "#0384", "type": "DRAGON / FLYING", "hp": 320,
-        "primary": "#00e676", "secondary": "#ffd600",
-        "shiny_primary": "#18181b", "shiny_secondary": "#eab308",
-        "desc": "It flies forever through the ozone layer, consuming meteoroids for sustenance.",
-        "sprite": [
-            "       _.-''''-._      ",
-            "     .'  /\\  /\\  '.    ",
-            "    /   (o)(o)     \\   ",
-            "   |     ▼  ===     |  ",
-            "    \\  .--------.  /   ",
-            "     '-|  ⚡⚡  |-'    ",
-            "     .-|  ====  |-.    ",
-            "    /  '--------'  \\   ",
-            "   |                |  ",
-            "    '-............-'   "
-        ]
+        "name": "RAYQUAZA", "dex": "#0384", "type": "DRAGON / FLYING", "species": "Sky High Pokémon", "gen": "GEN III",
+        "atk": 150, "def": 90, "spd": 95, "base_hp": 320, "ability": "Air Lock", "move": "Dragon Ascent",
+        "primary": "#22c55e", "secondary": "#eab308", "shiny_primary": "#1e293b", "shiny_secondary": "#eab308",
+        "desc": "Flies endlessly through the ozone layer, consuming meteorites to fuel its massive mega energy."
     },
     "umbreon": {
-        "name": "UMBREON", "dex": "#0197", "type": "DARK", "hp": 295,
-        "primary": "#ffd600", "secondary": "#1a237e",
-        "shiny_primary": "#00e5ff", "shiny_secondary": "#09090b",
-        "desc": "When exposed to moonlight, the ring patterns on its body glow mysterious yellow.",
-        "sprite": [
-            "      /\\        /\\     ",
-            "     /  \\  🟡  /  \\    ",
-            "    / /\\ \\.-.-/ /\\ \\   ",
-            "    \\/  (o) (o)  \\/    ",
-            "        |   ▼   |      ",
-            "         \\ === /       ",
-            "       .-'`---'`-.     ",
-            "      /  /| 🟡|\\  \\    ",
-            "     (_/__|___|__\\_)   "
-        ]
+        "name": "UMBREON", "dex": "#0197", "type": "DARK", "species": "Moonlight Pokémon", "gen": "GEN II",
+        "atk": 65, "def": 130, "spd": 65, "base_hp": 300, "ability": "Synchronize", "move": "Dark Pulse",
+        "primary": "#38bdf8", "secondary": "#eab308", "shiny_primary": "#0ea5e9", "shiny_secondary": "#f59e0b",
+        "desc": "When exposed to moonlight, the circular rings on its sleek body glow with mysterious power."
     },
     "lucario": {
-        "name": "LUCARIO", "dex": "#0448", "type": "FIGHTING / STEEL", "hp": 281,
-        "primary": "#38bdf8", "secondary": "#f59e0b",
-        "shiny_primary": "#eab308", "shiny_secondary": "#06b6d4",
-        "desc": "By catching the aura emanating from others, it can read their thoughts and actions.",
-        "sprite": [
-            "       /\\      /\\     ",
-            "      /  \\____/  \\    ",
-            "     /   (o)(o)   \\   ",
-            "     |     ▼      |   ",
-            "      \\   ===    /    ",
-            "     .-'`------'`-.   ",
-            "    /  /|  ⚙️   |\\  \\  ",
-            "   |  | |      | |  | ",
-            "    `'-'|______|'-'`  "
-        ]
+        "name": "LUCARIO", "dex": "#0448", "type": "FIGHTING / STEEL", "species": "Aura Pokémon", "gen": "GEN IV",
+        "atk": 115, "def": 70, "spd": 112, "base_hp": 280, "ability": "Inner Focus", "move": "Aura Sphere",
+        "primary": "#0ea5e9", "secondary": "#eab308", "shiny_primary": "#84cc16", "shiny_secondary": "#0284c7",
+        "desc": "By reading the auras of all things, it can tell how others are feeling from over half a mile."
     },
     "dragonite": {
-        "name": "DRAGONITE", "dex": "#0149", "type": "DRAGON / FLYING", "hp": 322,
-        "primary": "#fbbf24", "secondary": "#059669",
-        "shiny_primary": "#10b981", "shiny_secondary": "#818cf8",
-        "desc": "It is said to make its home somewhere in the sea. It guides shipwrecked crews to shore.",
-        "sprite": [
-            "        _.-.-._       ",
-            "      /\\ (o)(o) /\\    ",
-            "     /  \\  ▼   /  \\   ",
-            "    |    \\ == /    |  ",
-            "     \\_.-'`--'`-._/   ",
-            "     /   | 🛡️ |   \\   ",
-            "    /    |____|    \\  ",
-            "   (____/      \\____) "
-        ]
+        "name": "DRAGONITE", "dex": "#0149", "type": "DRAGON / FLYING", "species": "Dragon Pokémon", "gen": "GEN I",
+        "atk": 134, "def": 95, "spd": 80, "base_hp": 322, "ability": "Multiscale", "move": "Outrage",
+        "primary": "#f59e0b", "secondary": "#10b981", "shiny_primary": "#10b981", "shiny_secondary": "#9333ea",
+        "desc": "Capable of circling the globe in just 16 hours. A kindhearted Pokémon that rescues drowning sailors."
     },
     "snorlax": {
-        "name": "SNORLAX", "dex": "#0143", "type": "NORMAL", "hp": 360,
-        "primary": "#1e3a5f", "secondary": "#fef3c7",
-        "shiny_primary": "#0284c7", "shiny_secondary": "#ffedd5",
-        "desc": "Its stomach is so strong, even eating moldy or rotten food will not upset it.",
-        "sprite": [
-            "      .--------.      ",
-            "     /  /\\  /\\  \\     ",
-            "    |  ( -  - )  |    ",
-            "     \\    ▼     /     ",
-            "   .-'----------'-.   ",
-            "  /  .----------.  \\  ",
-            " |  /   💤 💤    \\  | ",
-            " |  \\            /  | ",
-            "  \\  '----------'  /  ",
-            "   '--'--------'--'   "
-        ]
+        "name": "SNORLAX", "dex": "#0143", "type": "NORMAL", "species": "Sleeping Pokémon", "gen": "GEN I",
+        "atk": 110, "def": 110, "spd": 30, "base_hp": 430, "ability": "Thick Fat", "move": "Giga Impact",
+        "primary": "#0284c7", "secondary": "#f59e0b", "shiny_primary": "#0369a1", "shiny_secondary": "#d97706",
+        "desc": "Its stomach can digest even rotten food without harm. Consumes 900 lbs of food before falling asleep."
     },
     "eevee": {
-        "name": "EEVEE", "dex": "#0133", "type": "NORMAL", "hp": 240,
-        "primary": "#b45309", "secondary": "#fef08a",
-        "shiny_primary": "#cbd5e1", "shiny_secondary": "#f1f5f9",
-        "desc": "Its genetic code is unstable, allowing it to evolve into a multitude of diverse forms.",
-        "sprite": [
-            "     /\\          /\\   ",
-            "    /  \\________/  \\  ",
-            "   /   /  (o)(o) \\  \\ ",
-            "  (   |     ▼    |   )",
-            "   \\   \\   ==   /   / ",
-            "    `'--.______.--'`  ",
-            "      /  ☁️☁️☁️  \\    ",
-            "     (___________)    "
-        ]
+        "name": "EEVEE", "dex": "#0133", "type": "NORMAL", "species": "Evolution Pokémon", "gen": "GEN I",
+        "atk": 55, "def": 50, "spd": 55, "base_hp": 220, "ability": "Adaptability", "move": "Last Resort",
+        "primary": "#b45309", "secondary": "#fef08a", "shiny_primary": "#e2e8f0", "shiny_secondary": "#a1a1aa",
+        "desc": "Its genetic code is unstable, allowing it to adapt and evolve into a multitude of specialized forms."
     },
     "gyarados": {
-        "name": "GYARADOS", "dex": "#0130", "type": "WATER / FLYING", "hp": 300,
-        "primary": "#0284c7", "secondary": "#dc2626",
-        "shiny_primary": "#dc2626", "shiny_secondary": "#fbbf24",
-        "desc": "Rarely seen in the wild. Huge and vicious, it is capable of destroying entire cities in a rage.",
-        "sprite": [
-            "      /\\  /\\  /\\      ",
-            "     /  \\/  \\/  \\     ",
-            "    |  (o)  (o)  |    ",
-            "    |     ▲      |    ",
-            "     \\   vvvv   /     ",
-            "     /`--------'\\     ",
-            "   ~'  ~  ~  ~   '~   ",
-            "  (     🌊🌊🌊     )  ",
-            "   `'------------'`   "
-        ]
+        "name": "GYARADOS", "dex": "#0130", "type": "WATER / FLYING", "species": "Atrocious Pokémon", "gen": "GEN I",
+        "atk": 125, "def": 79, "spd": 81, "base_hp": 310, "ability": "Intimidate", "move": "Waterfall",
+        "primary": "#0284c7", "secondary": "#ef4444", "shiny_primary": "#dc2626", "shiny_secondary": "#0284c7",
+        "desc": "Once it begins to rampage, its ferocious blood will not calm until everything has been burned down."
     },
     "alakazam": {
-        "name": "ALAKAZAM", "dex": "#0065", "type": "PSYCHIC", "hp": 250,
-        "primary": "#eab308", "secondary": "#9333ea",
-        "shiny_primary": "#d946ef", "shiny_secondary": "#f59e0b",
-        "desc": "Its brain cells multiply continually until death. It remembers everything that ever happened.",
-        "sprite": [
-            "    🥄   /\\  /\\   🥄  ",
-            "     \\  /  \\/  \\  /   ",
-            "      | (o)  (o) |    ",
-            "      |    ▼     |    ",
-            "       \\  ===   /     ",
-            "      .-'`----'`-.    ",
-            "     /  /| 🔮 |\\  \\   ",
-            "    (_/__|____|__\\_)  "
-        ]
+        "name": "ALAKAZAM", "dex": "#0065", "type": "PSYCHIC", "species": "Psi Pokémon", "gen": "GEN I",
+        "atk": 135, "def": 60, "spd": 120, "base_hp": 220, "ability": "Magic Guard", "move": "Psychic",
+        "primary": "#eab308", "secondary": "#9333ea", "shiny_primary": "#facc15", "shiny_secondary": "#ec4899",
+        "desc": "Its brain cells multiply continually until death. As a result, it remembers everything that happened."
     },
     "lugia": {
-        "name": "LUGIA", "dex": "#0249", "type": "PSYCHIC / FLYING", "hp": 320,
-        "primary": "#e2e8f0", "secondary": "#4338ca",
-        "shiny_primary": "#f1f5f9", "shiny_secondary": "#e11d48",
-        "desc": "It sleeps in deep ocean trenches. If it flaps its wings, it is said to cause a 40-day storm.",
-        "sprite": [
-            "      .-'''''-.       ",
-            "     /  (o)(o) \\      ",
-            "    |     ▼     |     ",
-            "   /`'---------'`\\    ",
-            " _/  /\\       /\\  \\_  ",
-            "/___/  \\_ 🌊 _/  \\___\\",
-            "      /   |   \\       ",
-            "     (____|____)      "
-        ]
+        "name": "LUGIA", "dex": "#0249", "type": "PSYCHIC / FLYING", "species": "Diving Pokémon", "gen": "GEN II",
+        "atk": 90, "def": 154, "spd": 110, "base_hp": 322, "ability": "Multiscale", "move": "Aeroblast",
+        "primary": "#60a5fa", "secondary": "#475569", "shiny_primary": "#ec4899", "shiny_secondary": "#38bdf8",
+        "desc": "Leader of the Legendary Birds. It sleeps in deep sea trenches because its wing power is devastating."
     },
     "garchomp": {
-        "name": "GARCHOMP", "dex": "#0445", "type": "DRAGON / GROUND", "hp": 326,
-        "primary": "#2563eb", "secondary": "#ef4444",
-        "shiny_primary": "#3b82f6", "shiny_secondary": "#f97316",
-        "desc": "When it folds up its body and extends its wings, it looks like a jet plane flying at sonic speed.",
-        "sprite": [
-            "    <==|  ⭐  |==>    ",
-            "      /  (o)(o) \\     ",
-            "     |     ▼     |    ",
-            "      \\   ===   /     ",
-            "     .-'`-----'`-.    ",
-            "   _/ /|  ⚡⚡ |\\ \\_  ",
-            "  /  / |       | \\  \\ ",
-            "  `'-' |_______|  `'-'"
-        ]
+        "name": "GARCHOMP", "dex": "#0445", "type": "DRAGON / GROUND", "species": "Mach Pokémon", "gen": "GEN IV",
+        "atk": 130, "def": 95, "spd": 102, "base_hp": 326, "ability": "Rough Skin", "move": "Draco Meteor",
+        "primary": "#3b82f6", "secondary": "#ef4444", "shiny_primary": "#6366f1", "shiny_secondary": "#f59e0b",
+        "desc": "When it folds up its body and extends its wings, it flies at supersonic speed matching a jet fighter."
     }
 }
+
+def load_pokemon_art(pokemon_key: str):
+    pk_filename = f"{pokemon_key.upper()}.svg"
+    cand_paths = [
+        os.path.join(os.getcwd(), "Pokemons", pk_filename),
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "Pokemons", pk_filename),
+        os.path.join(os.path.dirname(__file__), "..", "..", "Pokemons", pk_filename),
+    ]
+
+    for p in cand_paths:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    inner_svg = f.read()
+                tree = ET.fromstring(inner_svg)
+                for e in tree.iter():
+                    if '}' in e.tag:
+                        e.tag = e.tag.split('}', 1)[1]
+                defs = tree.find('defs')
+                defs_str = ET.tostring(defs, encoding='unicode') if defs is not None else ""
+                g_list = tree.findall('g')
+                if g_list:
+                    art_str = ET.tostring(g_list[-1], encoding='unicode')
+                    return defs_str, art_str
+            except Exception:
+                pass
+    return "", ""
 
 @registry.register
 class PokemonCardPlugin(BasePlugin):
     name = "pokemon_card"
     category = "profile"
-    description = "Retro 8-bit/16-bit RPG Pokemon colorscript battle card in terminal SVG"
+    description = "Holographic Pokemon RPG battle card with high-definition TrueColor terminal artwork in pure SVG"
 
     def run(
         self,
@@ -303,35 +148,36 @@ class PokemonCardPlugin(BasePlugin):
         shiny: bool = False,
         level: int = 100,
         out_svg: str = "pokemon_card.svg",
-        username: str = "trainer_vini",
+        username: str = "ViniciusNoetzold",
         **kwargs
     ) -> Dict[str, Any]:
-        pk_key = pokemon.lower()
+        pk_key = pokemon.lower().strip()
         data = POKEMON_DATA.get(pk_key, POKEMON_DATA["gengar"])
 
-        canvas_w = 680
-        canvas_h = 360
+        defs_art, art_str = load_pokemon_art(pk_key)
+
+        canvas_w = 800
+        canvas_h = 420
         titlebar_h = 34
-        clip_pfx = "pkmn_" + str(abs(hash(out_svg)) % 100000)
 
-        # Shiny palette swap
+        col_theme = data["shiny_primary"] if shiny else data["primary"]
+        col_sec = data["shiny_secondary"] if shiny else data["secondary"]
+
+        scale = max(0.05, min(1.0, float(level) / 100.0))
+        cur_hp = int(data["base_hp"] * (0.6 + 0.4 * scale))
+        max_hp = cur_hp
+
+        shiny_filter = ""
         if shiny:
-            prim = data.get("shiny_primary", data["primary"])
-            sec = data.get("shiny_secondary", data["secondary"])
-        else:
-            prim = data["primary"]
-            sec = data["secondary"]
-
-        max_hp = data["hp"]
-        cur_hp = max(10, int(max_hp * (level / 100.0)))
-        hp_pct = int(min(100, (cur_hp / max_hp) * 100))
+            shiny_filter = '<filter id="pk_shiny_filter"><feColorMatrix type="hueRotate" values="140"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>'
 
         parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{canvas_w}" height="{canvas_h}" '
             f'viewBox="0 0 {canvas_w} {canvas_h}" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">',
-            f'<rect width="{canvas_w}" height="{canvas_h}" rx="12" fill="#0b0e14"/>',
-            f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{canvas_h-1}" rx="12" fill="none" stroke="#252d3d" stroke-width="1"/>',
-            f'<line x1="0" y1="{titlebar_h}" x2="{canvas_w}" y2="{titlebar_h}" stroke="#252d3d"/>'
+            f'<defs>{defs_art}{shiny_filter}</defs>',
+            f'<rect width="{canvas_w}" height="{canvas_h}" rx="14" fill="#090d14"/>',
+            f'<rect x="0.5" y="0.5" width="{canvas_w-1}" height="{canvas_h-1}" rx="14" fill="none" stroke="#1f2736" stroke-width="1"/>',
+            f'<line x1="0" y1="{titlebar_h}" x2="{canvas_w}" y2="{titlebar_h}" stroke="#1f2736"/>'
         ]
 
         for i, c in enumerate(["#ff5f56", "#ffbd2e", "#27c93f"]):
@@ -340,84 +186,120 @@ class PokemonCardPlugin(BasePlugin):
         shiny_flag = " --shiny" if shiny else ""
         parts.append(
             f'<text x="{canvas_w/2}" y="{titlebar_h/2 + 4}" fill="#7d8590" font-size="12" '
-            f'text-anchor="middle">{username}@kanto: ~$ pokemon-colorscripts -n {pk_key}{shiny_flag}</text>'
+            f'text-anchor="middle">{html.escape(username)}@kanto: ~$ pkmndex --holo -n {pk_key}{shiny_flag}</text>'
         )
+        parts.append(f'<circle cx="{canvas_w - 24}" cy="{titlebar_h/2}" r="4" fill="{col_theme}"/>')
 
-        # Left Column: Sprite Box
-        box_x = 28
-        box_y = titlebar_h + 20
-        box_w = 260
-        box_h = canvas_h - titlebar_h - 40
+        # LEFT DISPLAY CASE: Holographic Showcase Display
+        disp_x = 24
+        disp_y = titlebar_h + 18
+        disp_w = 340
+        disp_h = 340
 
-        box_bg = "#111420" if not shiny else "#181424"
-        box_border = "#2d3748" if not shiny else "#6366f1"
-        parts.append(f'<rect x="{box_x}" y="{box_y}" width="{box_w}" height="{box_h}" rx="8" fill="{box_bg}" stroke="{box_border}" stroke-width="1"/>')
+        parts.append(f'<rect x="{disp_x}" y="{disp_y}" width="{disp_w}" height="{disp_h}" rx="12" fill="#0d131f" stroke="{col_theme}" stroke-width="1.5" stroke-opacity="0.8"/>')
+        parts.append(f'<rect x="{disp_x+3}" y="{disp_y+3}" width="{disp_w-6}" height="{disp_h-6}" rx="10" fill="none" stroke="{col_theme}" stroke-width="0.7" stroke-opacity="0.25"/>')
+
+        bk = 14
+        parts.append(f'<path d="M{disp_x+8} {disp_y+8+bk} L{disp_x+8} {disp_y+8} L{disp_x+8+bk} {disp_y+8}" fill="none" stroke="{col_theme}" stroke-width="2"/>')
+        parts.append(f'<path d="M{disp_x+disp_w-8-bk} {disp_y+8} L{disp_x+disp_w-8} {disp_y+8} L{disp_x+disp_w-8} {disp_y+8+bk}" fill="none" stroke="{col_theme}" stroke-width="2"/>')
+        parts.append(f'<path d="M{disp_x+8} {disp_y+disp_h-8-bk} L{disp_x+8} {disp_y+disp_h-8} L{disp_x+8+bk} {disp_y+disp_h-8}" fill="none" stroke="{col_theme}" stroke-width="2"/>')
+        parts.append(f'<path d="M{disp_x+disp_w-8-bk} {disp_y+disp_h-8} L{disp_x+disp_w-8} {disp_y+disp_h-8} L{disp_x+disp_w-8} {disp_y+disp_h-8-bk}" fill="none" stroke="{col_theme}" stroke-width="2"/>')
+
+        parts.append('<g opacity="0.06">')
+        for sl in range(disp_y + 10, disp_y + disp_h - 10, 8):
+            parts.append(f'<line x1="{disp_x+8}" y1="{sl}" x2="{disp_x+disp_w-8}" y2="{sl}" stroke="#ffffff" stroke-width="1"/>')
+        parts.append('</g>')
+
+        filter_attr = ' filter="url(#pk_shiny_filter)"' if shiny else ''
+        if art_str:
+            parts.append(f'<svg x="{disp_x+10}" y="{disp_y+10}" width="{disp_w-20}" height="{disp_h-45}" viewBox="0 32 560 353"{filter_attr}>')
+            parts.append(art_str)
+            parts.append('</svg>')
+        else:
+            parts.append(f'<text x="{disp_x+disp_w/2}" y="{disp_y+disp_h/2}" fill="{col_theme}" font-size="18" text-anchor="middle">[{html.escape(data["name"])}]</text>')
+
+        parts.append(f'<rect x="{disp_x+8}" y="{disp_y+disp_h-30}" width="{disp_w-16}" height="22" rx="4" fill="#121824" stroke="#1f2736" stroke-width="1"/>')
+        parts.append(f'<text x="{disp_x+16}" y="{disp_y+disp_h-15}" fill="{col_theme}" font-size="10" font-weight="bold">ID: {data["dex"]}</text>')
+        parts.append(f'<text x="{disp_x+disp_w/2}" y="{disp_y+disp_h-15}" fill="#94a3b8" font-size="10" text-anchor="middle">{data["species"]}</text>')
+        parts.append(f'<text x="{disp_x+disp_w-16}" y="{disp_y+disp_h-15}" fill="#64748b" font-size="10" font-weight="bold" text-anchor="end">{data["gen"]}</text>')
+
+        # RIGHT COLUMN: TELEMETRY & STATS
+        rx = disp_x + disp_w + 24
+        ry = disp_y + 8
+
+        parts.append(f'<text x="{rx}" y="{ry + 18}" fill="#ffffff" font-size="24" font-weight="bold" letter-spacing="1">{html.escape(data["name"])}</text>')
+        parts.append(f'<text x="{rx + len(data["name"])*15 + 14}" y="{ry + 18}" fill="#64748b" font-size="14" font-weight="bold">{data["dex"]}</text>')
 
         if shiny:
-            # Sparkle particles in sprite box
-            parts.append(f'<text x="{box_x + 16}" y="{box_y + 24}" fill="#ffd700" font-size="14">✨</text>')
-            parts.append(f'<text x="{box_x + box_w - 28}" y="{box_y + 36}" fill="#38bdf8" font-size="12">✦</text>')
-            parts.append(f'<text x="{box_x + 20}" y="{box_y + box_h - 18}" fill="#f43f5e" font-size="11">★</text>')
+            parts.append(f'<rect x="{canvas_w - 140}" y="{ry - 4}" width="116" height="26" rx="6" fill="#f59e0b" fill-opacity="0.2" stroke="#f59e0b" stroke-width="1.2"/>')
+            parts.append(f'<text x="{canvas_w - 82}" y="{ry + 14}" fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle">✨ ULTRA SHINY</text>')
+        else:
+            parts.append(f'<rect x="{canvas_w - 140}" y="{ry - 4}" width="116" height="26" rx="6" fill="#1f293d" stroke="#334155" stroke-width="1"/>')
+            parts.append(f'<text x="{canvas_w - 82}" y="{ry + 14}" fill="#94a3b8" font-size="11" font-weight="bold" text-anchor="middle">★ POKÉMON DATA</text>')
 
-        sprite_lines = data["sprite"]
-        line_h = 16
-        start_sprite_y = box_y + (box_h - len(sprite_lines) * line_h) / 2 + 12
+        type_y = ry + 42
+        types = [t.strip() for t in data["type"].split("/")]
+        bx_pos = rx
+        for t in types:
+            tw = len(t) * 8 + 20
+            parts.append(f'<rect x="{bx_pos}" y="{type_y - 12}" width="{tw}" height="20" rx="4" fill="{col_theme}" fill-opacity="0.22" stroke="{col_theme}" stroke-width="1"/>')
+            parts.append(f'<text x="{bx_pos + tw/2}" y="{type_y + 2}" fill="{col_theme}" font-size="10" font-weight="bold" text-anchor="middle">{t}</text>')
+            bx_pos += tw + 8
 
-        for idx, sline in enumerate(sprite_lines):
-            sy = start_sprite_y + idx * line_h
-            parts.append(
-                f'<text xml:space="preserve" x="{box_x + box_w/2}" y="{sy:.1f}" fill="{prim}" font-size="13" '
-                f'font-weight="bold" text-anchor="middle">{html.escape(sline)}</text>'
-            )
+        parts.append(f'<text x="{canvas_w - 24}" y="{type_y + 2}" fill="#7d8590" font-size="11" text-anchor="end">TRAINER: <tspan fill="#e2e8f0" font-weight="bold">{html.escape(username)}</tspan></text>')
+        parts.append(f'<line x1="{rx}" y1="{type_y + 14}" x2="{canvas_w - 24}" y2="{type_y + 14}" stroke="#1e2430"/>')
 
-        # Right Column: RPG Battle Stats Card
-        rx = box_x + box_w + 24
-        ry = box_y + 12
+        hp_y = type_y + 36
+        parts.append(f'<text x="{rx}" y="{hp_y}" fill="#94a3b8" font-size="11" font-weight="bold">LEVEL: <tspan fill="#ffffff">Lv. {level}</tspan></text>')
+        parts.append(f'<text x="{canvas_w - 24}" y="{hp_y}" fill="#10b981" font-size="12" font-weight="bold" text-anchor="end">HP {cur_hp}/{max_hp}</text>')
 
-        # Header: Name + Dex
-        parts.append(f'<text x="{rx}" y="{ry + 10}" fill="#ffffff" font-size="18" font-weight="bold" letter-spacing="1">{data["name"]}</text>')
-        parts.append(f'<text x="{rx + 180}" y="{ry + 10}" fill="#7d8590" font-size="14">{data["dex"]}</text>')
+        bar_w = canvas_w - rx - 24
+        parts.append(f'<rect x="{rx}" y="{hp_y + 8}" width="{bar_w}" height="8" rx="4" fill="#1e293b"/>')
+        parts.append(f'<rect x="{rx}" y="{hp_y + 8}" width="{bar_w}" height="8" rx="4" fill="#10b981"/>')
+        parts.append(f'<circle cx="{rx + bar_w}" cy="{hp_y + 12}" r="3" fill="#ffffff"/>')
 
-        # Shiny Badge or Level Pill
-        if shiny:
-            parts.append(f'<rect x="{rx + 246}" y="{ry - 4}" width="68" height="18" rx="4" fill="#ffd700" opacity="0.18"/>')
-            parts.append(f'<rect x="{rx + 246}" y="{ry - 4}" width="68" height="18" rx="4" fill="none" stroke="#ffd700" stroke-width="1"/>')
-            parts.append(f'<text x="{rx + 280}" y="{ry + 9}" fill="#ffd700" font-size="10" font-weight="bold" text-anchor="middle">✨ SHINY</text>')
+        stats_y = hp_y + 36
+        stat_box_w = (bar_w - 16) / 3
+        stat_box_h = 44
+        stat_list = [
+            ("ATTACK", data["atk"], "#f97316"),
+            ("DEFENSE", data["def"], "#06b6d4"),
+            ("SPEED", data["spd"], "#a855f7")
+        ]
 
-        # Type Pill Badge
-        type_w = 170
-        parts.append(f'<rect x="{rx}" y="{ry + 24}" width="{type_w}" height="22" rx="6" fill="{sec}" opacity="0.2"/>')
-        parts.append(f'<rect x="{rx}" y="{ry + 24}" width="{type_w}" height="22" rx="6" fill="none" stroke="{sec}" stroke-width="1"/>')
-        parts.append(f'<text x="{rx + type_w/2}" y="{ry + 39}" fill="{sec}" font-size="11" font-weight="bold" text-anchor="middle">{data["type"]}</text>')
+        for idx, (s_label, s_val, s_col) in enumerate(stat_list):
+            sx = rx + idx * (stat_box_w + 8)
+            parts.append(f'<rect x="{sx}" y="{stats_y}" width="{stat_box_w}" height="{stat_box_h}" rx="6" fill="#111722" stroke="#1f2736" stroke-width="1"/>')
+            parts.append(f'<text x="{sx + 10}" y="{stats_y + 16}" fill="#7d8590" font-size="9" font-weight="bold">{s_label}</text>')
+            parts.append(f'<text x="{sx + 10}" y="{stats_y + 34}" fill="{s_col}" font-size="15" font-weight="bold">{s_val}</text>')
+            mini_w = (stat_box_w - 20) * (min(150, s_val) / 150.0)
+            parts.append(f'<rect x="{sx + 10}" y="{stats_y + 38}" width="{stat_box_w - 20}" height="2" fill="#1f293b"/>')
+            parts.append(f'<rect x="{sx + 10}" y="{stats_y + 38}" width="{mini_w}" height="2" fill="{s_col}"/>')
 
-        # Level + HP Meter
-        lvl_str = f"Lv. {level} (MAX)" if level == 100 else f"Lv. {level}"
-        parts.append(f'<text x="{rx}" y="{ry + 74}" fill="#7d8590" font-size="12">LEVEL: <tspan fill="#ffffff" font-weight="bold">{lvl_str}</tspan></text>')
-        hp_color = "#00e676" if hp_pct > 50 else ("#f59e0b" if hp_pct > 25 else "#ef4444")
-        parts.append(f'<text x="{rx}" y="{ry + 98}" fill="#7d8590" font-size="12">HP: <tspan fill="{hp_color}" font-weight="bold">{cur_hp}/{max_hp}</tspan></text>')
+        ability_y = stats_y + stat_box_h + 24
+        parts.append(f'<text x="{rx}" y="{ability_y}" fill="#64748b" font-size="10" font-weight="bold">ABILITY: <tspan fill="#e2e8f0">{html.escape(data["ability"])}</tspan></text>')
+        parts.append(f'<text x="{canvas_w - 24}" y="{ability_y}" fill="#64748b" font-size="10" font-weight="bold" text-anchor="end">SIGNATURE: <tspan fill="{col_sec}">{html.escape(data["move"])}</tspan></text>')
 
-        # HP Bar
-        bar_w = 260
-        filled_bar = int(bar_w * (hp_pct / 100.0))
-        parts.append(f'<rect x="{rx}" y="{ry + 108}" width="{bar_w}" height="10" rx="5" fill="#1f2937"/>')
-        parts.append(f'<rect x="{rx}" y="{ry + 108}" width="{filled_bar}" height="10" rx="5" fill="{hp_color}"/>')
+        lore_y = ability_y + 14
+        lore_h = 68
+        parts.append(f'<rect x="{rx}" y="{lore_y}" width="{bar_w}" height="{lore_h}" rx="6" fill="#0f1520" stroke="#1c2433" stroke-width="1"/>')
+        parts.append(f'<line x1="{rx}" y1="{lore_y}" x2="{rx}" y2="{lore_y+lore_h}" stroke="{col_theme}" stroke-width="3"/>')
+        parts.append(f'<text x="{rx + 14}" y="{lore_y + 20}" fill="#7d8590" font-size="10" font-weight="bold">POKÉDEX LORE ARCHIVE:</text>')
 
-        # Divider
-        parts.append(f'<line x1="{rx}" y1="{ry + 138}" x2="{rx + bar_w}" y2="{ry + 138}" stroke="#252d3d"/>')
-
-        # Lore / Pokedex entry
-        parts.append(f'<text x="{rx}" y="{ry + 160}" fill="#a0aec0" font-size="11" font-style="italic">Pokédex Entry:</text>')
         desc_words = data["desc"].split()
-        l1, l2 = " ".join(desc_words[:6]), " ".join(desc_words[6:])
-        parts.append(f'<text x="{rx}" y="{ry + 180}" fill="#e2e8f0" font-size="12">"{html.escape(l1)}"</text>')
-        if l2:
-            parts.append(f'<text x="{rx}" y="{ry + 200}" fill="#e2e8f0" font-size="12">"{html.escape(l2)}"</text>')
+        mid = len(desc_words) // 2
+        l1 = " ".join(desc_words[:mid])
+        l2 = " ".join(desc_words[mid:])
+        parts.append(f'<text x="{rx + 14}" y="{lore_y + 38}" fill="#94a3b8" font-size="11" font-style="italic">"{html.escape(l1)}</text>')
+        parts.append(f'<text x="{rx + 14}" y="{lore_y + 54}" fill="#94a3b8" font-size="11" font-style="italic">{html.escape(l2)}"</text>')
 
-        # Pokeball Icon
-        ball_stroke = "#6366f1" if shiny else "#4a5568"
-        parts.append(f'<circle cx="{canvas_w - 40}" cy="{canvas_h - 35}" r="12" fill="none" stroke="{ball_stroke}" stroke-width="2"/>')
-        parts.append(f'<line x1="{canvas_w - 52}" y1="{canvas_h - 35}" x2="{canvas_w - 28}" y2="{canvas_h - 35}" stroke="{ball_stroke}" stroke-width="2"/>')
-        parts.append(f'<circle cx="{canvas_w - 40}" cy="{canvas_h - 35}" r="4" fill="#121722" stroke="{ball_stroke}" stroke-width="2"/>')
+        pb_cx = canvas_w - 36
+        pb_cy = canvas_h - 22
+        parts.append(f'<circle cx="{pb_cx}" cy="{pb_cy}" r="9" fill="none" stroke="#252f40" stroke-width="1.5"/>')
+        parts.append(f'<line x1="{pb_cx-9}" y1="{pb_cy}" x2="{pb_cx+9}" y2="{pb_cy}" stroke="#252f40" stroke-width="1.5"/>')
+        parts.append(f'<circle cx="{pb_cx}" cy="{pb_cy}" r="3.5" fill="#090d14" stroke="#252f40" stroke-width="1.5"/>')
+
+        parts.append(f'<text x="{rx}" y="{canvas_h - 14}" fill="#334155" font-size="9">SILPH CO. CYBER-DEX v3.0 • VERIFIED POKÉMON ARCHIVE</text>')
 
         parts.append('</svg>')
         svg_content = "".join(parts)
@@ -428,4 +310,3 @@ class PokemonCardPlugin(BasePlugin):
                 f.write(svg_content)
 
         return {"status": "success", "output_path": out_svg, "pokemon": pk_key, "shiny": shiny, "level": level}
-
