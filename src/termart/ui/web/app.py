@@ -2731,7 +2731,7 @@ async def render_image_upload(
         with open(upload_path, "wb") as f:
             f.write(content)
     else:
-        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "mezzold-logo.png" if engine == "signature" else "photo.jpg")
+        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "mezzold-logo.png" if engine == "signature" else "demo_cyber.png")
         with open(demo_src, "rb") as sf, open(upload_path, "wb") as df:
             df.write(sf.read())
 
@@ -2783,7 +2783,7 @@ async def render_image_batch(
         with open(upload_path, "wb") as f:
             f.write(content)
     else:
-        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "photo.jpg")
+        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "demo_cyber.png")
         with open(demo_src, "rb") as sf, open(upload_path, "wb") as df:
             df.write(sf.read())
 
@@ -2905,7 +2905,7 @@ async def render_fx_endpoint(
         kwargs["rows"] = 22
         kwargs["frames_count"] = 14
     elif engine in ("ansi_cp437", "tetris_reveal"):
-        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "photo.jpg")
+        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "demo_cyber.png")
         upload_path = os.path.join(os.path.dirname(__file__), "_upload_temp.png")
         src_file = upload_path if os.path.exists(upload_path) else demo_src
         kwargs["image_path"] = src_file

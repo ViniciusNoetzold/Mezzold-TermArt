@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from termart.core.registry import registry
 import termart  # registers all plugins
 
-SAMPLE_IMG = os.path.join(os.path.dirname(__file__), "..", "src", "termart", "ui", "web", "_upload_temp.png")
+SAMPLE_IMG = os.path.join(os.path.dirname(__file__), "..", "assets", "demo_cyber.png")
 OUT_DIR = os.path.join(os.path.dirname(__file__), "_test_outputs")
 os.makedirs(OUT_DIR, exist_ok=True)
 

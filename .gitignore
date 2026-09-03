@@ -17,5 +17,5 @@ upstream/
 /*.png
 /*.jpg
 /*.jpeg
-/test.tape
 bin/ffmpeg.exe
+bin/cloudflared.exe
