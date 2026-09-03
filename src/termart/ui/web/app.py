@@ -162,11 +162,22 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
 
           <div>
-            <div class="flex justify-between text-xs text-slate-400 mb-1">
+            <div class="flex justify-between items-center text-xs text-slate-400 mb-1">
               <span>Densidade (Colunas)</span>
-              <span id="img-cols-val" class="text-brand-500 font-bold">74</span>
+              <div class="flex items-center gap-1.5">
+                <input id="img-cols-input" type="number" min="20" max="300" value="110" class="w-14 bg-brand-dark border border-brand-border rounded px-1.5 py-0.5 text-right text-brand-400 font-bold font-mono text-xs focus:border-brand-500 outline-none" oninput="syncColsFromInput(this.value)">
+                <span class="text-[10px] text-slate-500 font-mono">cols</span>
+              </div>
             </div>
-            <input id="img-cols" type="range" min="40" max="110" value="74" class="w-full accent-brand-500" oninput="document.getElementById('img-cols-val').innerText = this.value">
+            <input id="img-cols" type="range" min="30" max="250" value="110" class="w-full accent-brand-500 cursor-pointer" oninput="syncColsFromSlider(this.value)">
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
+              <span class="cursor-pointer hover:text-brand-400 transition" onclick="setCols(40)">40</span>
+              <span class="cursor-pointer hover:text-brand-400 transition" onclick="setCols(74)">74 (Padrão)</span>
+              <span class="cursor-pointer hover:text-brand-400 transition" onclick="setCols(110)">110 (HD)</span>
+              <span class="cursor-pointer hover:text-brand-400 transition" onclick="setCols(160)">160 (FHD)</span>
+              <span class="cursor-pointer hover:text-brand-400 transition" onclick="setCols(200)">200 (4K)</span>
+              <span class="cursor-pointer hover:text-brand-400 transition" onclick="setCols(250)">250 (Max)</span>
+            </div>
           </div>
 
           <!-- Interactive Image Drop & Paste Zone -->
@@ -502,6 +513,26 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     let activeImageFile = null;
     let activeSvgFile = null;
 
+    function syncColsFromSlider(val) {
+      const inp = document.getElementById('img-cols-input');
+      if (inp) inp.value = val;
+    }
+
+    function syncColsFromInput(val) {
+      const num = parseInt(val, 10);
+      if (!isNaN(num)) {
+        const slider = document.getElementById('img-cols');
+        if (slider) slider.value = Math.min(Math.max(num, 30), 250);
+      }
+    }
+
+    function setCols(val) {
+      const slider = document.getElementById('img-cols');
+      const inp = document.getElementById('img-cols-input');
+      if (slider) slider.value = val;
+      if (inp) inp.value = val;
+    }
+
     function showToast(msg, duration = 3200) {
       const toast = document.getElementById('toast');
       const msgEl = document.getElementById('toast-msg');
@@ -738,7 +769,7 @@ Sleep 3s
     async function generateImage() {
       const engine = document.getElementById('img-engine').value;
       const user = document.getElementById('img-user').value;
-      const cols = document.getElementById('img-cols').value;
+      const cols = (document.getElementById('img-cols-input') ? document.getElementById('img-cols-input').value : document.getElementById('img-cols').value) || "110";
       const fileInput = document.getElementById('img-file');
       
       const formData = new FormData();
