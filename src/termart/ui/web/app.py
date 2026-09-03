@@ -1425,7 +1425,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div class="flex flex-col gap-2">
             <div class="flex items-center justify-between">
               <label class="text-xs font-semibold text-slate-300">Seções do seu Perfil (Ordem no README)</label>
-              <span class="text-[10px] text-brand-400" id="builder-count-label">0 ativas</span>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] text-slate-400 hidden sm:inline">⠿ Arraste para reordenar</span>
+                <span class="text-[10px] text-brand-400 font-bold" id="builder-count-label">0 ativas</span>
+              </div>
             </div>
             <div id="builder-sections-list" class="flex flex-col gap-2 max-h-[340px] overflow-y-auto pr-1">
               <!-- Rendered dynamically by JS -->
@@ -3012,6 +3015,8 @@ Sleep 3s
       renderBuilderSectionsList();
     }
 
+    let draggedBlockIdx = null;
+
     function renderBuilderSectionsList() {
       const listEl = document.getElementById('builder-sections-list');
       const countEl = document.getElementById('builder-count-label');
@@ -3021,26 +3026,85 @@ Sleep 3s
       if (countEl) countEl.innerText = `${activeCount} ativas de ${builderSections.length}`;
 
       listEl.innerHTML = builderSections.map((sec, idx) => `
-        <div class="flex items-center justify-between p-2.5 rounded-xl border ${sec.enabled ? 'bg-brand-dark/70 border-brand-border/90' : 'bg-brand-dark/30 border-brand-border/40 opacity-60'} transition">
-          <div class="flex items-center gap-2 min-w-0">
+        <div draggable="true"
+             data-index="${idx}"
+             ondragstart="handleBlockDragStart(event, ${idx})"
+             ondragover="handleBlockDragOver(event, ${idx})"
+             ondragenter="handleBlockDragEnter(event, ${idx})"
+             ondragleave="handleBlockDragLeave(event, ${idx})"
+             ondrop="handleBlockDrop(event, ${idx})"
+             ondragend="handleBlockDragEnd(event)"
+             class="group cursor-grab active:cursor-grabbing flex items-center justify-between p-2.5 rounded-xl border ${sec.enabled ? 'bg-brand-dark/85 border-brand-border hover:border-brand-500 shadow-sm' : 'bg-brand-dark/30 border-brand-border/40 opacity-50'} transition-all select-none">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="text-slate-500 group-hover:text-brand-400 font-mono text-base px-1 tracking-tighter" title="Clique e arraste para cima ou para baixo">⠿</span>
             <span class="text-base shrink-0">${sec.icon || '⚡'}</span>
             <div class="truncate">
               <span class="text-xs font-semibold text-white block truncate">${escapeHtml(sec.title)}</span>
               <span class="text-[10px] text-slate-500 font-mono">${escapeHtml(sec.file)}</span>
             </div>
           </div>
-          <div class="flex items-center gap-1 shrink-0">
-            <button onclick="moveBuilderBlock(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded flex items-center justify-center bg-slate-800 hover:bg-slate-700 disabled:opacity-20 text-[10px] text-white transition" title="Mover para Cima">▲</button>
-            <button onclick="moveBuilderBlock(${idx}, 1)" ${idx === builderSections.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded flex items-center justify-center bg-slate-800 hover:bg-slate-700 disabled:opacity-20 text-[10px] text-white transition" title="Mover para Baixo">▼</button>
-            <button onclick="toggleBuilderBlock(${idx})" class="w-6 h-6 rounded flex items-center justify-center ${sec.enabled ? 'bg-emerald-600/30 text-emerald-400 border border-emerald-500/40' : 'bg-slate-800 text-slate-500'} text-[11px] transition" title="${sec.enabled ? 'Desativar Bloco' : 'Ativar Bloco'}">
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="toggleBuilderBlock(${idx})" class="w-7 h-7 rounded-lg flex items-center justify-center ${sec.enabled ? 'bg-emerald-600/25 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-600/40' : 'bg-slate-800 text-slate-500 hover:bg-slate-700'} text-xs font-bold transition" title="${sec.enabled ? 'Desativar Bloco' : 'Ativar Bloco'}">
               ${sec.enabled ? '✓' : '✕'}
             </button>
-            <button onclick="removeBuilderBlock(${idx})" class="w-6 h-6 rounded flex items-center justify-center bg-red-600/20 hover:bg-red-600/40 text-red-400 text-[11px] transition" title="Remover Bloco">
+            <button onclick="removeBuilderBlock(${idx})" class="w-7 h-7 rounded-lg flex items-center justify-center bg-red-600/15 hover:bg-red-600/35 border border-red-500/30 text-red-400 text-xs transition" title="Remover Bloco">
               🗑️
             </button>
           </div>
         </div>
       `).join('');
+    }
+
+    function handleBlockDragStart(e, idx) {
+      draggedBlockIdx = idx;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(idx));
+      const target = e.currentTarget;
+      setTimeout(() => {
+        if (target) {
+          target.classList.add('opacity-30', 'border-brand-500', 'bg-brand-500/20', 'scale-[0.98]');
+        }
+      }, 0);
+    }
+
+    function handleBlockDragOver(e, idx) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+
+    function handleBlockDragEnter(e, idx) {
+      e.preventDefault();
+      if (idx === draggedBlockIdx) return;
+      const el = e.currentTarget;
+      el.classList.add('border-t-2', 'border-t-brand-400', 'bg-brand-500/10');
+    }
+
+    function handleBlockDragLeave(e, idx) {
+      const el = e.currentTarget;
+      el.classList.remove('border-t-2', 'border-t-brand-400', 'bg-brand-500/10');
+    }
+
+    function handleBlockDrop(e, targetIdx) {
+      e.preventDefault();
+      const el = e.currentTarget;
+      el.classList.remove('border-t-2', 'border-t-brand-400', 'bg-brand-500/10');
+
+      if (draggedBlockIdx === null || draggedBlockIdx === targetIdx) return;
+
+      const item = builderSections.splice(draggedBlockIdx, 1)[0];
+      builderSections.splice(targetIdx, 0, item);
+      draggedBlockIdx = null;
+
+      saveStoredBuilderSections(builderSections);
+      renderReadmePreview();
+      showToast(`✓ Bloco "${item.title}" reordenado!`, 1800);
+    }
+
+    function handleBlockDragEnd(e) {
+      draggedBlockIdx = null;
+      document.querySelectorAll('#builder-sections-list > div').forEach(el => {
+        el.classList.remove('opacity-30', 'border-brand-500', 'bg-brand-500/20', 'scale-[0.98]', 'border-t-2', 'border-t-brand-400', 'bg-brand-500/10');
+      });
     }
 
     function moveBuilderBlock(idx, dir) {
@@ -3855,38 +3919,45 @@ from ...modules.profile import readme_builder
 
 @app.post("/api/builder/preview")
 def builder_preview(payload: dict = Body(...)):
+    import urllib.parse
     username = payload.get("username", "developer")
     name = payload.get("name", username)
+    city = payload.get("city", "Curitiba, Brazil")
     sections = payload.get("sections", readme_builder.DEFAULT_SECTIONS)
+
+    # Safe encoded parameters so names with spaces or accents never break URLs
+    clean_name = name.strip() if name and name.strip() else username
+    safe_name = urllib.parse.quote(clean_name.upper())
+    safe_user = urllib.parse.quote(username.strip() if username else "developer")
+    safe_city = urllib.parse.quote(city.strip() if city else "Curitiba, Brazil")
     
     # Generate live preview URLs for each section
     for sec in sections:
         stype = sec.get("type", "")
         if stype == "header":
-            sec["preview_url"] = f"/api/render/wordmark?text={name.upper()}"
+            sec["preview_url"] = f"/api/render/wordmark?text={safe_name}"
         elif stype == "badges":
-            sec["preview_url"] = f"/api/render/tech_stack?username={username}"
+            sec["preview_url"] = f"/api/render/tech_stack?username={safe_user}"
         elif stype == "heatmap":
-            sec["preview_url"] = f"/api/render/heatmap?username={username}"
+            sec["preview_url"] = f"/api/render/heatmap?username={safe_user}"
         elif stype == "stats":
-            sec["preview_url"] = f"/api/render/stats?username={username}"
+            sec["preview_url"] = f"/api/render/stats?username={safe_user}"
         elif stype == "neofetch":
-            sec["preview_url"] = f"/api/render/neofetch?username={username}&name={name}"
+            sec["preview_url"] = f"/api/render/neofetch?username={safe_user}&name={safe_name}"
         elif stype == "pokemon":
-            sec["preview_url"] = f"/api/render/pokemon?pokemon=garchomp&shiny=true&username={username}"
+            sec["preview_url"] = f"/api/render/pokemon?pokemon=garchomp&shiny=true&username={safe_user}"
         elif stype == "coding_stats":
-            sec["preview_url"] = f"/api/render/coding_stats?username={username}"
+            sec["preview_url"] = f"/api/render/coding_stats?username={safe_user}"
         elif stype == "music":
-            sec["preview_url"] = f"/api/render/music?preset=synthwave&username={username}"
+            sec["preview_url"] = f"/api/render/music?preset=synthwave&username={safe_user}"
         elif stype == "chess":
-            sec["preview_url"] = f"/api/render/chess?match=immortal&username={username}"
+            sec["preview_url"] = f"/api/render/chess?match=immortal&username={safe_user}"
         elif stype == "weather":
-            city = payload.get("city", "Curitiba, Brazil")
-            sec["preview_url"] = f"/api/render/weather?city={city}&username={username}"
+            sec["preview_url"] = f"/api/render/weather?city={safe_city}&username={safe_user}"
         elif stype == "diagram":
-            sec["preview_url"] = f"/api/render/diagram?preset=microservices&username={username}"
+            sec["preview_url"] = f"/api/render/diagram?preset=microservices&username={safe_user}"
         elif stype == "fortune":
-            sec["preview_url"] = f"/api/render/fortune?username={username}"
+            sec["preview_url"] = f"/api/render/fortune?username={safe_user}"
 
     readme_md = readme_builder.generate_readme_markdown(username, name, sections)
     return {
