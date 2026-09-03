@@ -82,7 +82,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <span>✨</span> <span>Animador SVG</span>
       </button>
       <button onclick="switchTab('pipes')" id="btn-pipes" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🧪</span> <span>Pipes.sh Retro FX</span>
+        <span>🧪</span> <span>Screensavers & Retro FX</span>
       </button>
       <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>🎬</span> <span>Gravador VHS (.tape)</span>
@@ -106,10 +106,22 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Motor de Renderização</label>
             <select id="img-engine" onchange="toggleImageEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
-              <option value="rgb_ascii">TrueColor RGB ASCII (Cores 24-bit Reais da Foto)</option>
-              <option value="chafa">Chafa (C Engine) - Sub-pixel Graphics de Alta Resolução</option>
-              <option value="portrait">Retrato Terminal (Go Braille 2x4 com Digitação)</option>
-              <option value="signature">Logo / Assinatura em Caligrafia (ASCII Puro / Braille)</option>
+              <optgroup label="Motores Principais & Chafa">
+                <option value="rgb_ascii">TrueColor RGB ASCII (Cores 24-bit Reais da Foto)</option>
+                <option value="chafa">Chafa (C Engine) - Sub-pixel Graphics de Alta Resolução</option>
+                <option value="signature">Logo / Assinatura em Caligrafia (ASCII Puro / Braille)</option>
+                <option value="portrait">Retrato Terminal (Go Braille 2x4 com Digitação)</option>
+              </optgroup>
+              <optgroup label="Novos Motores Open-Source">
+                <option value="drawille">Drawille Subpixel (Matriz Braille 2x4 com 8x Resolução)</option>
+                <option value="dither">Retro Dithering (Atkinson Mac 1984, Floyd-Steinberg, Bayer)</option>
+                <option value="jp2a">jp2a Classic (Rampas Unix & Invert Contrast)</option>
+                <option value="halftone">Halftone Press (Retícula de Impressão, Jornais & HQs)</option>
+                <option value="edge_art">Edge Art (Contornos Sobel Mangá & Blueprint)</option>
+                <option value="glitch">Glitch Cyberpunk (Aberração Cromática VHS & Corrupção)</option>
+                <option value="pixel_mosaic">Pixel Mosaic (Sprites 8-bit Arcade PICO-8 & C64)</option>
+                <option value="palette_swap">Palette Swap (Dracula, Catppuccin, Nord, TokyoNight)</option>
+              </optgroup>
             </select>
           </div>
 
@@ -413,31 +425,115 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </button>
         </div>
 
-        <!-- ================= TAB 4: PIPES.SH PROCEDURAL ================= -->
+        <!-- ================= TAB 4: SCREENSAVERS & RETRO FX ================= -->
         <div id="tab-pipes" class="tab-content hidden flex flex-col gap-4">
           <div class="border-b border-brand-border pb-2">
-            <h2 class="font-bold text-white text-base flex items-center gap-2">🧪 Pipes.sh Retro Screensaver</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Motor inspirado no clássico pipeseroni/pipes.sh em puro SVG</p>
+            <h2 class="font-bold text-white text-base flex items-center gap-2">🧪 Screensavers & Retro FX</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Motores procedurais e screensavers clássicos em puro SVG 60fps</p>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Efeito / Screensaver</label>
+            <select id="fx-engine" onchange="toggleFxEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="pipes">🌀 Pipes.sh (Canos Procedurais em Loop Infinito)</option>
+              <option value="cmatrix">🟢 The Matrix (Chuva Digital Katakana 60fps)</option>
+              <option value="cbonsai">🌸 cbonsai (Árvore Bonsai Japonesa Orgânica)</option>
+              <option value="asciiquarium">🐠 Asciiquarium (Aquário Marinho com Peixes e Tubarão)</option>
+              <option value="cowsay">🐮 Cowsay (Balão de Fala Unix com Mascotes)</option>
+              <option value="ansi_cp437">💾 BBS CP437 (Arte Teletext Anos 90 IBM PC VGA)</option>
+              <option value="qr_badge">📱 QR Code Badge (Crachá de Terminal Escaneável)</option>
+            </select>
+          </div>
+
+          <!-- FX 1: Pipes options -->
+          <div id="fx-opt-pipes" class="grid grid-cols-2 gap-3">
             <div>
               <label class="text-xs text-slate-400 block mb-1">Número de Tubos</label>
-              <input id="pipes-count" type="number" min="1" max="8" value="4" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <input id="pipes-count" type="number" min="1" max="8" value="6" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
             </div>
             <div>
               <label class="text-xs text-slate-400 block mb-1">Passos de Animação</label>
-              <input id="pipes-steps" type="number" min="20" max="150" value="60" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <input id="pipes-steps" type="number" min="20" max="150" value="65" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <!-- FX 2: CMatrix options -->
+          <div id="fx-opt-cmatrix" class="hidden flex flex-col gap-2">
+            <label class="text-xs text-slate-400 block mb-1">Esquema de Cores Matrix</label>
+            <select id="cmatrix-color" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="matrix_green">🟢 Verde Fosfórico (The Matrix Clássico)</option>
+              <option value="cyber_cyan">🔵 Ciano Neon (Ghost in the Shell)</option>
+              <option value="blood_red">🔴 Vermelho Alerta (Terminal Hacker)</option>
+            </select>
+          </div>
+
+          <!-- FX 3: Cbonsai options -->
+          <div id="fx-opt-cbonsai" class="hidden flex flex-col gap-2">
+            <label class="text-xs text-slate-400 block mb-1">Folhagem da Árvore</label>
+            <select id="cbonsai-type" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="sakura">🌸 Flores de Cerejeira (Sakura Rosa)</option>
+              <option value="pine">🌲 Agulhas de Pinheiro Verde (Evergreen Pine)</option>
+            </select>
+          </div>
+
+          <!-- FX 4: Cowsay options -->
+          <div id="fx-opt-cowsay" class="hidden flex flex-col gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Mascote</label>
+                <select id="cowsay-mascot" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="cow">🐮 Vaca Clássica (Cow)</option>
+                  <option value="dragon">🐉 Dragão Alado</option>
+                  <option value="robot">🤖 Robô Futurista</option>
+                  <option value="cat">🐱 Gatinho Fofo</option>
+                  <option value="ghost">👻 Fantasminha</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Gradiente</label>
+                <select id="cowsay-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="cyberpunk">🌆 Cyberpunk</option>
+                  <option value="matrix">💻 Matrix</option>
+                  <option value="default">🔵 Terminal Padrão</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Mensagem do Balão</label>
+              <input id="cowsay-msg" type="text" value="Stay curious and build epic things!" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <!-- FX 5: QR Badge options -->
+          <div id="fx-opt-qr" class="hidden flex flex-col gap-2">
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">URL / Link de Destino</label>
+              <input id="qr-url" type="text" value="https://github.com/ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Rótulo do Crachá</label>
+                <input id="qr-label" type="text" value="GITHUB PROFILE" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Tema Visual</label>
+                <select id="qr-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="cyber_cyan">🔵 Ciano Neon</option>
+                  <option value="matrix">🟢 Matrix Hacker</option>
+                  <option value="sunset">🌇 Sunset Gold</option>
+                  <option value="mono">⚪ Monocromático</option>
+                </select>
+              </div>
             </div>
           </div>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">Usuário / Prompt do Terminal</label>
-            <input id="pipes-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <input id="fx-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
           </div>
 
-          <button onclick="generatePipes()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-            <span>🌀</span> <span>Gerar Animação Procedural Pipes.sh</span>
+          <button onclick="generateScreensaverFx()" class="mt-2 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <span>✨</span> <span>Gerar Efeito / Screensaver</span>
           </button>
         </div>
 
@@ -736,9 +832,18 @@ Sleep 3s
 
     function toggleImageEngine() {
       const eng = document.getElementById('img-engine').value;
-      document.getElementById('rgb-options').classList.toggle('hidden', eng !== 'rgb_ascii' && eng !== 'signature');
+      document.getElementById('rgb-options').classList.toggle('hidden', !['rgb_ascii', 'signature', 'drawille', 'jp2a'].includes(eng));
       document.getElementById('chafa-options').classList.toggle('hidden', eng !== 'chafa');
       document.getElementById('sig-options').classList.toggle('hidden', eng !== 'signature');
+    }
+
+    function toggleFxEngine() {
+      const fx = document.getElementById('fx-engine').value;
+      document.getElementById('fx-opt-pipes').classList.toggle('hidden', fx !== 'pipes');
+      document.getElementById('fx-opt-cmatrix').classList.toggle('hidden', fx !== 'cmatrix');
+      document.getElementById('fx-opt-cbonsai').classList.toggle('hidden', fx !== 'cbonsai');
+      document.getElementById('fx-opt-cowsay').classList.toggle('hidden', fx !== 'cowsay');
+      document.getElementById('fx-opt-qr').classList.toggle('hidden', fx !== 'qr_badge');
     }
 
     function toggle3dMode() {
@@ -878,6 +983,37 @@ Sleep 3s
       const res = await fetch(`/api/render/pipes?num_pipes=${pipes}&steps=${steps}&username=${encodeURIComponent(user)}`);
       const svg = await res.text();
       setPreview(svg, 'pipes-screensaver.svg');
+    }
+
+    async function generateScreensaverFx() {
+      const fx = document.getElementById('fx-engine').value;
+      const user = document.getElementById('fx-user').value;
+      document.getElementById('svg-display').innerHTML = `<div class="text-slate-400 text-sm animate-pulse">Renderizando ${fx}...</div>`;
+      
+      const formData = new FormData();
+      formData.append('engine', fx);
+      formData.append('username', user);
+
+      if (fx === 'pipes') {
+        formData.append('num_pipes', document.getElementById('pipes-count').value);
+        formData.append('steps', document.getElementById('pipes-steps').value);
+      } else if (fx === 'cmatrix') {
+        formData.append('color_scheme', document.getElementById('cmatrix-color').value);
+      } else if (fx === 'cbonsai') {
+        formData.append('foliage_type', document.getElementById('cbonsai-type').value);
+      } else if (fx === 'cowsay') {
+        formData.append('mascot', document.getElementById('cowsay-mascot').value);
+        formData.append('message', document.getElementById('cowsay-msg').value);
+        formData.append('color_scheme', document.getElementById('cowsay-theme').value);
+      } else if (fx === 'qr_badge') {
+        formData.append('url', document.getElementById('qr-url').value);
+        formData.append('label', document.getElementById('qr-label').value);
+        formData.append('color_scheme', document.getElementById('qr-theme').value);
+      }
+
+      const res = await fetch('/api/render/fx', { method: 'POST', body: formData });
+      const svg = await res.text();
+      setPreview(svg, `${fx}.svg`);
     }
 
     function downloadTape() {
@@ -1033,18 +1169,78 @@ async def render_image_upload(
 
     is_scan = (scanline.lower() == "true")
     out_svg = os.path.join(os.path.dirname(__file__), f"_temp_{engine}.svg")
-    if engine == "rgb_ascii":
+    
+    p = registry.get(engine)
+    if not p:
         p = registry.get("rgb_ascii")
-        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, color_mode=color_mode, username=username, anim_mode=anim_mode, scanline=is_scan)
+
+    kwargs = {
+        "image_path": upload_path,
+        "out_svg": out_svg,
+        "cols": cols,
+        "username": username,
+        "anim_mode": anim_mode,
+        "scanline": is_scan
+    }
+    if engine in ("rgb_ascii", "signature", "drawille", "jp2a"):
+        kwargs["color_mode"] = color_mode
+    if engine == "signature":
+        kwargs["braille"] = (braille.lower() == "true")
     elif engine == "chafa":
-        p = registry.get("chafa")
-        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, symbols=symbols, colors=colors, username=username, anim_mode=anim_mode, scanline=is_scan)
-    elif engine == "signature":
-        p = registry.get("signature")
-        p.run(image_path=upload_path, out_svg=out_svg, username=username, cols=cols, color_mode=color_mode, braille=(braille.lower() == "true"), anim_mode=anim_mode, scanline=is_scan)
-    else:
-        p = registry.get("portrait")
-        p.run(image_path=upload_path, out_svg=out_svg, username=username, full_name=username, cols=cols, anim_mode=anim_mode, scanline=is_scan)
+        kwargs["symbols"] = symbols
+        kwargs["colors"] = colors
+    elif engine == "portrait":
+        kwargs["full_name"] = username
+
+    p.run(**kwargs)
+
+    with open(out_svg, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.post("/api/render/fx")
+async def render_fx_endpoint(
+    engine: str = Form("pipes"),
+    username: str = Form("ViniciusNoetzold"),
+    num_pipes: int = Form(6),
+    steps: int = Form(65),
+    color_scheme: str = Form("matrix_green"),
+    foliage_type: str = Form("sakura"),
+    mascot: str = Form("cow"),
+    message: str = Form("Stay curious and build epic things!"),
+    url: str = Form("https://github.com/ViniciusNoetzold"),
+    label: str = Form("GITHUB PROFILE")
+):
+    p = registry.get(engine)
+    if not p:
+        p = registry.get("pipes")
+    
+    out_svg = os.path.join(os.path.dirname(__file__), f"_temp_fx_{engine}.svg")
+    kwargs = {"out_svg": out_svg, "username": username}
+    
+    if engine == "pipes":
+        kwargs["num_pipes"] = num_pipes
+        kwargs["steps"] = steps
+    elif engine == "cmatrix":
+        kwargs["color_scheme"] = color_scheme
+    elif engine == "cbonsai":
+        kwargs["foliage_type"] = foliage_type
+    elif engine == "cowsay":
+        kwargs["mascot"] = mascot
+        kwargs["message"] = message
+        kwargs["color_scheme"] = color_scheme
+    elif engine == "qr_badge":
+        kwargs["url"] = url
+        kwargs["label"] = label
+        kwargs["color_scheme"] = color_scheme
+    elif engine in ("ansi_cp437", "tetris_reveal"):
+        demo_src = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "assets", "photo.jpg")
+        upload_path = os.path.join(os.path.dirname(__file__), "_upload_temp.png")
+        src_file = upload_path if os.path.exists(upload_path) else demo_src
+        kwargs["image_path"] = src_file
+        kwargs["cols"] = 60
+
+    p.run(**kwargs)
 
     with open(out_svg, "r", encoding="utf-8") as f:
         svg = f.read()

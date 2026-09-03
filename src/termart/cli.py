@@ -39,30 +39,48 @@ def cmd_image(args):
     engine_name = args.engine
     p = registry.get(engine_name)
     if not p:
-        print(f"[Error] Engine '{engine_name}' not found. Available: rgb_ascii, chafa, ascii_braille")
+        print(f"[Error] Engine '{engine_name}' not found.")
         return
-    if engine_name == "rgb_ascii":
-        out_svg = args.out or "rgb_art.svg"
-        res = p.run(
-            image_path=args.image,
-            out_svg=out_svg,
-            cols=args.cols,
-            color_mode=args.color,
-            anim_mode=args.anim,
-            scanline=args.scanline,
-            username=args.username
-        )
-        print(f"[TermArt] ✓ RGB ASCII generated: {res.get('output_path')} (anim: {args.anim})")
-    elif args.out:
-        res = p.run(image_path=args.image, out_svg=args.out, cols=args.cols, braille=args.braille, anim_mode=args.anim, scanline=args.scanline, username=args.username)
-        print(f"[TermArt] ✓ Artwork SVG generated: {res.get('output_path')}")
-    else:
-        res = p.run(image_path=args.image, cols=args.cols, braille=args.braille)
-        if res.get("status") == "success":
-            for l in res.get("lines", [])[:args.rows or 35]:
-                print(l)
-        else:
-            print(f"[Error] {res.get('message')}")
+    out_svg = args.out or f"{engine_name}.svg"
+    kwargs = {
+        "image_path": args.image,
+        "out_svg": out_svg,
+        "cols": args.cols,
+        "anim_mode": args.anim,
+        "scanline": args.scanline,
+        "username": args.username
+    }
+    if hasattr(args, "color"):
+        kwargs["color_mode"] = args.color
+    if hasattr(args, "braille"):
+        kwargs["braille"] = args.braille
+    res = p.run(**kwargs)
+    print(f"[TermArt] ✓ {engine_name} generated: {res.get('output_path')}")
+
+def cmd_cmatrix(args):
+    p = registry.get("cmatrix")
+    res = p.run(out_svg=args.out, cols=args.cols, color_scheme=args.color, username=args.username)
+    print(f"[TermArt] ✓ CMatrix screensaver generated: {res.get('output_path')}")
+
+def cmd_cbonsai(args):
+    p = registry.get("cbonsai")
+    res = p.run(out_svg=args.out, foliage_type=args.type, username=args.username)
+    print(f"[TermArt] ✓ cbonsai generated: {res.get('output_path')}")
+
+def cmd_asciiquarium(args):
+    p = registry.get("asciiquarium")
+    res = p.run(out_svg=args.out, fish_count=args.fish, username=args.username)
+    print(f"[TermArt] ✓ Asciiquarium generated: {res.get('output_path')}")
+
+def cmd_cowsay(args):
+    p = registry.get("cowsay")
+    res = p.run(message=args.message, mascot=args.mascot, out_svg=args.out, username=args.username)
+    print(f"[TermArt] ✓ Cowsay generated: {res.get('output_path')}")
+
+def cmd_qr(args):
+    p = registry.get("qr_badge")
+    res = p.run(url=args.url, label=args.label, out_svg=args.out, color_scheme=args.color, username=args.username)
+    print(f"[TermArt] ✓ QR Badge generated: {res.get('output_path')}")
 
 def cmd_portrait(args):
     p = registry.get("portrait")
@@ -157,7 +175,7 @@ def main():
     # image
     im_p = sub.add_parser("image", help="Convert any image via RGB ASCII, Chafa or ASCII/Braille engine")
     im_p.add_argument("image", help="Path to image")
-    im_p.add_argument("--engine", default="rgb_ascii", choices=["rgb_ascii", "ascii_braille", "chafa"], help="Engine to use")
+    im_p.add_argument("--engine", default="rgb_ascii", choices=["rgb_ascii", "ascii_braille", "chafa", "drawille", "dither", "jp2a", "halftone", "edge_art", "glitch", "pixel_mosaic", "palette_swap"], help="Engine to use")
     im_p.add_argument("--color", default="rgb", choices=["rgb", "cyberpunk", "matrix", "mono"], help="Color mode for rgb_ascii")
     im_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
     im_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
@@ -237,6 +255,45 @@ def main():
     pi_p.add_argument("--out", default="pipes.svg")
     pi_p.add_argument("--username", default="developer")
     pi_p.set_defaults(func=cmd_pipes)
+
+    # cmatrix
+    cm_p = sub.add_parser("cmatrix", help="Generate Matrix digital rain animated SVG screensaver")
+    cm_p.add_argument("--out", default="cmatrix.svg")
+    cm_p.add_argument("--cols", type=int, default=50)
+    cm_p.add_argument("--color", default="matrix_green", choices=["matrix_green", "cyber_cyan", "blood_red"])
+    cm_p.add_argument("--username", default="neo")
+    cm_p.set_defaults(func=cmd_cmatrix)
+
+    # cbonsai
+    bo_p = sub.add_parser("cbonsai", help="Generate procedural Japanese bonsai tree SVG")
+    bo_p.add_argument("--out", default="cbonsai.svg")
+    bo_p.add_argument("--type", default="sakura", choices=["sakura", "pine"])
+    bo_p.add_argument("--username", default="zen_master")
+    bo_p.set_defaults(func=cmd_cbonsai)
+
+    # asciiquarium
+    aq_p = sub.add_parser("asciiquarium", help="Generate animated underwater coral reef aquarium SVG")
+    aq_p.add_argument("--out", default="asciiquarium.svg")
+    aq_p.add_argument("--fish", type=int, default=7)
+    aq_p.add_argument("--username", default="aquanaut")
+    aq_p.set_defaults(func=cmd_asciiquarium)
+
+    # cowsay
+    co_p = sub.add_parser("cowsay", help="Generate Unix terminal speech banner SVG with mascots")
+    co_p.add_argument("message", nargs="?", default="Stay curious and build epic things!")
+    co_p.add_argument("--out", default="cowsay.svg")
+    co_p.add_argument("--mascot", default="cow", choices=["cow", "dragon", "robot", "cat", "ghost"])
+    co_p.add_argument("--username", default="developer")
+    co_p.set_defaults(func=cmd_cowsay)
+
+    # qr
+    qr_p = sub.add_parser("qr", help="Generate scannable half-block terminal QR badge SVG")
+    qr_p.add_argument("url", nargs="?", default="https://github.com/ViniciusNoetzold")
+    qr_p.add_argument("--out", default="qr_badge.svg")
+    qr_p.add_argument("--label", default="GITHUB PROFILE")
+    qr_p.add_argument("--color", default="cyber_cyan", choices=["cyber_cyan", "matrix", "sunset", "mono"])
+    qr_p.add_argument("--username", default="developer")
+    qr_p.set_defaults(func=cmd_qr)
 
     # studio
     tu_p = sub.add_parser("studio", help="Launch interactive Web Studio UI")

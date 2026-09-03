@@ -1,0 +1,88 @@
+"""
+Automated Test Suite for Mezzold TermArt
+Validates that all 15 new image & screensaver engines compile valid SVG/XML output.
+"""
+import os
+import sys
+import xml.etree.ElementTree as ET
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
+# Ensure src is on path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+from termart.core.registry import registry
+import termart  # registers all plugins
+
+SAMPLE_IMG = os.path.join(os.path.dirname(__file__), "..", "src", "termart", "ui", "web", "_upload_temp.png")
+OUT_DIR = os.path.join(os.path.dirname(__file__), "_test_outputs")
+os.makedirs(OUT_DIR, exist_ok=True)
+
+ENGINES_TO_TEST = [
+    # Category A: Image Transformation Engines
+    ("drawille", {"image_path": SAMPLE_IMG, "cols": 40}),
+    ("dither", {"image_path": SAMPLE_IMG, "cols": 40, "method": "atkinson"}),
+    ("jp2a", {"image_path": SAMPLE_IMG, "cols": 40, "ramp": "standard"}),
+    ("halftone", {"image_path": SAMPLE_IMG, "cols": 40}),
+    ("edge_art", {"image_path": SAMPLE_IMG, "cols": 40, "theme": "manga"}),
+    ("glitch", {"image_path": SAMPLE_IMG, "cols": 40, "glitch_intensity": 0.3}),
+    ("pixel_mosaic", {"image_path": SAMPLE_IMG, "cols": 40, "palette": "pico8"}),
+    ("palette_swap", {"image_path": SAMPLE_IMG, "cols": 40, "theme": "dracula"}),
+
+    # Category B: Screensavers, Ambient FX & Badges
+    ("cmatrix", {"cols": 35, "rows": 15, "color_scheme": "matrix_green"}),
+    ("cbonsai", {"foliage_type": "sakura"}),
+    ("asciiquarium", {"fish_count": 5}),
+    ("cowsay", {"message": "Test speech banner", "mascot": "dragon"}),
+    ("tetris_reveal", {"image_path": SAMPLE_IMG, "cols": 35}),
+    ("ansi_cp437", {"image_path": SAMPLE_IMG, "cols": 40}),
+    ("qr_badge", {"url": "https://github.com/ViniciusNoetzold", "label": "GITHUB"})
+]
+
+def run_suite():
+    passed = 0
+    failed = 0
+    print("==================================================")
+    print("  MEZZOLD TERMART - 15 ENGINES VALIDATION SUITE   ")
+    print("==================================================")
+
+    for name, kwargs in ENGINES_TO_TEST:
+        p = registry.get(name)
+        if not p:
+            print(f"FAILED: Plugin '{name}' not found in registry!")
+            failed += 1
+            continue
+
+        out_path = os.path.join(OUT_DIR, f"{name}.svg")
+        kwargs["out_svg"] = out_path
+
+        try:
+            res = p.run(**kwargs)
+            if not os.path.exists(out_path):
+                print(f"FAILED: {name} did not generate {out_path}")
+                failed += 1
+                continue
+
+            # Validate XML
+            ET.parse(out_path)
+            size_kb = os.path.getsize(out_path) / 1024
+            print(f"✓ PASSED: [{p.category.upper():12}] {name:16} -> {size_kb:.1f} KB (Valid XML)")
+            passed += 1
+        except Exception as e:
+            print(f"FAILED: {name} raised {e}")
+            failed += 1
+
+    print("==================================================")
+    print(f"Results: {passed} passed, {failed} failed.")
+    print("==================================================")
+
+    # Cleanup test outputs
+    for f in os.listdir(OUT_DIR):
+        os.remove(os.path.join(OUT_DIR, f))
+    os.rmdir(OUT_DIR)
+
+    if failed > 0:
+        sys.exit(1)
+
+if __name__ == "__main__":
+    run_suite()
