@@ -793,10 +793,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <label class="text-xs text-slate-400 block mb-1">Partida Histórica</label>
               <select id="chess-match" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
                 <option value="opera">🎭 Paul Morphy (Opera Game 1858) - 17 lances, Sacrifício de Dama & Mate!</option>
+                <option value="immortal">👑 The Immortal Game 1851 (Anderssen) - 23 lances, Triplo Sacrifício & Mate de Bispo!</option>
+                <option value="legal">⚔️ Mate de Légal (1750) - 7 lances, Sacrifício de Dama & Triplo Ataque Menor!</option>
                 <option value="scholar">⚡ Mate do Pastor (4 Lances) - Ataque veloz em f7</option>
                 <option value="fools">⚡ Mate do Louco (2 Lances) - O mate mais rápido da história</option>
-                <option value="immortal">👑 The Immortal Game 1851 (Anderssen) - Triplo Sacrifício</option>
-                <option value="kasparov">🤖 Kasparov vs Deep Blue 1996 - Ruptura tática decisiva</option>
               </select>
             </div>
             <div class="grid grid-cols-2 gap-2">

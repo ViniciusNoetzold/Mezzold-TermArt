@@ -98,7 +98,7 @@ CHESS_MATCHES = {
         "event": "London 1851 (Anderssen vs Kieseritzky)",
         "result": "1 - 0 (White Checkmates with Minor Pieces!)",
         "mate_desc": "23. Be7# Checkmate sacrificing 2 Rooks, Bishop & Queen!",
-        "step_time": 1.2,
+        "step_time": 1.0,
         "moves": [
             ("e2", "e4", "1. e4", False),
             ("e7", "e5", "1... e5", False),
@@ -120,52 +120,53 @@ CHESS_MATCHES = {
             ("c7", "c6", "9... c6", False),
             ("g2", "g4", "10. g4", False),
             ("h5", "f6", "10... Nf6", False),
-            ("d1", "f3", "18. Bd6!", False),
-            ("h4", "f6", "22. Qf6+!! (Queen Sac)", False),
-            ("f6", "f6", "22... Nxf6", False),
-            ("c4", "e7", "23. Be7# (CHECKMATE!)", True)
+            ("h1", "g1", "11. Rg1", False),
+            ("c6", "b5", "11... cxb5", False),
+            ("h2", "h4", "12. h4", False),
+            ("g5", "g6", "12... Qg6", False),
+            ("h4", "h5", "13. h5", False),
+            ("g6", "g5", "13... Qg5", False),
+            ("d1", "f3", "14. Qf3", False),
+            ("f6", "g8", "14... Ng8", False),
+            ("c1", "f4", "15. Bxf4", False),
+            ("g5", "f6", "15... Qf6", False),
+            ("b1", "c3", "16. Nc3", False),
+            ("f8", "c5", "16... Bc5", False),
+            ("c3", "d5", "17. Nd5", False),
+            ("f6", "b2", "17... Qxb2", False),
+            ("f4", "d6", "18. Bd6!", False),
+            ("c5", "g1", "18... Bxg1", False),
+            ("e4", "e5", "19. e5", False),
+            ("b2", "a1", "19... Qxa1+", False),
+            ("f1", "e2", "20. Ke2", False),
+            ("b8", "a6", "20... Na6", False),
+            ("f5", "g7", "21. Nxg7+", False),
+            ("e8", "d8", "21... Kd8", False),
+            ("f3", "f6", "22. Qf6+!! (Queen Sac)", False),
+            ("g8", "f6", "22... Nxf6", False),
+            ("d6", "e7", "23. Be7# (CHECKMATE!)", True)
         ]
     },
-    "kasparov": {
-        "title": "Kasparov vs Deep Blue (1996 - Game 1)",
-        "event": "Philadelphia, Feb 10 1996",
-        "result": "1 - 0 (Deep Blue Wins)",
-        "mate_desc": "Historic Milestone: First AI Game Victory over World Champion",
-        "step_time": 1.1,
+    "legal": {
+        "title": "Légal's Mate (Mate de Légal)",
+        "event": "Paris 1750 (Sire de Légal)",
+        "result": "1 - 0 (White Checkmates with 3 Minor Pieces!)",
+        "mate_desc": "7. Nd5# Checkmate following brilliant Queen Sacrifice!",
+        "step_time": 1.2,
         "moves": [
             ("e2", "e4", "1. e4", False),
-            ("c7", "c5", "1... c5", False),
-            ("c2", "c3", "2. c3", False),
-            ("d7", "d5", "2... d5", False),
-            ("e4", "d5", "3. exd5", False),
-            ("d8", "d5", "3... Qxd5", False),
-            ("d2", "d4", "4. d4", False),
-            ("g8", "f6", "4... Nf6", False),
-            ("g1", "f3", "5. Nf3", False),
-            ("c8", "g4", "5... Bg4", False),
-            ("f1", "e2", "6. Be2", False),
-            ("e7", "e6", "6... e6", False),
-            ("h2", "h3", "7. h3", False),
-            ("g4", "h5", "7... Bh5", False),
-            ("e1", "g1", "8. O-O", False, ("h1", "f1")),
-            ("b8", "c6", "8... Nc6", False),
-            ("c1", "e3", "9. Be3", False),
-            ("c5", "d4", "9... cxd4", False),
-            ("c3", "d4", "10. cxd4", False),
-            ("f8", "b4", "10... Bb4", False),
-            ("a2", "a3", "11. a3", False),
-            ("b4", "a5", "11... Ba5", False),
-            ("b1", "c3", "12. Nc3", False),
-            ("d5", "d6", "12... Qd6", False),
-            ("c3", "b5", "13. Nb5", False),
-            ("d6", "e7", "13... Qe7", False),
-            ("f3", "e5", "14. Ne5", False),
-            ("h5", "e2", "14... Bxe2", False),
-            ("d1", "e2", "15. Qxe2", False),
-            ("e8", "g8", "15... O-O", False, ("f8", "e8")),
-            ("a1", "c1", "16. Rac1", False),
-            ("a8", "d8", "16... Rad8", False),
-            ("d4", "d5", "23. d5! (Decisive Breakthrough)", True)
+            ("e7", "e5", "1... e5", False),
+            ("g1", "f3", "2. Nf3", False),
+            ("d7", "d6", "2... d6", False),
+            ("f1", "c4", "3. Bc4", False),
+            ("c8", "g4", "3... Bg4", False),
+            ("b1", "c3", "4. Nc3", False),
+            ("g7", "g6", "4... g6?", False),
+            ("f3", "e5", "5. Nxe5!! (Queen Sac)", False),
+            ("g4", "d1", "5... Bxd1??", False),
+            ("c4", "f7", "6. Bxf7+", False),
+            ("e8", "e7", "6... Ke7", False),
+            ("c3", "d5", "7. Nd5# (CHECKMATE!)", True)
         ]
     }
 }
@@ -226,48 +227,60 @@ class ChessBoardPlugin(BasePlugin):
     ) -> Dict[str, Any]:
         match_key = match.lower()
         data = CHESS_MATCHES.get(match_key, CHESS_MATCHES["opera"])
-        frames = simulate_game(data["moves"])
+        moves = data["moves"]
+        frames = simulate_game(moves)
         n_frames = len(frames)
 
         canvas_w = 700
         canvas_h = 410
         titlebar_h = 34
-        clip_pfx = "chess_" + str(abs(hash(out_svg)) % 100000)
 
         step_s = data.get("step_time", 1.0) / max(0.2, speed)
-        hold_s = 4.0  # seconds on checkmate before repeating
+        hold_s = 3.5  # seconds paused on checkmate before looping
         total_s = max(2.0, (n_frames - 1) * step_s + hold_s) if animated else 1.0
 
-        # Build CSS Keyframe Rules for smooth sequential playback
-        css_rules = []
+        # Build 100% Reliable Keyframe Rules using opacity & visibility
+        css_rules = [".cf { opacity: 0; visibility: hidden; }"]
         if animated and n_frames > 1:
-            css_rules.append(f".cf {{ display: none; }}")
             for idx in range(n_frames):
                 if idx == 0:
                     t_start = 0.0
                     t_end = (step_s / total_s) * 100.0
+                    rule = (
+                        f"@keyframes kf_cf_{idx} {{"
+                        f"0% {{ opacity: 1; visibility: visible; }}"
+                        f"{max(0.0, t_end - 0.1):.2f}% {{ opacity: 1; visibility: visible; }}"
+                        f"{t_end:.2f}% {{ opacity: 0; visibility: hidden; }}"
+                        f"100% {{ opacity: 0; visibility: hidden; }}"
+                        f"}} .cf-{idx} {{ animation: kf_cf_{idx} {total_s:.2f}s infinite; }}"
+                    )
                 elif idx == n_frames - 1:
                     t_start = ((idx * step_s) / total_s) * 100.0
-                    t_end = 100.0
+                    rule = (
+                        f"@keyframes kf_cf_{idx} {{"
+                        f"0% {{ opacity: 0; visibility: hidden; }}"
+                        f"{max(0.0, t_start - 0.1):.2f}% {{ opacity: 0; visibility: hidden; }}"
+                        f"{t_start:.2f}% {{ opacity: 1; visibility: visible; }}"
+                        f"100% {{ opacity: 1; visibility: visible; }}"
+                        f"}} .cf-{idx} {{ animation: kf_cf_{idx} {total_s:.2f}s infinite; }}"
+                    )
                 else:
                     t_start = ((idx * step_s) / total_s) * 100.0
                     t_end = (((idx + 1) * step_s) / total_s) * 100.0
-
-                rule = (
-                    f"@keyframes kf_cf_{idx} {{"
-                    f"0% {{ display: none; opacity: 0; }}"
-                    f"{max(0.0, t_start - 0.05):.2f}% {{ display: none; opacity: 0; }}"
-                    f"{t_start:.2f}% {{ display: inline; opacity: 1; }}"
-                    f"{min(100.0, t_end - 0.05):.2f}% {{ display: inline; opacity: 1; }}"
-                    f"{min(100.0, t_end):.2f}% {{ display: none; opacity: 0; }}"
-                    f"100% {{ display: none; opacity: 0; }}"
-                    f"}} "
-                    f".cf-{idx} {{ animation: kf_cf_{idx} {total_s:.2f}s infinite; }}"
-                )
+                    rule = (
+                        f"@keyframes kf_cf_{idx} {{"
+                        f"0% {{ opacity: 0; visibility: hidden; }}"
+                        f"{max(0.0, t_start - 0.1):.2f}% {{ opacity: 0; visibility: hidden; }}"
+                        f"{t_start:.2f}% {{ opacity: 1; visibility: visible; }}"
+                        f"{max(0.0, t_end - 0.1):.2f}% {{ opacity: 1; visibility: visible; }}"
+                        f"{t_end:.2f}% {{ opacity: 0; visibility: hidden; }}"
+                        f"100% {{ opacity: 0; visibility: hidden; }}"
+                        f"}} .cf-{idx} {{ animation: kf_cf_{idx} {total_s:.2f}s infinite; }}"
+                    )
                 css_rules.append(rule)
         else:
-            # Static mode: only display final frame
-            css_rules.append(f".cf {{ display: none; }} .cf-{n_frames - 1} {{ display: inline !important; }}")
+            # Static mode: display final frame only
+            css_rules.append(f".cf-{n_frames - 1} {{ opacity: 1 !important; visibility: visible !important; }}")
 
         parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{canvas_w}" height="{canvas_h}" '
@@ -284,7 +297,7 @@ class ChessBoardPlugin(BasePlugin):
         anim_tag = " [LIVE PLAYBACK]" if animated else " [STATIC CHECKMATE]"
         parts.append(
             f'<text x="{canvas_w/2}" y="{titlebar_h/2 + 4}" fill="#7d8590" font-size="12" '
-            f'text-anchor="middle">{username}@chess: ~$ gnuchess --replay "{data["title"]}"{anim_tag}</text>'
+            f'text-anchor="middle">{username}@chess: ~$ gnuchess --replay "{html.escape(data["title"])}"{anim_tag}</text>'
         )
 
         board_x = 38
@@ -299,23 +312,23 @@ class ChessBoardPlugin(BasePlugin):
             parts.append(f'<text x="{board_x - 14}" y="{board_y + r_idx * sq_size + 22}" fill="#6e7681" font-size="12">{rank_label}</text>')
             for c_idx in range(8):
                 is_light = (r_idx + c_idx) % 2 == 0
-                sq_col = "#1e2430" if not is_light else "#2d3748"
-                px = board_x + c_idx * sq_size
-                py = board_y + r_idx * sq_size
-                parts.append(f'<rect x="{px:.1f}" y="{py:.1f}" width="{sq_size:.1f}" height="{sq_size:.1f}" fill="{sq_col}"/>')
+                sq_fill = "#2d3748" if is_light else "#1e2430"
+                sx = board_x + c_idx * sq_size
+                sy = board_y + r_idx * sq_size
+                parts.append(f'<rect x="{sx}" y="{sy}" width="{sq_size}" height="{sq_size}" fill="{sq_fill}"/>')
 
-        for c_idx, file_label in enumerate("abcdefgh"):
-            parts.append(f'<text x="{board_x + c_idx * sq_size + sq_size/2:.1f}" y="{board_y + 8 * sq_size + 18}" fill="#6e7681" font-size="12" text-anchor="middle">{file_label}</text>')
+        files_label = ["a", "b", "c", "d", "e", "f", "g", "h"]
+        for c_idx, fl in enumerate(files_label):
+            parts.append(f'<text x="{board_x + c_idx * sq_size + sq_size/2}" y="{board_y + 8 * sq_size + 18}" fill="#6e7681" font-size="12" text-anchor="middle">{fl}</text>')
 
-        # Right Column Fixed Headers
+        # Static Right Column Header (Match Title & Info)
         rx = board_x + 8 * sq_size + 34
-        ry = board_y + 8
-
+        ry = titlebar_h + 38
         parts.append(f'<text x="{rx}" y="{ry}" fill="#58a6ff" font-size="14" font-weight="bold">{html.escape(data["title"])}</text>')
-        parts.append(f'<text x="{rx}" y="{ry + 18}" fill="#7d8590" font-size="11">{html.escape(data.get("event", "Tournament"))}</text>')
+        parts.append(f'<text x="{rx}" y="{ry + 18}" fill="#7d8590" font-size="11">{html.escape(data["event"])}</text>')
         parts.append(f'<line x1="{rx}" y1="{ry + 30}" x2="{canvas_w - 24}" y2="{ry + 30}" stroke="#232a3b"/>')
 
-        # Generate Frame Groups (Pieces, Highlights, and Live Ticker)
+        # Sequential frames
         for f_idx, fr in enumerate(frames):
             parts.append(f'<g class="cf cf-{f_idx}">')
 
@@ -333,9 +346,8 @@ class ChessBoardPlugin(BasePlugin):
                 hl_col = "#ff2255" if fr["is_mate"] else "#00e5ff"
                 parts.append(f'<rect x="{tx+1}" y="{ty+1}" width="{sq_size-2}" height="{sq_size-2}" fill="{hl_col}" fill-opacity="0.35" stroke="{hl_col}" stroke-width="2"/>')
 
-            # 2. Checkmate pulse alert on King if checkmate
+            # 2. Checkmate beacon on King if checkmate
             if fr["is_mate"]:
-                # find king
                 for r_i in range(8):
                     for c_i in range(8):
                         if fr["board"][r_i][c_i] in ("♚", "♔"):
@@ -367,7 +379,6 @@ class ChessBoardPlugin(BasePlugin):
             transcript_y = status_y + 36
             parts.append(f'<text x="{rx}" y="{transcript_y}" fill="#64748b" font-size="11" font-weight="bold">NOTATION RECORD:</text>')
 
-            # Show window of moves around current ply
             all_moves = data["moves"]
             window_size = 7
             start_m = max(0, min(f_idx - 3, len(all_moves) - window_size))
@@ -401,4 +412,3 @@ class ChessBoardPlugin(BasePlugin):
                 f.write(svg_content)
 
         return {"status": "success", "output_path": out_svg, "match": match_key, "frames": n_frames, "animated": animated}
-
