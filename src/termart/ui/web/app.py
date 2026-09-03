@@ -295,13 +295,67 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <textarea id="typo-text" rows="2" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">VINICIUS\nNOETZOLD</textarea>
             </div>
             <div>
-              <label class="text-xs text-slate-400 block mb-1">Fonte FIGlet</label>
+              <label class="text-xs text-slate-400 block mb-1">Fonte FIGlet (30+ Estilos Curados)</label>
               <select id="typo-font" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
-                <option value="slant">Slant (Cyberpunk Futurista)</option>
-                <option value="standard">Standard (Clássica)</option>
-                <option value="doom">Doom (Pesada / Bold)</option>
-                <option value="big">Big (Extra Grande)</option>
-                <option value="small">Small (Compacta)</option>
+                <optgroup label="👾 3D & Isométricas">
+                  <option value="isometric1">Isometric 1 (3D Cúbico Sólido)</option>
+                  <option value="isometric2">Isometric 2 (3D Negrito Isométrico)</option>
+                  <option value="isometric3">Isometric 3 (3D Cubos Sombreados)</option>
+                  <option value="larry3d">Larry 3D (Perspectiva com Sombra)</option>
+                  <option value="banner3-D">Banner 3D (Letreiro Billboard)</option>
+                  <option value="shadow">Shadow (3D Sombra Projetada)</option>
+                </optgroup>
+                <optgroup label="⚡ Cyberpunk & Sci-Fi">
+                  <option value="slant" selected>Slant (Cyberpunk Futurista Clássico)</option>
+                  <option value="cyberlarge">CyberLarge (Terminal Futurista Largo)</option>
+                  <option value="cybermedium">CyberMedium (HUD Tático Sci-Fi)</option>
+                  <option value="speed">Speed (Alta Velocidade Itálico)</option>
+                  <option value="starwars">Star Wars (Clássico Sci-Fi Galáctico)</option>
+                  <option value="cosmic">Cosmic (Espaço Profundo Interstelar)</option>
+                </optgroup>
+                <optgroup label="🔥 Heavy, Gothic & Metal">
+                  <option value="doom">Doom (Heavy Id Software Original)</option>
+                  <option value="bloody">Bloody (Gótico Sangrento / Horror)</option>
+                  <option value="poison">Poison (Punk & Metal com Bordas Afiadas)</option>
+                  <option value="gothic">Gothic (Gótico Medieval Autêntico)</option>
+                  <option value="colossal">Colossal (Blocos Monolíticos Pesados)</option>
+                  <option value="sub-zero">Sub-Zero (Lâminas Congeladas Sharp)</option>
+                  <option value="epic">Epic (Cinemático Dramático)</option>
+                </optgroup>
+                <optgroup label="🎨 Graffiti, Cartoons & Estilizados">
+                  <option value="graffiti">Graffiti (Street Art Spray Tag)</option>
+                  <option value="ogre">Ogre (Desenho Animado Graffiti Chunky)</option>
+                  <option value="alligator">Alligator (Ondulado Escamas de Réptil)</option>
+                  <option value="bulbhead">Bulbhead (Bolha Arredondada Retrô)</option>
+                  <option value="chunky">Chunky (Arcade Retrô Chunky)</option>
+                  <option value="broadway">Broadway (Letreiro Broadway Neon Retrô)</option>
+                </optgroup>
+                <optgroup label="💻 Clássicas, BBS & Minimalistas">
+                  <option value="standard">Standard (Clássica Unix FIGlet 1990)</option>
+                  <option value="big">Big (Letras Grandes em Linhas)</option>
+                  <option value="small">Small (Compacta Multi-Linha)</option>
+                  <option value="mini">Mini (Minimalista Ultra Compacto)</option>
+                  <option value="ghost">Ghost (Holográfico Wireframe Oco)</option>
+                  <option value="digital">Digital (Display LCD 7 Segmentos)</option>
+                  <option value="thin">Thin (Elegante Traço Fino)</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Paleta de Cores & Gradiente</label>
+              <select id="typo-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="cyberpunk" selected>🌆 Cyberpunk Neon (Ciano → Rosa Choque → Roxo)</option>
+                <option value="matrix">💻 Matrix Hacker (Verde Fosfórico com Esmeralda)</option>
+                <option value="sunset">🌇 Sunset Gold (Dourado → Âmbar → Carmesim)</option>
+                <option value="dracula">🧛 Dracula Vampire (Lilás → Rosa Neon → Ciano)</option>
+                <option value="nord">❄️ Nord Frost (Gelo Glacial & Azul Ártico)</option>
+                <option value="gold">👑 Ouro Real (Champagne & Ouro Nobre)</option>
+                <option value="blood">🩸 Crimson Blood (Carmesim & Vermelho Rubi)</option>
+                <option value="ocean">🌊 Ocean Blue (Azul Turquesa & Safira)</option>
+                <option value="rainbow">🌈 Lolcat Rainbow (Onda de Arco-Íris Senoidal)</option>
+                <option value="two_tone">🌗 Two-Tone (Azul GitHub & Branco Puro)</option>
+                <option value="monochrome">⚪ Branco Minimalista (Apple Crisp White)</option>
               </select>
             </div>
 
@@ -937,9 +991,10 @@ Sleep 3s
       } else if (mode === 'typography') {
         const text = document.getElementById('typo-text').value;
         const font = document.getElementById('typo-font').value;
+        const theme = document.getElementById('typo-theme').value;
         const animMode = document.getElementById('typo-anim-mode').value;
         const scanline = document.getElementById('typo-scanline').checked;
-        const res = await fetch(`/api/render/typography?text=${encodeURIComponent(text)}&font=${encodeURIComponent(font)}&anim_mode=${encodeURIComponent(animMode)}&scanline=${scanline}`);
+        const res = await fetch(`/api/render/typography?text=${encodeURIComponent(text)}&font=${encodeURIComponent(font)}&theme=${encodeURIComponent(theme)}&anim_mode=${encodeURIComponent(animMode)}&scanline=${scanline}`);
         const svg = await res.text();
         setPreview(svg, 'ascii-typography.svg');
       }
@@ -1102,13 +1157,14 @@ def render_wordmark(text: str = "MEZZOLD\nSTUDIOS"):
 def render_typography(
     text: str = "VINICIUS\nNOETZOLD",
     font: str = "slant",
+    theme: str = "cyberpunk",
     username: str = "ViniciusNoetzold",
     anim_mode: str = "oscillate",
     scanline: bool = False
 ):
     p = registry.get("typography")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_typo.svg")
-    p.run(text=text, font_name=font, out_svg=tmp, username=username, anim_mode=anim_mode, scanline=scanline)
+    p.run(text=text, font_name=font, theme=theme, out_svg=tmp, username=username, anim_mode=anim_mode, scanline=scanline)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")

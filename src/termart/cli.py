@@ -169,8 +169,16 @@ def cmd_wordmark(args):
 
 def cmd_text(args):
     p = registry.get("typography")
-    res = p.run(text=args.text, out_svg=args.out, font_name=args.font, username=args.username)
-    print(f"[TermArt] ✓ ASCII Typography generated: {res.get('output_path')}")
+    res = p.run(
+        text=args.text,
+        out_svg=args.out,
+        font_name=args.font,
+        theme=getattr(args, "theme", "cyberpunk"),
+        anim_mode=getattr(args, "anim", "oscillate"),
+        scanline=getattr(args, "scanline", False),
+        username=args.username
+    )
+    print(f"[TermArt] ✓ ASCII Typography generated: {res.get('output_path')} (font: {args.font}, theme: {getattr(args, 'theme', 'cyberpunk')})")
 
 def cmd_heatmap(args):
     p = registry.get("heatmap")
@@ -281,7 +289,10 @@ def main():
     tx_p = sub.add_parser("text", help="Generate high-legibility FIGlet ASCII typography banner SVG")
     tx_p.add_argument("--text", required=True, help="Text to render (use \\n for newline)")
     tx_p.add_argument("--out", default="typography.svg")
-    tx_p.add_argument("--font", default="slant", help="FIGlet font (slant, standard, doom, small, big)")
+    tx_p.add_argument("--font", default="slant", help="FIGlet font (slant, isometric1, larry3d, doom, graffiti, etc.)")
+    tx_p.add_argument("--theme", default="cyberpunk", choices=["cyberpunk", "matrix", "sunset", "dracula", "nord", "gold", "blood", "ocean", "monochrome", "two_tone", "rainbow"], help="Color gradient theme")
+    tx_p.add_argument("--anim", default="oscillate", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    tx_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     tx_p.add_argument("--username", default="developer")
     tx_p.set_defaults(func=cmd_text)
 
