@@ -101,13 +101,24 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Motor de Renderização</label>
             <select id="img-engine" onchange="toggleImageEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="rgb_ascii">TrueColor RGB ASCII (Cores 24-bit Reais da Foto)</option>
               <option value="chafa">Chafa (C Engine) - Sub-pixel Graphics de Alta Resolução</option>
               <option value="portrait">Retrato Terminal (Go Braille 2x4 com Digitação)</option>
               <option value="signature">Logo / Assinatura em Caligrafia (ASCII Puro / Braille)</option>
             </select>
           </div>
 
-          <div id="chafa-options" class="flex flex-col gap-3 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
+          <div id="rgb-options" class="flex flex-col gap-2 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
+            <span class="font-semibold text-emerald-400">Esquema de Cores RGB</span>
+            <select id="rgb-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
+              <option value="rgb">TrueColor RGB (Cores Reais 24-bit Amostradas da Foto)</option>
+              <option value="cyberpunk">Gradiente Cyberpunk (Ciano -^> Roxo -^> Rosa)</option>
+              <option value="matrix">Matrix Hacker (Verde Neon com Sombras)</option>
+              <option value="mono">Monocromático Estilizado</option>
+            </select>
+          </div>
+
+          <div id="chafa-options" class="hidden flex flex-col gap-3 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
             <span class="font-semibold text-brand-500">Configurações do Motor Chafa (C)</span>
             <div class="grid grid-cols-2 gap-2">
               <div>
@@ -379,6 +390,7 @@ Sleep 3s
 
     function toggleImageEngine() {
       const eng = document.getElementById('img-engine').value;
+      document.getElementById('rgb-options').classList.toggle('hidden', eng !== 'rgb_ascii');
       document.getElementById('chafa-options').classList.toggle('hidden', eng !== 'chafa');
       document.getElementById('sig-options').classList.toggle('hidden', eng !== 'signature');
     }
@@ -419,7 +431,9 @@ Sleep 3s
       formData.append('username', user);
       formData.append('cols', cols);
       
-      if (engine === 'chafa') {
+      if (engine === 'rgb_ascii') {
+        formData.append('color_mode', document.getElementById('rgb-mode').value);
+      } else if (engine === 'chafa') {
         formData.append('symbols', document.getElementById('chafa-symbols').value);
         formData.append('colors', document.getElementById('chafa-colors').value);
       } else if (engine === 'signature') {
@@ -601,11 +615,12 @@ def render_pipes(num_pipes: int = 4, steps: int = 60, username: str = "ViniciusN
 
 @app.post("/api/render/image")
 async def render_image_upload(
-    engine: str = Form("chafa"),
+    engine: str = Form("rgb_ascii"),
     username: str = Form("ViniciusNoetzold"),
     cols: int = Form(74),
     symbols: str = Form("ascii"),
     colors: str = Form("none"),
+    color_mode: str = Form("rgb"),
     braille: str = Form("false"),
     file: UploadFile = File(None)
 ):
@@ -620,7 +635,10 @@ async def render_image_upload(
             df.write(sf.read())
 
     out_svg = os.path.join(os.path.dirname(__file__), f"_temp_{engine}.svg")
-    if engine == "chafa":
+    if engine == "rgb_ascii":
+        p = registry.get("rgb_ascii")
+        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, color_mode=color_mode, username=username)
+    elif engine == "chafa":
         p = registry.get("chafa")
         p.run(image_path=upload_path, out_svg=out_svg, cols=cols, symbols=symbols, colors=colors, username=username)
     elif engine == "signature":
