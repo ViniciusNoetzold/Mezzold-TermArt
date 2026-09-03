@@ -76,6 +76,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>📊</span> <span>Stats & Heatmap</span>
       </button>
+      <button onclick="switchTab('animator')" id="btn-animator" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+        <span>✨</span> <span>Animador SVG</span>
+      </button>
       <button onclick="switchTab('pipes')" id="btn-pipes" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>🧪</span> <span>Pipes.sh Retro FX</span>
       </button>
@@ -299,6 +302,52 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <button onclick="generateProfile()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
             <span>⚡</span> <span>Gerar Widget de Perfil</span>
+          </button>
+        </div>
+
+        <!-- ================= TAB: ANIMADOR DE SVG IMPORTADO ================= -->
+        <div id="tab-animator" class="tab-content hidden flex flex-col gap-4">
+          <div class="border-b border-brand-border pb-2">
+            <h2 class="font-bold text-white text-base flex items-center gap-2">✨ Importar & Animar SVG</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Importe qualquer arquivo .svg e aplique efeitos dinâmicos em 60fps</p>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Selecionar Arquivo SVG do Computador</label>
+            <input id="import-svg-file" type="file" accept=".svg" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-border file:text-white hover:file:bg-brand-600">
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Ou Cole o Código SVG Diretamente (Opcional)</label>
+            <textarea id="import-svg-code" rows="3" placeholder="<svg ...> ... </svg>" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono"></textarea>
+          </div>
+
+          <div class="p-3 rounded-xl bg-brand-dark/50 border border-brand-border flex flex-col gap-2.5 text-xs">
+            <span class="font-bold text-brand-500 flex items-center gap-1.5">
+              <span>🎬</span> <span>Efeitos da Animação</span>
+            </span>
+            <div>
+              <label class="text-[11px] text-slate-400 block mb-1">Estilo de Movimento / Efeito</label>
+              <select id="import-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
+                <option value="oscillate">🌊 Oscilante 3D (Levitação, Balanço e Profundidade)</option>
+                <option value="cascade">🌧️ Cascata / Chuva Digital (Ondas Matrix Contínuas)</option>
+                <option value="drop">🧱 Caindo e Encaixando (Gravity Drop & Tetris Snap)</option>
+                <option value="pulse">💥 Pulso Cibernético (Breathing Glow & Zoom)</option>
+                <option value="none">⏹️ Estático (Apenas Overlays)</option>
+              </select>
+            </div>
+            <label class="flex items-center gap-2 cursor-pointer pt-1">
+              <input type="checkbox" id="import-scanline" checked class="w-4 h-4 accent-brand-500 rounded">
+              <span class="text-slate-300 font-medium">📡 Ativar Varredura Laser de Radar / Linha CRT</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer pt-0.5">
+              <input type="checkbox" id="import-wrap-term" class="w-4 h-4 accent-brand-500 rounded">
+              <span class="text-slate-300 font-medium">🪟 Envolver em Janela macOS Terminal (Bordas & Botões)</span>
+            </label>
+          </div>
+
+          <button onclick="animateImportedSvg()" class="mt-2 w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+            <span>🚀</span> <span>Animar Arquivo SVG</span>
           </button>
         </div>
 
@@ -542,6 +591,37 @@ Sleep 3s
       setPreview(svg, `${widget}.svg`);
     }
 
+    async function animateImportedSvg() {
+      const fileInput = document.getElementById('import-svg-file');
+      const textCode = document.getElementById('import-svg-code').value.trim();
+      const animMode = document.getElementById('import-anim-mode').value;
+      const scanline = document.getElementById('import-scanline').checked;
+      const wrapTerm = document.getElementById('import-wrap-term').checked;
+
+      const formData = new FormData();
+      formData.append('anim_mode', animMode);
+      formData.append('scanline', scanline ? 'true' : 'false');
+      formData.append('wrap_terminal', wrapTerm ? 'true' : 'false');
+
+      if (fileInput.files.length > 0) {
+        formData.append('file', fileInput.files[0]);
+      } else if (textCode) {
+        formData.append('svg_code', textCode);
+      } else {
+        alert('Por favor, selecione um arquivo .svg ou cole o código SVG no campo de texto!');
+        return;
+      }
+
+      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Injetando animações no SVG...</div>';
+      const res = await fetch('/api/svg/animate', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setPreview(data.svg, 'animated-import.svg');
+      } else {
+        document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message}</div>`;
+      }
+    }
+
     async function generatePipes() {
       const pipes = document.getElementById('pipes-count').value;
       const steps = document.getElementById('pipes-steps').value;
@@ -721,6 +801,39 @@ async def render_image_upload(
     with open(out_svg, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
+
+@app.post("/api/svg/animate")
+async def api_animate_svg(
+    anim_mode: str = Form("oscillate"),
+    scanline: str = Form("false"),
+    wrap_terminal: str = Form("false"),
+    svg_code: str = Form(""),
+    file: UploadFile = File(None)
+):
+    content = ""
+    if file and hasattr(file, "read") and getattr(file, "filename", ""):
+        file_bytes = await file.read()
+        content = file_bytes.decode("utf-8", errors="replace")
+    elif svg_code:
+        content = svg_code
+    else:
+        return {"status": "error", "message": "Nenhum arquivo SVG ou código fornecido"}
+
+    p = registry.get("svg_animator")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_anim_import.svg")
+    res = p.run(
+        svg_content=content,
+        out_svg=tmp,
+        anim_mode=anim_mode,
+        scanline=(scanline.lower() == "true"),
+        wrap_terminal=(wrap_terminal.lower() == "true")
+    )
+    if res.get("status") == "success":
+        with open(tmp, "r", encoding="utf-8") as f:
+            svg = f.read()
+        return {"status": "success", "svg": svg}
+    else:
+        return {"status": "error", "message": res.get("message", "Erro ao animar SVG")}
 
 @app.post("/api/vhs/compile")
 def compile_vhs_tape(payload: dict = Body(...)):

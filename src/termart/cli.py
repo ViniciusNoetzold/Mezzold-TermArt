@@ -100,6 +100,18 @@ def cmd_pipes(args):
     res = p.run(out_svg=args.out, username=args.username)
     print(f"[TermArt] ✓ Animated Pipes screensaver generated: {res.get('output_path')}")
 
+def cmd_animate(args):
+    p = registry.get("svg_animator")
+    res = p.run(
+        svg_path=args.svg,
+        out_svg=args.out,
+        anim_mode=args.anim,
+        scanline=args.scanline,
+        wrap_terminal=args.wrap_term,
+        username=args.username
+    )
+    print(f"[TermArt] ✓ Animated SVG generated: {res.get('output_path')} (effect: {args.anim})")
+
 def cmd_studio(args):
     from ..ui.web.app import launch_studio
     launch_studio(port=args.port)
@@ -196,6 +208,16 @@ def main():
     tu_p = sub.add_parser("studio", help="Launch interactive Web Studio UI")
     tu_p.add_argument("--port", type=int, default=7860)
     tu_p.set_defaults(func=cmd_studio)
+
+    # animate
+    an_p = sub.add_parser("animate", help="Import an existing SVG and inject dynamic animations")
+    an_p.add_argument("svg", help="Path to input SVG file")
+    an_p.add_argument("--anim", default="oscillate", choices=["oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    an_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
+    an_p.add_argument("--wrap-term", action="store_true", help="Wrap inside macOS terminal frame")
+    an_p.add_argument("--username", default="developer")
+    an_p.add_argument("--out", default="animated.svg")
+    an_p.set_defaults(func=cmd_animate)
 
     args = parser.parse_args()
     args.func(args)
