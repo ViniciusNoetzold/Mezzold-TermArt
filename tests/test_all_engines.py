@@ -48,7 +48,11 @@ ENGINES_TO_TEST = [
     ("tty_clock", {"color_scheme": "phosphor"}),
     ("chess_board", {"match": "kasparov"}),
     ("file_tree", {}),
-    ("fortune_banner", {})
+    ("fortune_banner", {}),
+    ("tech_stack", {"techs": "python,rust,react", "style": "neon"}),
+    ("music_card", {"preset": "synthwave"}),
+    ("coding_stats", {"hours": 1200, "streak": 30}),
+    ("ascii_diagram", {"preset": "microservices"})
 ]
 
 def run_suite():

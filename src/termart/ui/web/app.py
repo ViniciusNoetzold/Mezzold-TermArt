@@ -88,6 +88,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>🎬</span> <span>Gravador VHS & AGG</span>
       </button>
+      <button onclick="switchTab('badges')" id="btn-badges" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+        <span>🛡️</span> <span>Badges & Tech Stack</span>
+      </button>
+      <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+        <span>🎵</span> <span>Música & Atividade Dev</span>
+      </button>
     </div>
   </div>
 
@@ -1178,6 +1184,145 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
         </div>
 
+        <!-- ================= TAB 7: TECH STACK & BADGES STUDIO ================= -->
+        <div id="tab-badges" class="tab-content hidden flex flex-col gap-4">
+          <div class="border-b border-brand-border pb-2">
+            <h2 class="font-bold text-white text-base flex items-center gap-2">🛡️ Tech Stack & Badges Studio</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Crie matrizes de tecnologias e badges estilizados para seu README</p>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Título do Banner</label>
+            <input id="badge-title" type="text" value="TECH STACK & CORE ARSENAL" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Estilo Visual dos Badges</label>
+            <select id="badge-style" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="neon">⚡ Cyberpunk Neon (Glow Colorido & Símbolos)</option>
+              <option value="flat">🔵 Modern Flat Dark (Pills Minimalistas GitHub)</option>
+              <option value="arcade">👾 Retro 8-Bit Arcade (Colchetes & Borda Pixel)</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs text-slate-400">Presets de Tecnologias</label>
+              <div class="flex gap-1 text-[10px]">
+                <button type="button" onclick="loadTechPreset('fullstack')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">Fullstack</button>
+                <button type="button" onclick="loadTechPreset('python_ai')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">Python/AI</button>
+                <button type="button" onclick="loadTechPreset('devops')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">DevOps</button>
+                <button type="button" onclick="loadTechPreset('systems')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">Sistemas</button>
+              </div>
+            </div>
+            <label class="text-[11px] text-slate-500 block mb-1">Tecnologias selecionadas (separadas por vírgula):</label>
+            <textarea id="badge-techs" rows="3" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">python, typescript, rust, react, nextjs, fastapi, docker, postgresql, tailwind, linux, git</textarea>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
+            <input id="badge-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <div class="flex flex-col gap-2 pt-1">
+            <button onclick="generateTechBadges()" class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+              <span>🛡️</span> <span>Gerar Banner de Badges (SVG)</span>
+            </button>
+            <button onclick="copyShieldsMarkdown()" class="w-full py-2 bg-brand-dark border border-brand-border hover:bg-brand-border text-slate-300 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+              <span>📋</span> <span>Copiar Badges em Markdown (Shields.io)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= TAB 8: MÚSICA & ATIVIDADE DEV ================= -->
+        <div id="tab-activity" class="tab-content hidden flex flex-col gap-4">
+          <div class="border-b border-brand-border pb-2">
+            <h2 class="font-bold text-white text-base flex items-center gap-2">🎵 Dev Music & Atividade</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Cards do Spotify, métricas de linguagem e diagramas de arquitetura</p>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Tipo de Card</label>
+            <select id="act-widget" onchange="toggleActivityWidget()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="music">🎵 Tocando Agora (Spotify / Cassette Player)</option>
+              <option value="coding">📊 Métricas de Código (WakaTime & Streak Radar)</option>
+              <option value="diagram">🗺️ Diagrama de Arquitetura (ASCII Flowchart)</option>
+            </select>
+          </div>
+
+          <!-- MUSIC CONTROLS -->
+          <div id="act-opt-music" class="flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-pink-400 flex items-center gap-1.5">
+              <span>📻</span> <span>Opções de Música & Áudio</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Preset de Faixa Musical</label>
+              <select id="music-preset" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                <option value="synthwave">🌆 Synthwave: HOME — Resonance</option>
+                <option value="lofi">☕ Lofi Girl: Coffee Beats & Code</option>
+                <option value="cyberpunk">🦾 Cyberpunk: Night City Wire</option>
+                <option value="rock">🎸 Metal: Metallica — Master of Puppets</option>
+                <option value="interstellar">🌌 Cinema: Hans Zimmer — Cornfield Chase</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Música (Opcional)</label>
+                <input id="music-title" type="text" placeholder="Nome da faixa" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Artista (Opcional)</label>
+                <input id="music-artist" type="text" placeholder="Artista / Banda" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+              </div>
+            </div>
+          </div>
+
+          <!-- CODING STATS CONTROLS -->
+          <div id="act-opt-coding" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <span>📊</span> <span>Métricas de Produtividade</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Horas Codadas</label>
+                <input id="coding-hours" type="number" value="1480" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Dias de Streak 🔥</label>
+                <input id="coding-streak" type="number" value="48" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Nível / Rank de Produtividade</label>
+              <input id="coding-rank" type="text" value="S+ Tier (Cyber Architect)" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <!-- DIAGRAM CONTROLS -->
+          <div id="act-opt-diagram" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <span>🗺️</span> <span>Topologia & Arquitetura</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Topologia de Sistema</label>
+              <select id="diagram-preset" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="microservices">☁️ Nuvem Distribuída (Gateway + Microsserviços + Kafka + Postgres)</option>
+                <option value="ai_agent">🤖 Agente de IA Autônomo & RAG (Prompt + Vector DB + LLM + Tools)</option>
+                <option value="gitops">🚀 Pipeline GitOps Zero-Downtime (GitHub Actions + Docker + K8s)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
+            <input id="act-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <button onclick="generateActivityCard()" class="mt-2 w-full py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+            <span>⚡</span> <span>Gerar Card de Atividade (SVG)</span>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -2012,6 +2157,101 @@ Sleep 3s
       setPreview(svg, `${widget}.svg`);
     }
 
+    const TECH_PRESETS = {
+      fullstack: 'typescript, javascript, react, nextjs, nodejs, express, tailwind, postgresql, docker, git',
+      python_ai: 'python, fastapi, django, postgresql, redis, docker, linux, git, github',
+      devops: 'docker, kubernetes, aws, gcp, azure, linux, git, github, terraform, nginx',
+      systems: 'rust, go, cpp, csharp, linux, git, docker, sqlite, neovim'
+    };
+
+    function loadTechPreset(key) {
+      if (TECH_PRESETS[key]) {
+        document.getElementById('badge-techs').value = TECH_PRESETS[key];
+        showToast(`Preset "${key}" carregado!`);
+      }
+    }
+
+    async function generateTechBadges() {
+      const techs = document.getElementById('badge-techs').value;
+      const style = document.getElementById('badge-style').value;
+      const title = document.getElementById('badge-title').value;
+      const user = document.getElementById('badge-user').value;
+
+      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Renderizando matriz de badges...</div>';
+      const url = `/api/render/tech_stack?techs=${encodeURIComponent(techs)}&style=${encodeURIComponent(style)}&title=${encodeURIComponent(title)}&username=${encodeURIComponent(user)}`;
+      const res = await fetch(url);
+      const svg = await res.text();
+      setPreview(svg, 'tech_stack.svg');
+    }
+
+    function copyShieldsMarkdown() {
+      const rawTechs = document.getElementById('badge-techs').value.split(',');
+      const mdList = [];
+      const SHIELD_MAP = {
+        python: 'Python-3776AB?style=for-the-badge&logo=python&logoColor=white',
+        typescript: 'TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white',
+        javascript: 'JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black',
+        rust: 'Rust-DEA584?style=for-the-badge&logo=rust&logoColor=white',
+        go: 'Go-00ADD8?style=for-the-badge&logo=go&logoColor=white',
+        react: 'React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB',
+        nextjs: 'Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white',
+        fastapi: 'FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white',
+        docker: 'Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white',
+        postgresql: 'PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white',
+        tailwind: 'Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white',
+        linux: 'Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black',
+        git: 'Git-F05032?style=for-the-badge&logo=git&logoColor=white'
+      };
+
+      for (let t of rawTechs) {
+        t = t.trim().toLowerCase();
+        if (SHIELD_MAP[t]) {
+          mdList.push(`![${t}](https://img.shields.io/badge/${SHIELD_MAP[t]})`);
+        } else if (t) {
+          const cap = t.charAt(0).toUpperCase() + t.slice(1);
+          mdList.push(`![${cap}](https://img.shields.io/badge/${encodeURIComponent(cap)}-23272d?style=for-the-badge)`);
+        }
+      }
+
+      const fullMd = '<div align="center">\n  ' + mdList.join(' ') + '\n</div>';
+      navigator.clipboard.writeText(fullMd);
+      showToast('📋 Códigos Markdown copiados com sucesso!');
+    }
+
+    function toggleActivityWidget() {
+      const w = document.getElementById('act-widget').value;
+      document.getElementById('act-opt-music').classList.toggle('hidden', w !== 'music');
+      document.getElementById('act-opt-coding').classList.toggle('hidden', w !== 'coding');
+      document.getElementById('act-opt-diagram').classList.toggle('hidden', w !== 'diagram');
+    }
+
+    async function generateActivityCard() {
+      const w = document.getElementById('act-widget').value;
+      const user = document.getElementById('act-user').value;
+      document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Renderizando card de atividade...</div>';
+
+      let url = '';
+      if (w === 'music') {
+        const preset = document.getElementById('music-preset').value;
+        const title = document.getElementById('music-title').value;
+        const artist = document.getElementById('music-artist').value;
+        const anim = globalAnimationsDisabled ? false : true;
+        url = `/api/render/music?preset=${encodeURIComponent(preset)}&title=${encodeURIComponent(title)}&artist=${encodeURIComponent(artist)}&animated=${anim}&username=${encodeURIComponent(user)}`;
+      } else if (w === 'coding') {
+        const hours = document.getElementById('coding-hours').value;
+        const streak = document.getElementById('coding-streak').value;
+        const rank = document.getElementById('coding-rank').value;
+        url = `/api/render/coding_stats?hours=${encodeURIComponent(hours)}&streak=${encodeURIComponent(streak)}&rank=${encodeURIComponent(rank)}&username=${encodeURIComponent(user)}`;
+      } else if (w === 'diagram') {
+        const preset = document.getElementById('diagram-preset').value;
+        url = `/api/render/diagram?preset=${encodeURIComponent(preset)}&username=${encodeURIComponent(user)}`;
+      }
+
+      const res = await fetch(url);
+      const svg = await res.text();
+      setPreview(svg, `${w}_card.svg`);
+    }
+
     async function animateImportedSvg() {
       const fileInput = document.getElementById('import-svg-file');
       const textCode = document.getElementById('import-svg-code').value.trim();
@@ -2426,6 +2666,42 @@ def render_pipes(num_pipes: int = 4, steps: int = 60, username: str = "ViniciusN
     p = registry.get("pipes")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_pi.svg")
     p.run(out_svg=tmp, username=username, num_pipes=num_pipes, steps=steps)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/tech_stack")
+def render_tech_stack(techs: str = "python,typescript,rust,react,nextjs,fastapi,docker,postgresql,tailwind,linux,git", style: str = "neon", title: str = "TECH STACK & CORE ARSENAL", username: str = "ViniciusNoetzold"):
+    p = registry.get("tech_stack")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_ts.svg")
+    p.run(techs=techs, style=style, title=title, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/music")
+def render_music(preset: str = "synthwave", title: str = None, artist: str = None, animated: bool = True, username: str = "audiophile"):
+    p = registry.get("music_card")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_mu.svg")
+    p.run(preset=preset, custom_title=title if title else None, custom_artist=artist if artist else None, animated=animated, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/coding_stats")
+def render_coding_stats(hours: int = 1480, streak: int = 48, rank: str = "S+ Tier (Architect)", username: str = "ViniciusNoetzold"):
+    p = registry.get("coding_stats")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_cs.svg")
+    p.run(hours=int(hours), streak=int(streak), rank=rank, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/diagram")
+def render_diagram(preset: str = "microservices", title: str = None, username: str = "architect"):
+    p = registry.get("ascii_diagram")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_di.svg")
+    p.run(preset=preset, title=title, username=username, out_svg=tmp)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")

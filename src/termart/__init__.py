@@ -24,5 +24,8 @@ from .modules.fx import (
     doom_fire, synthwave_grid, game_of_life
 )
 from .modules.animator import svg_importer
+from .modules.badges import tech_stack
+from .modules.activity import music_card, coding_stats
+from .modules.diagrams import ascii_diagram
 
 from .core.registry import registry

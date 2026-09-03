@@ -11,10 +11,10 @@
 # Mezzold TermArt Suite v2.0 🚀
 ### *The Ultimate Terminal Art, Image Conversion & GitHub Profile Studio*
 
-**A powerhouse uniting 32 world-class open-source engines into a single CLI and real-time Visual Web Studio.**
+**The Complete Creative Studio for Terminal Graphics, Developer Aesthetics & GitHub Personalization.**
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](#)
-[![Engines](https://img.shields.io/badge/Engines-Go_%2B_Rust_%2B_C_%2B_Python-00ADD8?style=for-the-badge)](#)
+[![Engines](https://img.shields.io/badge/Performance-C_%2B_Rust_%2B_Go_%2B_Python-00ADD8?style=for-the-badge)](#)
 [![Zero Token](https://img.shields.io/badge/Security-Zero_Token-2ea44f?style=for-the-badge&logo=github)](#)
 [![Pure SVG](https://img.shields.io/badge/Graphics-Pure_Animated_SVG-orange?style=for-the-badge)](#)
 [![Mezzold Studios](https://img.shields.io/badge/Creator-Mezzold_Studios-8a2be2?style=for-the-badge)](#)
@@ -25,7 +25,7 @@
 
 ## ⚡ Visão Geral / Overview
 
-O **Mezzold TermArt Suite** é a mais completa suíte open-source para criação de arte em terminal, transformação estilística de fotos e personalização estética de perfis do GitHub.
+O **Mezzold TermArt Suite** é a mais completa suíte profissional para criação de arte em terminal, transformação estilística de fotos e personalização estética de perfis do GitHub.
 
 Reúne motores compilados de alta performance em **C**, **Go**, **Rust** e algoritmos matemáticos em **Python** sob uma **arquitetura modular e extensível de plugins** (`@registry.register`). Oferece tanto uma interface via linha de comando (**CLI**) quanto um **Web Studio Visual em Tempo Real** com suporte a arrastar-e-soltar e pré-visualização instantânea.
 
