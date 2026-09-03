@@ -112,12 +112,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
 
           <div id="rgb-options" class="flex flex-col gap-2 p-3 rounded-xl bg-brand-dark/50 border border-brand-border text-xs">
-            <span class="font-semibold text-emerald-400">Esquema de Cores RGB</span>
+            <span class="font-semibold text-emerald-400">Esquema de Cores</span>
             <select id="rgb-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
-              <option value="rgb">TrueColor RGB (Cores Reais 24-bit Amostradas da Foto)</option>
-              <option value="cyberpunk">Gradiente Cyberpunk (Ciano -^> Roxo -^> Rosa)</option>
-              <option value="matrix">Matrix Hacker (Verde Neon com Sombras)</option>
-              <option value="mono">Monocromático Estilizado</option>
+              <option value="rgb">🎨 TrueColor RGB (Cores Reais 24-bit Amostradas da Imagem)</option>
+              <option value="cyberpunk">🌆 Gradiente Cyberpunk (Ciano → Roxo → Rosa)</option>
+              <option value="sunset">🌇 Gradiente Sunset (Dourado → Âmbar → Carmesim)</option>
+              <option value="tokyo">🌃 Gradiente TokyoNight (Índigo → Roxo Neon)</option>
+              <option value="matrix">💻 Matrix Hacker (Verde Fosfórico Neon)</option>
+              <option value="mono">⚪ Monocromático Estilizado (Prateado GitHub)</option>
             </select>
           </div>
 
@@ -699,7 +701,7 @@ Sleep 3s
 
     function toggleImageEngine() {
       const eng = document.getElementById('img-engine').value;
-      document.getElementById('rgb-options').classList.toggle('hidden', eng !== 'rgb_ascii');
+      document.getElementById('rgb-options').classList.toggle('hidden', eng !== 'rgb_ascii' && eng !== 'signature');
       document.getElementById('chafa-options').classList.toggle('hidden', eng !== 'chafa');
       document.getElementById('sig-options').classList.toggle('hidden', eng !== 'signature');
     }
@@ -740,13 +742,14 @@ Sleep 3s
       formData.append('username', user);
       formData.append('cols', cols);
       
-      if (engine === 'rgb_ascii') {
+      if (engine === 'rgb_ascii' || engine === 'signature') {
         formData.append('color_mode', document.getElementById('rgb-mode').value);
+      }
+      if (engine === 'signature') {
+        formData.append('braille', document.getElementById('sig-braille').checked ? 'true' : 'false');
       } else if (engine === 'chafa') {
         formData.append('symbols', document.getElementById('chafa-symbols').value);
         formData.append('colors', document.getElementById('chafa-colors').value);
-      } else if (engine === 'signature') {
-        formData.append('braille', document.getElementById('sig-braille').checked ? 'true' : 'false');
       }
 
       if (activeImageFile) {
@@ -1003,7 +1006,7 @@ async def render_image_upload(
         p.run(image_path=upload_path, out_svg=out_svg, cols=cols, symbols=symbols, colors=colors, username=username, anim_mode=anim_mode, scanline=is_scan)
     elif engine == "signature":
         p = registry.get("signature")
-        p.run(image_path=upload_path, out_svg=out_svg, username=username, cols=cols, braille=(braille.lower() == "true"), anim_mode=anim_mode, scanline=is_scan)
+        p.run(image_path=upload_path, out_svg=out_svg, username=username, cols=cols, color_mode=color_mode, braille=(braille.lower() == "true"), anim_mode=anim_mode, scanline=is_scan)
     else:
         p = registry.get("portrait")
         p.run(image_path=upload_path, out_svg=out_svg, username=username, full_name=username, cols=cols, anim_mode=anim_mode, scanline=is_scan)

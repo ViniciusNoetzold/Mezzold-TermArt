@@ -71,8 +71,18 @@ def cmd_portrait(args):
 
 def cmd_signature(args):
     p = registry.get("signature")
-    res = p.run(image_path=args.image, out_svg=args.out, title=args.title, username=args.username, cols=args.cols, braille=args.braille)
-    print(f"[TermArt] ✓ Signature generated: {res.get('output_path')}")
+    res = p.run(
+        image_path=args.image,
+        out_svg=args.out,
+        title=args.title,
+        username=args.username,
+        cols=args.cols,
+        braille=args.braille,
+        color_mode=args.color,
+        anim_mode=args.anim,
+        scanline=args.scanline
+    )
+    print(f"[TermArt] ✓ Signature generated: {res.get('output_path')} (color: {args.color}, anim: {args.anim})")
 
 def cmd_wordmark(args):
     p = registry.get("wordmark_3d")
@@ -169,12 +179,15 @@ def main():
     po_p.set_defaults(func=cmd_portrait)
 
     # signature
-    si_p = sub.add_parser("signature", help="Generate tight-cropped high-DPI signature SVG")
+    si_p = sub.add_parser("signature", help="Generate tight-cropped high-DPI signature SVG with TrueColor and Animations")
     si_p.add_argument("image")
     si_p.add_argument("--out", default="signature.svg")
     si_p.add_argument("--title", default="./signature.sh")
-    si_p.add_argument("--username", default="developer")
+    si_p.add_argument("--username", default="ViniciusNoetzold")
     si_p.add_argument("--cols", type=int, default=58)
+    si_p.add_argument("--color", default="rgb", choices=["rgb", "cyberpunk", "matrix", "sunset", "tokyo", "mono"], help="Color scheme")
+    si_p.add_argument("--anim", default="cascade", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    si_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     si_p.add_argument("--braille", action="store_true", help="Use braille dots instead of pure ASCII characters")
     si_p.set_defaults(func=cmd_signature)
 

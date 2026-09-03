@@ -1,39 +1,54 @@
 """
 Mezzold TermArt - Signature Module
-Crops tight bounding boxes and renders high-definition Braille/ASCII calligraphy banners.
+Crops tight bounding boxes and renders high-definition Braille/ASCII calligraphy banners
+with full TrueColor RGB sampling, gradient palettes, and typewriter cursor animations.
 """
 import html
 import os
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
 from ...core.animator import get_animation_defs, get_animation_open, get_animation_close, get_animation_overlays
 from .ascii_braille import AsciiBraillePlugin
 
-def crop_tight(image_path: str, pad: int = 4) -> Image.Image:
-    im = Image.open(image_path).convert("L")
-    arr = np.array(im)
-    mask = arr < 240
+def crop_tight(image_path: str, pad: int = 4) -> Tuple[Image.Image, Image.Image, bool]:
+    im_raw = Image.open(image_path)
+    if im_raw.mode != "RGB":
+        im_raw = im_raw.convert("RGB")
+
+    im_gray = im_raw.convert("L")
+    arr = np.array(im_gray)
+
+    is_light_bg = bool(arr.mean() > 128)
+    if is_light_bg:
+        mask = arr < 235
+    else:
+        mask = arr > 25
+
     if not mask.any():
-        return im
+        return im_raw, im_gray, is_light_bg
 
     ys, xs = np.where(mask)
     y0 = max(0, ys.min() - pad)
-    y1 = min(im.height, ys.max() + pad)
+    y1 = min(im_raw.height, ys.max() + pad)
     x0 = max(0, xs.min() - pad)
-    x1 = min(im.width, xs.max() + pad)
-    cropped = im.crop((x0, y0, x1, y1))
-    cropped = ImageEnhance.Contrast(cropped).enhance(1.6)
-    cropped = cropped.filter(ImageFilter.UnsharpMask(radius=1.5, percent=160, threshold=2))
-    return cropped
+    x1 = min(im_raw.width, xs.max() + pad)
+
+    crop_rgb = im_raw.crop((x0, y0, x1, y1))
+    crop_gray = im_gray.crop((x0, y0, x1, y1))
+
+    crop_rgb = ImageEnhance.Contrast(crop_rgb).enhance(1.2)
+    crop_gray = ImageEnhance.Contrast(crop_gray).enhance(1.4)
+    return crop_rgb, crop_gray, is_light_bg
+
 
 @registry.register
 class SignaturePlugin(BasePlugin):
     name = "signature"
     category = "image"
-    description = "Tight-cropped high-DPI Braille & ASCII calligraphy logo/signature SVG banner"
+    description = "Tight-cropped high-DPI Braille & ASCII calligraphy logo/signature banner with TrueColor & Gradients"
 
     def run(
         self,
@@ -47,6 +62,7 @@ class SignaturePlugin(BasePlugin):
         titlebar_h: int = 32,
         pad_x: int = 24,
         accent_color: str = "#58a6ff",
+        color_mode: str = "rgb",
         braille: bool = False,
         anim_mode: str = "oscillate",
         scanline: bool = False,
@@ -54,8 +70,8 @@ class SignaturePlugin(BasePlugin):
         **kwargs
     ) -> Dict[str, Any]:
         temp_crop = os.path.join(os.path.dirname(os.path.abspath(out_svg)), "_temp_crop.png")
-        cropped = crop_tight(image_path)
-        cropped.save(temp_crop)
+        crop_rgb, crop_gray, is_light_bg = crop_tight(image_path)
+        crop_gray.save(temp_crop)
 
         conv = AsciiBraillePlugin()
         res = conv.run(image_path=temp_crop, width=cols, braille=braille)
@@ -77,6 +93,8 @@ class SignaturePlugin(BasePlugin):
         num_rows = len(lines)
         num_cols = max(len(l) for l in lines) if lines else 1
 
+        im_rgb_small = crop_rgb.resize((num_cols, num_rows), Image.Resampling.LANCZOS)
+
         avail_w = canvas_w - pad_x * 2
         avail_h = canvas_h - titlebar_h - 32
         cell_w = avail_w / num_cols
@@ -89,7 +107,6 @@ class SignaturePlugin(BasePlugin):
         BG2 = "#111722"
         FRAME = "#30363d"
         TITLE_TEXT = "#7d8590"
-        INK = "#f0f6fc"
         CURSOR = accent_color
 
         ROW_DUR = 0.08
@@ -125,7 +142,7 @@ class SignaturePlugin(BasePlugin):
 
         parts.append(
             f'<text x="{canvas_w/2}" y="{titlebar_h/2 + 4}" fill="{TITLE_TEXT}" font-size="12" '
-            f'text-anchor="middle">{html.escape(username)}@github: ~$ {html.escape(title)} --anim={anim_mode}</text>'
+            f'text-anchor="middle">{html.escape(username)}@github: ~$ {html.escape(title)} --color={color_mode} --anim={anim_mode}</text>'
         )
 
         parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=canvas_w))
@@ -134,11 +151,78 @@ class SignaturePlugin(BasePlugin):
             y = start_y + ry * line_spacing
             row_top = y - line_spacing * 0.7
             delay = ry * STAGGER
-            safe_line = html.escape(line)
 
+            # Build colorized line with tspans
+            curr_col = None
+            curr_txt = []
+            line_tspans = []
+
+            for rx, char in enumerate(line):
+                if char in (" ", "⠀", "\t"):
+                    if curr_txt:
+                        safe = html.escape("".join(curr_txt))
+                        line_tspans.append(f'<tspan fill="{curr_col}">{safe}</tspan>')
+                        curr_txt = []
+                        curr_col = None
+                    line_tspans.append(char)
+                    continue
+
+                r, g, b = im_rgb_small.getpixel((min(rx, num_cols - 1), min(ry, num_rows - 1)))
+
+                if color_mode == "rgb":
+                    v = max(r, g, b)
+                    if v < 75:
+                        hex_color = accent_color if is_light_bg else "#f0f6fc"
+                    else:
+                        factor = max(1.15, 160.0 / max(v, 1)) if is_light_bg else 1.15
+                        br = min(int(r * factor), 255)
+                        bg = min(int(g * factor), 255)
+                        bb = min(int(b * factor), 255)
+                        hex_color = f"#{br:02x}{bg:02x}{bb:02x}"
+                elif color_mode == "cyberpunk":
+                    prog = rx / max(num_cols - 1, 1)
+                    cr = int(34 + prog * (236 - 34))
+                    cg = int(211 - prog * (211 - 72))
+                    cb = int(238 + prog * (244 - 238))
+                    hex_color = f"#{cr:02x}{cg:02x}{cb:02x}"
+                elif color_mode == "matrix":
+                    lum = int(0.299 * r + 0.587 * g + 0.114 * b)
+                    shade = min(int(lum * 1.3), 255)
+                    hex_color = f"#00{shade:02x}55"
+                elif color_mode == "sunset":
+                    prog = rx / max(num_cols - 1, 1)
+                    cr = int(251 - prog * (251 - 244))
+                    cg = int(191 - prog * (191 - 63))
+                    cb = int(36 + prog * (94 - 36))
+                    hex_color = f"#{cr:02x}{cg:02x}{cb:02x}"
+                elif color_mode == "tokyo":
+                    prog = rx / max(num_cols - 1, 1)
+                    cr = int(129 + prog * (192 - 129))
+                    cg = int(140 - prog * (140 - 132))
+                    cb = int(248 + prog * (252 - 248))
+                    hex_color = f"#{cr:02x}{cg:02x}{cb:02x}"
+                elif color_mode == "accent":
+                    hex_color = accent_color
+                else:
+                    # mono
+                    hex_color = "#f0f6fc"
+
+                if hex_color != curr_col:
+                    if curr_txt:
+                        safe = html.escape("".join(curr_txt))
+                        line_tspans.append(f'<tspan fill="{curr_col}">{safe}</tspan>')
+                        curr_txt = []
+                    curr_col = hex_color
+                curr_txt.append(char)
+
+            if curr_txt:
+                safe = html.escape("".join(curr_txt))
+                line_tspans.append(f'<tspan fill="{curr_col}">{safe}</tspan>')
+
+            text_content = "".join(line_tspans)
             text = (
-                f'<text xml:space="preserve" x="{canvas_w/2}" y="{y:.1f}" fill="{INK}" '
-                f'font-size="{font_size:.1f}" text-anchor="middle">{safe_line}</text>'
+                f'<text xml:space="preserve" x="{canvas_w/2}" y="{y:.1f}" '
+                f'font-size="{font_size:.1f}" text-anchor="middle">{text_content}</text>'
             )
 
             clip_id = f"clp_{clip_pfx}_{ry}"
@@ -163,4 +247,10 @@ class SignaturePlugin(BasePlugin):
         os.makedirs(os.path.dirname(os.path.abspath(out_svg)), exist_ok=True)
         with open(out_svg, "w", encoding="utf-8") as f:
             f.write(svg)
-        return {"status": "success", "output_path": out_svg, "canvas_w": canvas_w, "canvas_h": canvas_h}
+        return {
+            "status": "success",
+            "output_path": out_svg,
+            "canvas_w": canvas_w,
+            "canvas_h": canvas_h,
+            "color_mode": color_mode
+        }
