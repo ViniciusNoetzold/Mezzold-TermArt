@@ -3356,14 +3356,16 @@ Sleep 3s
       const cleanFilename = (currentFilename || 'minha-arte.svg').replace(/[^a-zA-Z0-9._-]/g, '_');
       const blockTitle = cleanFilename.replace('.svg', '').replace(/[-_]/g, ' ').toUpperCase();
 
+      const blockId = 'custom_' + Date.now();
       const newBlock = {
-        id: 'custom_' + Date.now(),
+        id: blockId,
         type: 'custom_svg',
         title: `Arte: ${blockTitle}`,
         file: cleanFilename.endsWith('.svg') ? cleanFilename : `${cleanFilename}.svg`,
         icon: '🖼️',
         enabled: true,
         svg_data: currentSvg,
+        preview_url: `/api/builder/custom_svg/${blockId}`,
         params: {}
       };
 
@@ -3551,7 +3553,17 @@ Sleep 3s
           if (codeContainer) codeContainer.innerText = data.markdown;
 
           // Render Visual Cards
-          const active = builderSections.filter(s => s.enabled);
+          const active = (data.sections && data.sections.length) ? data.sections.filter(s => s.enabled) : builderSections.filter(s => s.enabled);
+          if (data.sections) {
+            data.sections.forEach(ds => {
+              const orig = builderSections.find(b => b.id === ds.id);
+              if (orig) {
+                if (orig.svg_data) ds.svg_data = orig.svg_data;
+                orig.preview_url = ds.preview_url;
+              }
+            });
+          }
+
           if (visualContainer) {
             visualContainer.innerHTML = `
               <div class="text-center w-full pb-3 border-b border-slate-800">
@@ -3562,13 +3574,34 @@ Sleep 3s
                 </div>
               </div>
               <div class="w-full flex flex-col items-center gap-6">
-                ${active.map(s => `
-                  <div class="w-full flex flex-col items-center">
-                    <div class="w-full max-w-full overflow-x-auto flex justify-center py-2">
-                      <img src="${s.preview_url || '/api/render/' + s.type}" class="max-w-full h-auto rounded-lg shadow-md border border-slate-800/80" alt="${escapeHtml(s.title)}" />
+                ${active.map(s => {
+                  if (s.type === 'custom_svg' && s.svg_data) {
+                    return `
+                      <div class="w-full flex flex-col items-center">
+                        <div class="w-full max-w-full overflow-x-auto flex justify-center py-2 [&>svg]:max-w-full [&>svg]:h-auto rounded-lg shadow-md border border-slate-800/80">
+                          ${s.svg_data}
+                        </div>
+                      </div>
+                    `;
+                  }
+                  let imgSrc = s.preview_url;
+                  if (!imgSrc) {
+                    if (s.type === 'custom_svg') {
+                      imgSrc = `/api/builder/custom_svg/${s.id || 'custom'}`;
+                    } else if (s.type === 'header') {
+                      imgSrc = `/api/render/wordmark?text=${encodeURIComponent((name || user).toUpperCase())}`;
+                    } else {
+                      imgSrc = `/api/render/${s.type}`;
+                    }
+                  }
+                  return `
+                    <div class="w-full flex flex-col items-center">
+                      <div class="w-full max-w-full overflow-x-auto flex justify-center py-2">
+                        <img src="${imgSrc}" class="max-w-full h-auto rounded-lg shadow-md border border-slate-800/80" alt="${escapeHtml(s.title)}" />
+                      </div>
                     </div>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
               <div class="text-[11px] text-slate-500 pt-4 border-t border-slate-800 w-full text-center">
                 ⚡ Built & Crafted with <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" class="text-brand-400 hover:underline">Mezzold TermArt Studio</a>
@@ -4247,6 +4280,13 @@ _BUILDER_CUSTOM_CACHE = {}
 def get_custom_svg(sec_id: str):
     svg = _BUILDER_CUSTOM_CACHE.get(sec_id, '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60"><text x="200" y="35" fill="#58a6ff" text-anchor="middle">Custom SVG</text></svg>')
     return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/custom_svg")
+def get_custom_svg_fallback():
+    if _BUILDER_CUSTOM_CACHE:
+        last_svg = list(_BUILDER_CUSTOM_CACHE.values())[-1]
+        return Response(content=last_svg, media_type="image/svg+xml")
+    return Response(content='<svg xmlns="http://www.w3.org/2000/svg" width="600" height="100"><rect width="600" height="100" fill="#0d1117" rx="10"/><text x="300" y="55" fill="#58a6ff" text-anchor="middle" font-family="monospace">ARTE FIXADA NO PERFIL</text></svg>', media_type="image/svg+xml")
 
 @app.post("/api/builder/preview")
 def builder_preview(payload: dict = Body(...)):
