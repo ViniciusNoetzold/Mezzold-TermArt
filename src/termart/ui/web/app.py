@@ -46,28 +46,30 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 </head>
 <body class="bg-brand-dark text-slate-200 font-mono min-h-screen flex flex-col">
   <!-- Header -->
-  <header class="border-b border-brand-border bg-brand-card/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="h-3 w-3 rounded-full bg-emerald-400 pulse-dot"></div>
-      <div class="flex flex-col">
-        <h1 class="text-base font-bold text-white tracking-wider flex items-center gap-2">
-          <span>⚡ MEZZOLD</span>
-          <span class="text-brand-500">TERMART STUDIO</span>
-          <span class="text-xs px-2 py-0.5 rounded bg-brand-border text-slate-400">v2.0</span>
-        </h1>
-        <span class="text-[11px] text-slate-500">Suite Completa de Arte em Terminal & Widgets de Perfil</span>
+  <header class="border-b border-brand-border bg-brand-card/80 backdrop-blur sticky top-0 z-50 px-6 py-3">
+    <div class="max-w-[1600px] w-full mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-3 w-3 rounded-full bg-emerald-400 pulse-dot"></div>
+        <div class="flex flex-col">
+          <h1 class="text-base font-bold text-white tracking-wider flex items-center gap-2">
+            <span>⚡ MEZZOLD</span>
+            <span class="text-brand-500">TERMART STUDIO</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-brand-border text-slate-400">v2.0</span>
+          </h1>
+          <span class="text-[11px] text-slate-500">Suite Completa de Arte em Terminal & Widgets de Perfil</span>
+        </div>
       </div>
-    </div>
-    <div class="flex items-center gap-4 text-xs">
-      <span class="text-slate-400 hidden sm:inline">Owner: <strong class="text-white">Vinícius Noetzold</strong></span>
-      <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold transition">GitHub Repo ↗</a>
+      <div class="flex items-center gap-4 text-xs">
+        <span class="text-slate-400 hidden sm:inline">Owner: <strong class="text-white">Vinícius Noetzold</strong></span>
+        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold transition">GitHub Repo ↗</a>
+      </div>
     </div>
   </header>
 
   <!-- Navigation Tabs (5 Categorias Abrangendo Todas as Ferramentas) -->
-  <div class="border-b border-brand-border bg-brand-card/50 px-6 py-2">
-    <div class="max-w-7xl mx-auto flex flex-wrap gap-2 text-xs">
-      <button onclick="switchTab('image')" id="btn-image" class="tab-btn px-4 py-2 rounded-xl font-bold bg-brand-600 text-white flex items-center gap-1.5 transition">
+  <div class="border-b border-brand-border bg-brand-card/50 px-6 py-2.5">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap gap-2 text-xs">
+      <button onclick="switchTab('image')" id="btn-image" class="tab-btn px-4 py-2 rounded-xl font-bold bg-brand-600 text-white flex items-center gap-1.5 transition shadow">
         <span>🖼️</span> <span>Imagens & Chafa</span>
       </button>
       <button onclick="switchTab('3d')" id="btn-3d" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
@@ -89,7 +91,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </div>
 
   <!-- Main Content -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+  <main class="flex-1 max-w-[1600px] w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
     <!-- Left Column: Controls -->
     <div class="lg:col-span-5 flex flex-col gap-5">
       <div class="p-5 rounded-2xl bg-brand-card border border-brand-border flex flex-col gap-4 text-sm shadow-xl">
@@ -277,6 +279,8 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <option value="big">Big (Extra Grande)</option>
                 <option value="small">Small (Compacta)</option>
               </select>
+            </div>
+
             <!-- Typography Animation Controls Suite -->
             <div class="p-3 rounded-xl bg-brand-dark/50 border border-brand-border flex flex-col gap-2.5 text-xs">
               <span class="font-bold text-brand-500 flex items-center gap-1.5">
@@ -462,22 +466,22 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
 
     <!-- Right Column: Live Canvas & Preview -->
-    <div class="lg:col-span-7 flex flex-col gap-4">
+    <div class="lg:col-span-7 flex flex-col gap-4 lg:sticky lg:top-20">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span class="text-xs text-slate-400">Arte Renderizada:</span>
-          <span id="preview-tag" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">contrib-3d-city.svg</span>
+          <span id="preview-tag" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">termart.svg</span>
         </div>
         <div class="flex gap-2">
-          <button onclick="downloadSvg()" class="text-xs px-3 py-1.5 rounded-lg border border-brand-border bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-1.5">
+          <button onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/10">
             <span>⭳</span> <span>Baixar Arquivo</span>
           </button>
         </div>
       </div>
 
       <!-- Preview Canvas -->
-      <div id="canvas-wrapper" class="flex-1 min-h-[520px] p-6 rounded-2xl bg-brand-card border border-brand-border flex items-center justify-center overflow-auto shadow-2xl relative">
-        <div id="svg-display" class="w-full flex items-center justify-center">
+      <div id="canvas-wrapper" class="w-full min-h-[580px] p-6 rounded-2xl bg-brand-card/70 border border-brand-border flex items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
+        <div id="svg-display" class="w-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:h-auto">
           <div class="text-center text-slate-500">
             <p class="text-4xl mb-3 animate-pulse">⚡</p>
             <p>Selecione um motor e clique em Gerar para ver o resultado ao vivo!</p>
