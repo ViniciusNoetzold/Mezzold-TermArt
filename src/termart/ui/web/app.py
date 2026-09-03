@@ -178,7 +178,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <div>
               <label class="text-[11px] text-slate-400 block mb-1">Estilo de Animação da Arte</label>
               <select id="img-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
-                <option value="oscillate">🌊 Oscilante 3D (Levitação, Balanço e Profundidade)</option>
+                <option value="waves_left">🌊 Ondas / Esteira Fluida Contínua (Correndo para Esquerda)</option>
+                <option value="waves_right">🌊 Ondas / Esteira Fluida Contínua (Correndo para Direita)</option>
+                <option value="oscillate">⚖️ Oscilante 3D (Levitação, Balanço e Profundidade)</option>
                 <option value="cascade">🌧️ Cascata / Chuva Digital (Ondas Matrix Contínuas)</option>
                 <option value="drop">🧱 Caindo e Encaixando (Gravity Drop & Tetris Snap)</option>
                 <option value="pulse">💥 Pulso Cibernético (Breathing Glow & Zoom)</option>
@@ -260,7 +262,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <div>
                 <label class="text-[11px] text-slate-400 block mb-1">Estilo de Animação</label>
                 <select id="typo-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
-                  <option value="oscillate">🌊 Oscilante 3D (Levitação, Balanço e Profundidade)</option>
+                  <option value="waves_left">🌊 Ondas / Esteira Fluida Contínua (Correndo para Esquerda)</option>
+                  <option value="waves_right">🌊 Ondas / Esteira Fluida Contínua (Correndo para Direita)</option>
+                  <option value="oscillate">⚖️ Oscilante 3D (Levitação, Balanço e Profundidade)</option>
                   <option value="cascade">🌧️ Cascata / Chuva Digital (Ondas Matrix Contínuas)</option>
                   <option value="drop">🧱 Caindo e Encaixando (Gravity Drop & Tetris Snap)</option>
                   <option value="pulse">💥 Pulso Cibernético (Breathing Glow & Zoom)</option>
@@ -329,7 +333,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <div>
               <label class="text-[11px] text-slate-400 block mb-1">Estilo de Movimento / Efeito</label>
               <select id="import-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
-                <option value="oscillate">🌊 Oscilante 3D (Levitação, Balanço e Profundidade)</option>
+                <option value="waves_left">🌊 Ondas / Esteira Fluida Contínua (Correndo para Esquerda)</option>
+                <option value="waves_right">🌊 Ondas / Esteira Fluida Contínua (Correndo para Direita)</option>
+                <option value="oscillate">⚖️ Oscilante 3D (Levitação, Balanço e Profundidade)</option>
                 <option value="cascade">🌧️ Cascata / Chuva Digital (Ondas Matrix Contínuas)</option>
                 <option value="drop">🧱 Caindo e Encaixando (Gravity Drop & Tetris Snap)</option>
                 <option value="pulse">💥 Pulso Cibernético (Breathing Glow & Zoom)</option>

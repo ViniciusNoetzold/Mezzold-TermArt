@@ -73,7 +73,7 @@ class TypographyPlugin(BasePlugin):
             f'<linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="#111722"/><stop offset="1" stop-color="#0d1117"/>'
             f'</linearGradient>'
-            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h)}'
+            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h)}'
             f'</defs>'
         )
         parts.append(f'<rect width="{canvas_w}" height="{canvas_h}" rx="12" fill="url(#bg_{clip_pfx})"/>')
@@ -90,7 +90,7 @@ class TypographyPlugin(BasePlugin):
 
         first_block_len = len(rendered_blocks[0]) if rendered_blocks else len(all_lines)
 
-        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy))
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=canvas_w))
 
         for ry, line in enumerate(all_lines):
             y = start_y + ry * line_spacing
@@ -118,7 +118,7 @@ class TypographyPlugin(BasePlugin):
                     f'<set attributeName="opacity" to="0" begin="{delay+0.08:.3f}s"/></rect>'
                 )
 
-        parts.append(get_animation_close())
+        parts.append(get_animation_close(clip_pfx, anim_mode, art_w=canvas_w))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h))
 
         bot_y = canvas_h - 16

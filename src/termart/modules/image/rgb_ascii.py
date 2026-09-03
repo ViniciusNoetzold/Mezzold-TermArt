@@ -51,6 +51,7 @@ class RgbAsciiPlugin(BasePlugin):
         pad_x = 24
         titlebar_h = 32
         avail_w = canvas_w - pad_x * 2
+        art_w = avail_w
         cell_w = avail_w / cols
         line_h = cell_w * 1.95
         canvas_h = int(titlebar_h + rows * line_h + 36)
@@ -75,7 +76,7 @@ class RgbAsciiPlugin(BasePlugin):
             f'<linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="#111722"/><stop offset="1" stop-color="#0a0e14"/>'
             f'</linearGradient>'
-            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h)}'
+            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h)}'
             f'</defs>'
         )
         parts.append(f'<rect width="{canvas_w}" height="{canvas_h}" rx="12" fill="url(#bg_{clip_pfx})"/>')
@@ -90,7 +91,7 @@ class RgbAsciiPlugin(BasePlugin):
             f'text-anchor="middle">{username}@github: ~$ {title} --color={color_mode} --anim={anim_mode}</text>'
         )
 
-        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy))
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=art_w))
 
         for ry in range(rows):
             y = start_y + ry * line_h
@@ -137,7 +138,7 @@ class RgbAsciiPlugin(BasePlugin):
             line_parts.append("</text>")
             parts.append("".join(line_parts))
 
-        parts.append(get_animation_close())
+        parts.append(get_animation_close(clip_pfx, anim_mode, art_w=art_w))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, titlebar_h))
 
         parts.append("</svg>")

@@ -81,7 +81,7 @@ class PortraitPlugin(BasePlugin):
             f'<linearGradient id="bg_{clip_pfx}" x1="0" y1="0" x2="0" y2="1">'
             f'<stop offset="0" stop-color="{BG2}"/><stop offset="1" stop-color="{BG}"/>'
             f'</linearGradient>'
-            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, CANVAS_H)}'
+            f'{get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, CANVAS_H, TITLEBAR_H)}'
             f'</defs>'
         )
         parts.append(f'<rect width="{canvas_w}" height="{CANVAS_H}" rx="12" fill="url(#bg_{clip_pfx})"/>')
@@ -96,7 +96,7 @@ class PortraitPlugin(BasePlugin):
             f'text-anchor="middle">{html.escape(username)}@github: ~/whoami --anim={anim_mode}</text>'
         )
 
-        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy))
+        parts.append(get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=canvas_w))
 
         art_top = TITLEBAR_H + PAD * 0.4
         for ry, line in enumerate(lines):
@@ -123,7 +123,7 @@ class PortraitPlugin(BasePlugin):
                 f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
             )
 
-        parts.append(get_animation_close())
+        parts.append(get_animation_close(clip_pfx, anim_mode, art_w=canvas_w))
         parts.append(get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, CANVAS_H, TITLEBAR_H, accent=accent_color))
 
         status_line_y = TITLEBAR_H + ART_H + PAD * 0.35

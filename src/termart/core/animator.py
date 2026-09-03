@@ -8,7 +8,14 @@ Provides GPU-accelerated SVG animations for any ASCII art:
 - CRT Laser Scanline / Radar Sweep Overlay
 """
 
-def get_animation_defs(clip_pfx: str, anim_mode: str, scanline: bool, canvas_w: int, canvas_h: int) -> str:
+def get_animation_defs(
+    clip_pfx: str,
+    anim_mode: str,
+    scanline: bool,
+    canvas_w: int,
+    canvas_h: int,
+    titlebar_h: int = 34
+) -> str:
     defs = []
     if scanline or anim_mode == "radar":
         defs.append(
@@ -32,11 +39,43 @@ def get_animation_defs(clip_pfx: str, anim_mode: str, scanline: bool, canvas_w: 
             f'</rect>'
             f'</mask>'
         )
+    if anim_mode in ("waves", "waves_left", "wave", "wave_left", "waves_right", "wave_right"):
+        defs.append(
+            f'<clipPath id="term_clip_{clip_pfx}">'
+            f'<rect x="0" y="{titlebar_h}" width="{canvas_w}" height="{canvas_h - titlebar_h}"/>'
+            f'</clipPath>'
+        )
     return "".join(defs)
 
 
-def get_animation_open(clip_pfx: str, anim_mode: str, cx: float, cy: float) -> str:
-    if anim_mode == "oscillate":
+def get_animation_open(
+    clip_pfx: str,
+    anim_mode: str,
+    cx: float,
+    cy: float,
+    art_w: float = None,
+    speed: float = 8.0
+) -> str:
+    if art_w is None:
+        art_w = cx * 2
+
+    if anim_mode in ("waves", "waves_left", "wave", "wave_left"):
+        return (
+            f'<g clip-path="url(#term_clip_{clip_pfx})">'
+            f'<g>'
+            f'<animateTransform attributeName="transform" type="translate" from="0 0" to="-{art_w:.1f} 0" dur="{speed:.1f}s" repeatCount="indefinite"/>'
+            f'<use href="#art_{clip_pfx}" x="-{art_w:.1f}" y="0"/>'
+            f'<g id="art_{clip_pfx}">'
+        )
+    elif anim_mode in ("waves_right", "wave_right"):
+        return (
+            f'<g clip-path="url(#term_clip_{clip_pfx})">'
+            f'<g>'
+            f'<animateTransform attributeName="transform" type="translate" from="-{art_w:.1f} 0" to="0 0" dur="{speed:.1f}s" repeatCount="indefinite"/>'
+            f'<use href="#art_{clip_pfx}" x="-{art_w:.1f}" y="0"/>'
+            f'<g id="art_{clip_pfx}">'
+        )
+    elif anim_mode == "oscillate":
         return (
             f'<g transform-origin="{cx:.1f} {cy:.1f}">'
             f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
@@ -63,7 +102,16 @@ def get_animation_open(clip_pfx: str, anim_mode: str, cx: float, cy: float) -> s
     return '<g>'
 
 
-def get_animation_close() -> str:
+def get_animation_close(clip_pfx: str = "", anim_mode: str = "none", art_w: float = None) -> str:
+    if anim_mode in ("waves", "waves_left", "wave", "wave_left", "waves_right", "wave_right"):
+        if art_w is None:
+            art_w = 800
+        return (
+            f'</g>'
+            f'<use href="#art_{clip_pfx}" x="{art_w:.1f}" y="0"/>'
+            f'</g>'
+            f'</g>'
+        )
     return '</g>'
 
 

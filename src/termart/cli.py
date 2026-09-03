@@ -39,14 +39,30 @@ def cmd_image(args):
     engine_name = args.engine
     p = registry.get(engine_name)
     if not p:
-        print(f"[Error] Engine '{engine_name}' not found. Available: chafa, ascii_braille")
+        print(f"[Error] Engine '{engine_name}' not found. Available: rgb_ascii, chafa, ascii_braille")
         return
-    res = p.run(image_path=args.image, cols=args.cols, braille=args.braille)
-    if res.get("status") == "success":
-        for l in res.get("lines", [])[:args.rows or 35]:
-            print(l)
+    if engine_name == "rgb_ascii":
+        out_svg = args.out or "rgb_art.svg"
+        res = p.run(
+            image_path=args.image,
+            out_svg=out_svg,
+            cols=args.cols,
+            color_mode=args.color,
+            anim_mode=args.anim,
+            scanline=args.scanline,
+            username=args.username
+        )
+        print(f"[TermArt] ✓ RGB ASCII generated: {res.get('output_path')} (anim: {args.anim})")
+    elif args.out:
+        res = p.run(image_path=args.image, out_svg=args.out, cols=args.cols, braille=args.braille, anim_mode=args.anim, scanline=args.scanline, username=args.username)
+        print(f"[TermArt] ✓ Artwork SVG generated: {res.get('output_path')}")
     else:
-        print(f"[Error] {res.get('message')}")
+        res = p.run(image_path=args.image, cols=args.cols, braille=args.braille)
+        if res.get("status") == "success":
+            for l in res.get("lines", [])[:args.rows or 35]:
+                print(l)
+        else:
+            print(f"[Error] {res.get('message')}")
 
 def cmd_portrait(args):
     p = registry.get("portrait")
@@ -129,12 +145,17 @@ def main():
     sub.add_parser("plugins", help="List all registered modules and engines").set_defaults(func=cmd_plugins)
 
     # image
-    im_p = sub.add_parser("image", help="Convert any image via Chafa or ASCII/Braille engine")
+    im_p = sub.add_parser("image", help="Convert any image via RGB ASCII, Chafa or ASCII/Braille engine")
     im_p.add_argument("image", help="Path to image")
-    im_p.add_argument("--engine", default="ascii_braille", choices=["ascii_braille", "chafa"], help="Engine to use")
-    im_p.add_argument("--cols", type=int, default=80)
+    im_p.add_argument("--engine", default="rgb_ascii", choices=["rgb_ascii", "ascii_braille", "chafa"], help="Engine to use")
+    im_p.add_argument("--color", default="rgb", choices=["rgb", "cyberpunk", "matrix", "mono"], help="Color mode for rgb_ascii")
+    im_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    im_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
+    im_p.add_argument("--cols", type=int, default=74)
     im_p.add_argument("--rows", type=int, default=30)
     im_p.add_argument("--braille", action="store_true")
+    im_p.add_argument("--out", default=None, help="Output SVG path")
+    im_p.add_argument("--username", default="ViniciusNoetzold")
     im_p.set_defaults(func=cmd_image)
 
     # portrait
@@ -212,7 +233,7 @@ def main():
     # animate
     an_p = sub.add_parser("animate", help="Import an existing SVG and inject dynamic animations")
     an_p.add_argument("svg", help="Path to input SVG file")
-    an_p.add_argument("--anim", default="oscillate", choices=["oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    an_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
     an_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     an_p.add_argument("--wrap-term", action="store_true", help="Wrap inside macOS terminal frame")
     an_p.add_argument("--username", default="developer")

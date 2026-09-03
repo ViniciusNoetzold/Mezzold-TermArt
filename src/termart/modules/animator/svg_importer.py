@@ -75,9 +75,9 @@ class SvgAnimatorPlugin(BasePlugin):
             body_end = len(raw_svg)
         inner_body = raw_svg[body_start:body_end]
 
-        defs_content = get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h)
-        open_anim = get_animation_open(clip_pfx, anim_mode, cx, cy)
-        close_anim = get_animation_close()
+        defs_content = get_animation_defs(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, 0)
+        open_anim = get_animation_open(clip_pfx, anim_mode, cx, cy, art_w=canvas_w)
+        close_anim = get_animation_close(clip_pfx, anim_mode, art_w=canvas_w)
         overlays = get_animation_overlays(clip_pfx, anim_mode, scanline, canvas_w, canvas_h, 0)
 
         if wrap_terminal:
@@ -88,8 +88,9 @@ class SvgAnimatorPlugin(BasePlugin):
             term_cx = term_w / 2
             term_cy = (term_h + titlebar_h) / 2
 
-            t_defs = get_animation_defs(clip_pfx, anim_mode, scanline, term_w, term_h)
-            t_open = get_animation_open(clip_pfx, anim_mode, term_cx, term_cy)
+            t_defs = get_animation_defs(clip_pfx, anim_mode, scanline, term_w, term_h, titlebar_h)
+            t_open = get_animation_open(clip_pfx, anim_mode, term_cx, term_cy, art_w=canvas_w)
+            t_close = get_animation_close(clip_pfx, anim_mode, art_w=canvas_w)
             t_overlays = get_animation_overlays(clip_pfx, anim_mode, scanline, term_w, term_h, titlebar_h)
 
             new_svg = (
@@ -112,7 +113,7 @@ class SvgAnimatorPlugin(BasePlugin):
                 f'<g transform="translate(24, {titlebar_h + 15})">'
                 f'{inner_body}'
                 f'</g>'
-                f'{close_anim}'
+                f'{t_close}'
                 f'{t_overlays}'
                 f'</svg>'
             )
