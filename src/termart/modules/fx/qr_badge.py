@@ -19,7 +19,7 @@ class QrBadgePlugin(BasePlugin):
 
     def run(
         self,
-        url: str = "https://github.com/ViniciusNoetzold",
+        url: str = "https://github.com",
         label: str = "SCAN TO VISIT GITHUB PROFILE",
         out_svg: str = "qr_badge.svg",
         color_scheme: str = "cyber_cyan",

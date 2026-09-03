@@ -36,7 +36,7 @@ ENGINES_TO_TEST = [
     ("cowsay", {"message": "Test speech banner", "mascot": "dragon"}),
     ("tetris_reveal", {"image_path": SAMPLE_IMG, "cols": 35}),
     ("ansi_cp437", {"image_path": SAMPLE_IMG, "cols": 40}),
-    ("qr_badge", {"url": "https://github.com/ViniciusNoetzold", "label": "GITHUB"}),
+    ("qr_badge", {"url": "https://github.com/developer", "label": "GITHUB"}),
     ("donut_3d", {"frames_count": 8, "theme": "cyberpunk"}),
     ("cava", {"bars_count": 20, "theme": "cyberpunk"}),
     ("doom_fire", {"cols": 35, "rows": 16, "frames_count": 8}),

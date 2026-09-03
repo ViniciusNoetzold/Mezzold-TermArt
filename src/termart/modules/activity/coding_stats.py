@@ -25,7 +25,7 @@ class CodingStatsPlugin(BasePlugin):
 
     def run(
         self,
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         hours: int = 1480,
         streak: int = 48,
         rank: str = "S+ Tier (Architect)",

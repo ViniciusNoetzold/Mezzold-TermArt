@@ -84,7 +84,7 @@ class TechStackPlugin(BasePlugin):
         techs: str = "python,typescript,rust,react,nextjs,fastapi,docker,postgresql,tailwind,linux,git",
         style: str = "neon",
         title: str = "TECH STACK & CORE ARSENAL",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         out_svg: str = "tech_stack.svg",
         **kwargs
     ) -> Dict[str, Any]:

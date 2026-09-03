@@ -69,7 +69,7 @@ def main():
             webbrowser.open("http://localhost:7860")
             run_cmd("python termstudio.py")
         elif choice == "2":
-            user = input(f" Usuário GitHub {DIM}[Enter para ViniciusNoetzold]{RESET}: ").strip() or "ViniciusNoetzold"
+            user = input(f" Usuário GitHub {DIM}[Enter para developer]{RESET}: ").strip() or "developer"
             run_cmd(f"python termart.py city {user} --out contrib-3d-city.svg")
             input(f"\n{DIM}Pressione Enter para voltar ao menu...{RESET}")
         elif choice == "3":
@@ -77,19 +77,19 @@ def main():
             run_cmd(f'python termart.py wordmark --text "{text}" --out wordmark.svg')
             input(f"\n{DIM}Pressione Enter para voltar ao menu...{RESET}")
         elif choice == "4":
-            user = input(f" Usuário GitHub {DIM}[Enter para ViniciusNoetzold]{RESET}: ").strip() or "ViniciusNoetzold"
+            user = input(f" Usuário GitHub {DIM}[Enter para developer]{RESET}: ").strip() or "developer"
             run_cmd(f"python termart.py heatmap {user} --out contrib-heatmap.svg")
             input(f"\n{DIM}Pressione Enter para voltar ao menu...{RESET}")
         elif choice == "5":
-            text = input(f" Nome em ASCII {DIM}[Enter para VINICIUS\\nNOETZOLD]{RESET}: ").strip() or r"VINICIUS\nNOETZOLD"
+            text = input(f" Nome em ASCII {DIM}[Enter para MEZZOLD\\nTERMART]{RESET}: ").strip() or r"MEZZOLD\nTERMART"
             run_cmd(f'python termart.py text --text "{text}" --font slant --out name-banner.svg')
             input(f"\n{DIM}Pressione Enter para voltar ao menu...{RESET}")
         elif choice == "6":
-            user = input(f" Usuário GitHub {DIM}[Enter para ViniciusNoetzold]{RESET}: ").strip() or "ViniciusNoetzold"
+            user = input(f" Usuário GitHub {DIM}[Enter para developer]{RESET}: ").strip() or "developer"
             run_cmd(f"python termart.py neofetch --username {user} --out info-card.svg")
             input(f"\n{DIM}Pressione Enter para voltar ao menu...{RESET}")
         elif choice == "7":
-            user = input(f" Usuário GitHub {DIM}[Enter para ViniciusNoetzold]{RESET}: ").strip() or "ViniciusNoetzold"
+            user = input(f" Usuário GitHub {DIM}[Enter para developer]{RESET}: ").strip() or "developer"
             run_cmd(f"python termart.py stats {user} --out stats-card.svg")
             input(f"\n{DIM}Pressione Enter para voltar ao menu...{RESET}")
         elif choice == "8":

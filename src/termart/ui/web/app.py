@@ -60,8 +60,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <span class="text-[11px] text-slate-500">Suite Completa de Arte em Terminal & Widgets de Perfil</span>
         </div>
       </div>
-      <div class="flex items-center gap-4 text-xs">
-        <span class="text-slate-400 hidden sm:inline">Owner: <strong class="text-white">Vinícius Noetzold</strong></span>
+      <div class="flex items-center gap-3 text-xs">
+        <button onclick="openConfigModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-dark/90 hover:bg-brand-dark border border-brand-border text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm" title="Configurar Perfil e GitHub">
+          <span class="text-brand-400">⚙️</span>
+          <span id="header-user-badge">Perfil: <strong class="text-white">Convidado</strong></span>
+        </button>
         <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold transition">GitHub Repo ↗</a>
       </div>
     </div>
@@ -93,6 +96,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       </button>
       <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>🎵</span> <span>Música & Atividade Dev</span>
+      </button>
+      <button onclick="openConfigModal()" id="btn-config" class="tab-btn px-4 py-2 rounded-xl font-bold bg-brand-dark/90 border border-brand-border text-brand-400 hover:text-brand-300 hover:border-brand-500 flex items-center gap-1.5 transition ml-auto shadow-sm">
+        <span>⚙️</span> <span>Configurar Perfil Dev</span>
       </button>
     </div>
   </div>
@@ -250,7 +256,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">Nome / Usuário</label>
-            <input id="img-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <input id="img-user" type="text" placeholder="ex: developer" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
           </div>
 
           <div>
@@ -350,7 +356,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div id="city-block" class="flex flex-col gap-3">
             <div>
               <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
-              <input id="city-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <input id="city-user" type="text" placeholder="ex: seu-usuario-github" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
             </div>
             <div>
               <label class="text-xs text-slate-400 block mb-1">Paleta de Cores da Cidade 3D</label>
@@ -665,7 +671,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">GitHub Username / Treinador</label>
-            <input id="profile-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <input id="profile-user" type="text" placeholder="ex: seu-usuario-github" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
           </div>
 
           <!-- POKEMON OPTIONS -->
@@ -977,12 +983,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div id="fx-opt-qr" class="hidden flex flex-col gap-2">
             <div>
               <label class="text-xs text-slate-400 block mb-1">URL / Link de Destino</label>
-              <input id="qr-url" type="text" value="https://github.com/ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <input id="qr-url" type="text" placeholder="https://github.com/seu-usuario" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="text-xs text-slate-400 block mb-1">Rótulo do Crachá</label>
-                <input id="qr-label" type="text" value="GITHUB PROFILE" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <input id="qr-label" type="text" value="DEV PROFILE" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
               </div>
               <div>
                 <label class="text-xs text-slate-400 block mb-1">Tema Visual</label>
@@ -998,7 +1004,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">Usuário / Prompt do Terminal</label>
-            <input id="fx-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <input id="fx-user" type="text" placeholder="ex: developer" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
           </div>
 
           <button onclick="generateScreensaverFx()" class="mt-2 w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
@@ -1221,7 +1227,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
-            <input id="badge-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <input id="badge-user" type="text" placeholder="ex: seu-usuario-github" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
           </div>
 
           <div class="flex flex-col gap-2 pt-1">
@@ -1315,7 +1321,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
-            <input id="act-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            <input id="act-user" type="text" placeholder="ex: seu-usuario-github" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
           </div>
 
           <button onclick="generateActivityCard()" class="mt-2 w-full py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
@@ -1362,6 +1368,68 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <!-- Floating Toast Notification -->
   <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none px-4 py-2.5 rounded-xl bg-brand-dark/95 border border-brand-500 shadow-2xl text-xs font-semibold text-white flex items-center gap-2">
     <span id="toast-msg">Mensagem</span>
+  </div>
+
+  <!-- PERFIL DEV & CONFIGURAÇÃO INICIAL MODAL -->
+  <div id="modal-dev-profile" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-brand-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">⚡</span>
+          <div>
+            <h3 class="text-base font-bold text-white tracking-wide">Configuração do Perfil Dev</h3>
+            <p class="text-xs text-slate-400">Personalize seu estúdio com seu GitHub e informações</p>
+          </div>
+        </div>
+        <button onclick="closeConfigModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-lg hover:bg-brand-dark transition">✕</button>
+      </div>
+
+      <!-- GitHub Handle with auto-fetch -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-300 flex items-center justify-between">
+          <span>GitHub Username ou Link do Perfil</span>
+          <span class="text-[10px] text-brand-400 font-normal">Pressione Enter ou clique em Puxar Dados</span>
+        </label>
+        <div class="flex gap-2">
+          <div class="relative flex-1">
+            <span class="absolute left-3 top-2.5 text-slate-500 text-xs">github.com/</span>
+            <input id="cfg-github" type="text" placeholder="seu-usuario" class="w-full pl-24 pr-3 py-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs focus:border-brand-500 outline-none" onkeyup="if(event.key==='Enter') fetchGithubData()">
+          </div>
+          <button onclick="fetchGithubData()" id="btn-fetch-gh" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shrink-0 shadow">
+            <span>🔄</span> <span>Puxar Dados</span>
+          </button>
+        </div>
+        <span id="cfg-gh-status" class="text-[11px] text-slate-400"></span>
+      </div>
+
+      <!-- Display Name / Signature -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-300">Nome de Exibição / Assinatura de Terminal</label>
+        <input id="cfg-name" type="text" placeholder="ex: Seu Nome ou Nickname" class="w-full p-2.5 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs focus:border-brand-500 outline-none">
+      </div>
+
+      <!-- City for Weather Widget -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-300">Cidade / Localização (Para Weather & Perfil)</label>
+        <input id="cfg-city" type="text" placeholder="ex: São Paulo, Brazil" class="w-full p-2.5 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs focus:border-brand-500 outline-none">
+      </div>
+
+      <!-- Tech Role / Bio -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs font-semibold text-slate-300">Cargo / Bio Rápida (Opcional)</label>
+        <input id="cfg-role" type="text" placeholder="ex: Full-Stack Engineer / DevOps" class="w-full p-2.5 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs focus:border-brand-500 outline-none">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2.5 pt-2">
+        <button onclick="saveDevProfile()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-xs">
+          <span>💾</span> <span>Salvar & Aplicar no Studio</span>
+        </button>
+        <button onclick="closeConfigModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl transition">
+          Fechar
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -2477,10 +2545,147 @@ Sleep 3s
       URL.revokeObjectURL(url);
     }
 
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function getDevProfile() {
+      try {
+        const raw = localStorage.getItem('termart_dev_profile');
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return null;
+    }
+
+    function setDevProfile(profile) {
+      localStorage.setItem('termart_dev_profile', JSON.stringify(profile));
+      applyDevProfile(profile);
+    }
+
+    function applyDevProfile(profile) {
+      if (!profile) return;
+      const user = profile.github || profile.name || 'developer';
+      const name = profile.name || profile.github || 'Developer';
+      const city = profile.city || 'Curitiba, Brazil';
+      const ghUrl = profile.github ? `https://github.com/${profile.github}` : 'https://github.com';
+
+      // Update Navbar Badge
+      const badge = document.getElementById('header-user-badge');
+      if (badge) {
+        badge.innerHTML = `Perfil: <strong class="text-brand-400">@${escapeHtml(user)}</strong>`;
+      }
+
+      // Auto-populate all inputs across all tabs
+      const fields = {
+        'img-user': name,
+        'city-user': user,
+        'profile-user': user,
+        'weather-city': city,
+        'qr-url': ghUrl,
+        'fx-user': user,
+        'badge-user': user,
+        'act-user': user
+      };
+
+      for (const [id, val] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el && val) {
+          el.value = val;
+        }
+      }
+    }
+
+    async function fetchGithubData() {
+      let rawUser = document.getElementById('cfg-github').value.trim();
+      if (!rawUser) return;
+      if (rawUser.includes('github.com/')) {
+        rawUser = rawUser.split('github.com/')[1].split('/')[0].replace(/[@]/g, '');
+        document.getElementById('cfg-github').value = rawUser;
+      } else {
+        rawUser = rawUser.replace(/[@]/g, '');
+        document.getElementById('cfg-github').value = rawUser;
+      }
+
+      const statusEl = document.getElementById('cfg-gh-status');
+      const btn = document.getElementById('btn-fetch-gh');
+      if (statusEl) statusEl.innerHTML = '<span class="text-brand-400">🔍 Buscando perfil na API do GitHub...</span>';
+      if (btn) btn.disabled = true;
+
+      try {
+        const res = await fetch(`https://api.github.com/users/${encodeURIComponent(rawUser)}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.name) {
+            document.getElementById('cfg-name').value = data.name;
+          } else if (data.login) {
+            document.getElementById('cfg-name').value = data.login;
+          }
+          if (data.location) {
+            document.getElementById('cfg-city').value = data.location;
+          }
+          if (data.bio) {
+            document.getElementById('cfg-role').value = data.bio;
+          }
+          if (statusEl) statusEl.innerHTML = `<span class="text-emerald-400">✓ Dados de <strong>${escapeHtml(data.login)}</strong> carregados com sucesso!</span>`;
+        } else {
+          if (statusEl) statusEl.innerHTML = `<span class="text-amber-400">Usuário não encontrado no GitHub. Você pode preencher manualmente abaixo!</span>`;
+        }
+      } catch (err) {
+        if (statusEl) statusEl.innerHTML = `<span class="text-slate-400">API do GitHub indisponível. Preencha os campos manualmente.</span>`;
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function saveDevProfile() {
+      let github = document.getElementById('cfg-github').value.trim();
+      if (github.includes('github.com/')) {
+        github = github.split('github.com/')[1].split('/')[0].replace(/[@]/g, '');
+      } else {
+        github = github.replace(/[@]/g, '');
+      }
+
+      const name = document.getElementById('cfg-name').value.trim() || github || 'Developer';
+      const city = document.getElementById('cfg-city').value.trim() || 'Curitiba, Brazil';
+      const role = document.getElementById('cfg-role').value.trim();
+
+      const profile = { github, name, city, role };
+      setDevProfile(profile);
+      closeConfigModal();
+      showToast(`Perfil @${github || name} configurado com sucesso!`);
+    }
+
+    function openConfigModal() {
+      const modal = document.getElementById('modal-dev-profile');
+      if (!modal) return;
+      const p = getDevProfile();
+      if (p) {
+        document.getElementById('cfg-github').value = p.github || '';
+        document.getElementById('cfg-name').value = p.name || '';
+        document.getElementById('cfg-city').value = p.city || '';
+        document.getElementById('cfg-role').value = p.role || '';
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeConfigModal() {
+      const modal = document.getElementById('modal-dev-profile');
+      if (modal) modal.classList.add('hidden');
+    }
+
     // Initialize defaults
     window.addEventListener('DOMContentLoaded', () => {
       loadVhsPreset();
       generate3d();
+      const p = getDevProfile();
+      if (p) {
+        applyDevProfile(p);
+      } else {
+        // First access: open onboarding modal!
+        openConfigModal();
+      }
     });
   </script>
 </body>
@@ -2492,7 +2697,7 @@ def index():
     return HTMLResponse(content=HTML_TEMPLATE)
 
 @app.get("/api/render/city")
-def render_city(username: str = "ViniciusNoetzold", theme: str = "cyberpunk"):
+def render_city(username: str = "developer", theme: str = "cyberpunk"):
     p = registry.get("isometric_city")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_city.svg")
     p.run(username=username, out_svg=tmp, theme=theme)
@@ -2511,10 +2716,10 @@ def render_wordmark(text: str = "MEZZOLD\nSTUDIOS"):
 
 @app.get("/api/render/typography")
 def render_typography(
-    text: str = "VINICIUS\nNOETZOLD",
+    text: str = "MEZZOLD\nTERMART",
     font: str = "slant",
     theme: str = "cyberpunk",
-    username: str = "ViniciusNoetzold",
+    username: str = "developer",
     anim_mode: str = "oscillate",
     scanline: bool = False
 ):
@@ -2527,10 +2732,10 @@ def render_typography(
 
 @app.post("/api/render/typography_batch")
 def render_typography_batch(payload: dict = Body(...)):
-    text = payload.get("text", "VINICIUS\nNOETZOLD")
+    text = payload.get("text", "MEZZOLD\nTERMART")
     fonts = payload.get("fonts", ["slant", "isometric1", "doom"])
     theme = payload.get("theme", "cyberpunk")
-    username = payload.get("username", "ViniciusNoetzold")
+    username = payload.get("username", "developer")
     anim_mode = payload.get("anim_mode", "oscillate")
     scanline = payload.get("scanline", False)
     disable_anim = payload.get("disable_anim", False)
@@ -2574,7 +2779,7 @@ def render_typography_batch(payload: dict = Body(...)):
     }
 
 @app.get("/api/render/heatmap")
-def render_heatmap(username: str = "ViniciusNoetzold"):
+def render_heatmap(username: str = "developer"):
     p = registry.get("heatmap")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_hm.svg")
     p.run(username=username, out_svg=tmp)
@@ -2583,14 +2788,16 @@ def render_heatmap(username: str = "ViniciusNoetzold"):
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/neofetch")
-def render_neofetch(username: str = "ViniciusNoetzold"):
+def render_neofetch(username: str = "developer", name: str = None, role: str = None):
     p = registry.get("neofetch")
+    display_title = name if name else (username if username != "developer" else "Developer Profile")
+    display_role = role if role else "Software Engineer & Terminal Enthusiast"
     rows = [
-        ("Title", "Vinícius de Almeida Noetzold", "#e3b341"),
-        ("Role", "Tech Support Analyst @ Hansen Software", "#c9d1d9"),
-        ("Focus", "Systems, APIs, Automation, QA & AI", "#39c5cf"),
-        ("Languages", "Python, Java, TypeScript, JavaScript, SQL", "#56d364"),
-        ("Highlights", "Mezzold Connect, YouTube Trend, QuotePRO, EduSystem", "#f0883e")
+        ("Title", display_title, "#e3b341"),
+        ("Role", display_role, "#c9d1d9"),
+        ("Focus", "Systems, Terminal Art, Cloud & APIs", "#39c5cf"),
+        ("Languages", "Python, TypeScript, Rust, Go, SQL", "#56d364"),
+        ("GitHub", f"https://github.com/{username}", "#f0883e")
     ]
     tmp = os.path.join(os.path.dirname(__file__), "_temp_neo.svg")
     p.run(rows=rows, out_svg=tmp, username=username)
@@ -2599,7 +2806,7 @@ def render_neofetch(username: str = "ViniciusNoetzold"):
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/stats")
-def render_stats(username: str = "ViniciusNoetzold"):
+def render_stats(username: str = "developer"):
     p = registry.get("stats_card")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_st.svg")
     p.run(username=username, out_svg=tmp)
@@ -2668,7 +2875,7 @@ def render_fortune(username: str = "philosopher"):
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/pipes")
-def render_pipes(num_pipes: int = 4, steps: int = 60, username: str = "ViniciusNoetzold"):
+def render_pipes(num_pipes: int = 4, steps: int = 60, username: str = "developer"):
     p = registry.get("pipes")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_pi.svg")
     p.run(out_svg=tmp, username=username, num_pipes=num_pipes, steps=steps)
@@ -2677,7 +2884,7 @@ def render_pipes(num_pipes: int = 4, steps: int = 60, username: str = "ViniciusN
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/tech_stack")
-def render_tech_stack(techs: str = "python,typescript,rust,react,nextjs,fastapi,docker,postgresql,tailwind,linux,git", style: str = "neon", title: str = "TECH STACK & CORE ARSENAL", username: str = "ViniciusNoetzold"):
+def render_tech_stack(techs: str = "python,typescript,rust,react,nextjs,fastapi,docker,postgresql,tailwind,linux,git", style: str = "neon", title: str = "TECH STACK & CORE ARSENAL", username: str = "developer"):
     p = registry.get("tech_stack")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_ts.svg")
     p.run(techs=techs, style=style, title=title, username=username, out_svg=tmp)
@@ -2695,7 +2902,7 @@ def render_music(preset: str = "synthwave", title: str = None, artist: str = Non
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/coding_stats")
-def render_coding_stats(hours: int = 1480, streak: int = 48, rank: str = "S+ Tier (Architect)", username: str = "ViniciusNoetzold"):
+def render_coding_stats(hours: int = 1480, streak: int = 48, rank: str = "S+ Tier (Architect)", username: str = "developer"):
     p = registry.get("coding_stats")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_cs.svg")
     p.run(hours=int(hours), streak=int(streak), rank=rank, username=username, out_svg=tmp)
@@ -2715,7 +2922,7 @@ def render_diagram(preset: str = "microservices", title: str = None, username: s
 @app.post("/api/render/image")
 async def render_image_upload(
     engine: str = Form("rgb_ascii"),
-    username: str = Form("ViniciusNoetzold"),
+    username: str = Form("developer"),
     cols: int = Form(74),
     symbols: str = Form("ascii"),
     colors: str = Form("none"),
@@ -2769,7 +2976,7 @@ async def render_image_upload(
 @app.post("/api/render/image_batch")
 async def render_image_batch(
     engines: str = Form("chafa,rgb_ascii,drawille,dither"),
-    username: str = Form("ViniciusNoetzold"),
+    username: str = Form("developer"),
     cols: int = Form(74),
     color_mode: str = Form("rgb"),
     anim_mode: str = Form("oscillate"),
@@ -2856,14 +3063,14 @@ async def render_image_batch(
 @app.post("/api/render/fx")
 async def render_fx_endpoint(
     engine: str = Form("pipes"),
-    username: str = Form("ViniciusNoetzold"),
+    username: str = Form("developer"),
     num_pipes: int = Form(6),
     steps: int = Form(65),
     color_scheme: str = Form("matrix_green"),
     foliage_type: str = Form("sakura"),
     mascot: str = Form("cow"),
     message: str = Form("Stay curious and build epic things!"),
-    url: str = Form("https://github.com/ViniciusNoetzold"),
+    url: str = Form("https://github.com"),
     label: str = Form("GITHUB PROFILE")
 ):
     p = registry.get(engine)

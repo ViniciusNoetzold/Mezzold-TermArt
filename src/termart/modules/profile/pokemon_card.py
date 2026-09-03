@@ -148,7 +148,7 @@ class PokemonCardPlugin(BasePlugin):
         shiny: bool = False,
         level: int = 100,
         out_svg: str = "pokemon_card.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "trainer",
         **kwargs
     ) -> Dict[str, Any]:
         pk_key = pokemon.lower().strip()

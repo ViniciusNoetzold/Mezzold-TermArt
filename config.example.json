@@ -1,15 +1,15 @@
 {
-  "username": "ViniciusNoetzold",
-  "name": "Vinícius de Almeida Noetzold",
+  "username": "developer",
+  "name": "Developer Profile",
   "portrait": {
-    "image": "assets/photo.jpg",
-    "out": "Vini2-ascii.svg",
+    "image": "assets/demo_cyber.png",
+    "out": "dev-ascii.svg",
     "cols": 80,
     "braille": false
   },
   "signature": {
     "image": "assets/signature.png",
-    "out": "vinicius-wordmark.svg",
+    "out": "dev-wordmark.svg",
     "title": "./signature.sh",
     "cols": 58,
     "width": 560,
