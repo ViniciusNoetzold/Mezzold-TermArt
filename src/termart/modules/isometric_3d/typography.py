@@ -26,6 +26,7 @@ class TypographyPlugin(BasePlugin):
         canvas_h: int = 385,
         titlebar_h: int = 32,
         pad_x: int = 24,
+        oscillate: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         f = pyfiglet.Figlet(font=font_name)
@@ -77,6 +78,16 @@ class TypographyPlugin(BasePlugin):
 
         first_block_len = len(rendered_blocks[0]) if rendered_blocks else len(all_lines)
 
+        cx = canvas_w / 2
+        cy = (canvas_h + titlebar_h - 36) / 2
+        if oscillate:
+            parts.append(
+                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
+            )
+
         for ry, line in enumerate(all_lines):
             y = start_y + ry * line_spacing
             row_top = y - line_spacing * 0.7
@@ -102,6 +113,9 @@ class TypographyPlugin(BasePlugin):
                     f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
                     f'<set attributeName="opacity" to="0" begin="{delay+0.08:.3f}s"/></rect>'
                 )
+
+        if oscillate:
+            parts.append('</g>')
 
         bot_y = canvas_h - 16
         parts.append(f'<line x1="0" y1="{canvas_h-36}" x2="{canvas_w}" y2="{canvas_h-36}" stroke="#30363d"/>')

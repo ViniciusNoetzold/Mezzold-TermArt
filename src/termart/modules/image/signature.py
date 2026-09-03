@@ -51,6 +51,7 @@ class SignaturePlugin(BasePlugin):
         pad_x: int = 24,
         accent_color: str = "#58a6ff",
         braille: bool = False,
+        oscillate: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         temp_crop = os.path.join(os.path.dirname(os.path.abspath(out_svg)), "_temp_crop.png")
@@ -119,6 +120,16 @@ class SignaturePlugin(BasePlugin):
             f'text-anchor="middle">{html.escape(username)}@github: ~$ {html.escape(title)}</text>'
         )
 
+        cx = canvas_w / 2
+        cy = (canvas_h + titlebar_h) / 2
+        if oscillate:
+            parts.append(
+                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
+            )
+
         for ry, line in enumerate(lines):
             y = start_y + ry * line_spacing
             row_top = y - line_spacing * 0.7
@@ -143,6 +154,9 @@ class SignaturePlugin(BasePlugin):
                 f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
                 f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
             )
+
+        if oscillate:
+            parts.append('</g>')
 
         parts.append("</svg>")
         svg = "".join(parts)

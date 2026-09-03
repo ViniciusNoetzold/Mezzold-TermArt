@@ -19,7 +19,8 @@ def build_chafa_svg(
     out_svg: str,
     title: str = "./chafa_art.sh",
     username: str = "developer",
-    accent: str = "#58a6ff"
+    accent: str = "#58a6ff",
+    oscillate: bool = False
 ) -> str:
     # Trim leading/trailing blank rows
     while lines and not lines[0].strip():
@@ -68,6 +69,16 @@ def build_chafa_svg(
         f'text-anchor="middle">{username}@github: ~$ {title}</text>'
     )
 
+    cx = canvas_w / 2
+    cy = (canvas_h + titlebar_h) / 2
+    if oscillate:
+        parts.append(
+            f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+            f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
+            f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
+            f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
+        )
+
     for ry, line in enumerate(lines):
         y = start_y + ry * line_spacing
         row_top = y - line_spacing * 0.7
@@ -91,6 +102,9 @@ def build_chafa_svg(
             f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
             f'<set attributeName="opacity" to="0" begin="{delay+0.08:.3f}s"/></rect>'
         )
+
+    if oscillate:
+        parts.append('</g>')
 
     parts.append("</svg>")
     svg_str = "".join(parts)
@@ -128,6 +142,7 @@ class ChafaPlugin(BasePlugin):
         username: str = "developer",
         title: str = "./chafa_art.sh",
         accent: str = "#58a6ff",
+        oscillate: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         if not self.has_binary():
@@ -152,7 +167,8 @@ class ChafaPlugin(BasePlugin):
                     out_svg=out_svg,
                     title=title,
                     username=username,
-                    accent=accent
+                    accent=accent,
+                    oscillate=oscillate
                 )
             return {
                 "status": "success",

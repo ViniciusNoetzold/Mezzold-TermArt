@@ -28,6 +28,7 @@ class RgbAsciiPlugin(BasePlugin):
         username: str = "developer",
         title: str = "./ascii_rgb.sh",
         contrast: float = 1.25,
+        oscillate: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         im = Image.open(image_path).convert("RGB")
@@ -77,6 +78,16 @@ class RgbAsciiPlugin(BasePlugin):
             f'text-anchor="middle">{username}@github: ~$ {title} --color={color_mode}</text>'
         )
 
+        cx = canvas_w / 2
+        cy = (canvas_h + titlebar_h) / 2
+        if oscillate:
+            parts.append(
+                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
+            )
+
         for ry in range(rows):
             y = start_y + ry * line_h
             line_parts = [f'<text xml:space="preserve" x="{pad_x}" y="{y:.1f}" font-size="{font_size:.1f}">']
@@ -121,6 +132,9 @@ class RgbAsciiPlugin(BasePlugin):
 
             line_parts.append("</text>")
             parts.append("".join(line_parts))
+
+        if oscillate:
+            parts.append('</g>')
 
         parts.append("</svg>")
         svg_content = "".join(parts)

@@ -167,6 +167,16 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <input id="img-file" type="file" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-border file:text-white hover:file:bg-brand-600">
           </div>
 
+          <div class="p-2.5 rounded-xl bg-brand-dark/40 border border-brand-border hover:border-brand-500/40 transition">
+            <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+              <input type="checkbox" id="img-oscillate" checked class="w-4 h-4 accent-brand-500 rounded">
+              <div>
+                <span class="font-bold text-brand-500 block">🌊 Efeito Oscilante Contínuo (Levitação 3D & Balanço)</span>
+                <span class="text-[11px] text-slate-400">Faz a arte flutuar e oscilar suavemente em 3D</span>
+              </div>
+            </label>
+          </div>
+
           <button onclick="generateImage()" class="mt-2 w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2">
             <span>✨</span> <span>Renderizar Imagem com Motor Selecionado</span>
           </button>
@@ -228,6 +238,15 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <option value="big">Big (Extra Grande)</option>
                 <option value="small">Small (Compacta)</option>
               </select>
+            </div>
+            <div class="p-2.5 rounded-xl bg-brand-dark/40 border border-brand-border hover:border-brand-500/40 transition">
+              <label class="flex items-center gap-2.5 cursor-pointer text-xs">
+                <input type="checkbox" id="typo-oscillate" checked class="w-4 h-4 accent-brand-500 rounded">
+                <div>
+                  <span class="font-bold text-brand-500 block">🌊 Efeito Oscilante Contínuo (Levitação 3D & Balanço)</span>
+                  <span class="text-[11px] text-slate-400">Faz o letreiro flutuar e oscilar suavemente em 3D</span>
+                </div>
+              </label>
             </div>
           </div>
 
@@ -457,6 +476,8 @@ Sleep 3s
       if (fileInput.files.length > 0) {
         formData.append('file', fileInput.files[0]);
       }
+      const osc = document.getElementById('img-oscillate').checked;
+      formData.append('oscillate', osc ? 'true' : 'false');
 
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Renderizando imagem com motor ' + engine + '...</div>';
       const res = await fetch('/api/render/image', { method: 'POST', body: formData });
@@ -481,7 +502,8 @@ Sleep 3s
       } else if (mode === 'typography') {
         const text = document.getElementById('typo-text').value;
         const font = document.getElementById('typo-font').value;
-        const res = await fetch(`/api/render/typography?text=${encodeURIComponent(text)}&font=${encodeURIComponent(font)}`);
+        const osc = document.getElementById('typo-oscillate').checked;
+        const res = await fetch(`/api/render/typography?text=${encodeURIComponent(text)}&font=${encodeURIComponent(font)}&oscillate=${osc}`);
         const svg = await res.text();
         setPreview(svg, 'ascii-typography.svg');
       }
@@ -577,10 +599,10 @@ def render_wordmark(text: str = "MEZZOLD\nSTUDIOS"):
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/typography")
-def render_typography(text: str = "VINICIUS\nNOETZOLD", font: str = "slant", username: str = "ViniciusNoetzold"):
+def render_typography(text: str = "VINICIUS\nNOETZOLD", font: str = "slant", username: str = "ViniciusNoetzold", oscillate: bool = False):
     p = registry.get("typography")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_typo.svg")
-    p.run(text=text, font_name=font, out_svg=tmp, username=username)
+    p.run(text=text, font_name=font, out_svg=tmp, username=username, oscillate=oscillate)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
@@ -637,6 +659,7 @@ async def render_image_upload(
     colors: str = Form("none"),
     color_mode: str = Form("rgb"),
     braille: str = Form("false"),
+    oscillate: str = Form("false"),
     file: UploadFile = File(None)
 ):
     upload_path = os.path.join(os.path.dirname(__file__), "_upload_temp.png")
@@ -649,19 +672,20 @@ async def render_image_upload(
         with open(demo_src, "rb") as sf, open(upload_path, "wb") as df:
             df.write(sf.read())
 
+    is_osc = (oscillate.lower() == "true")
     out_svg = os.path.join(os.path.dirname(__file__), f"_temp_{engine}.svg")
     if engine == "rgb_ascii":
         p = registry.get("rgb_ascii")
-        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, color_mode=color_mode, username=username)
+        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, color_mode=color_mode, username=username, oscillate=is_osc)
     elif engine == "chafa":
         p = registry.get("chafa")
-        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, symbols=symbols, colors=colors, username=username)
+        p.run(image_path=upload_path, out_svg=out_svg, cols=cols, symbols=symbols, colors=colors, username=username, oscillate=is_osc)
     elif engine == "signature":
         p = registry.get("signature")
-        p.run(image_path=upload_path, out_svg=out_svg, username=username, cols=cols, braille=(braille.lower() == "true"))
+        p.run(image_path=upload_path, out_svg=out_svg, username=username, cols=cols, braille=(braille.lower() == "true"), oscillate=is_osc)
     else:
         p = registry.get("portrait")
-        p.run(image_path=upload_path, out_svg=out_svg, username=username, full_name=username, cols=cols)
+        p.run(image_path=upload_path, out_svg=out_svg, username=username, full_name=username, cols=cols, oscillate=is_osc)
 
     with open(out_svg, "r", encoding="utf-8") as f:
         svg = f.read()

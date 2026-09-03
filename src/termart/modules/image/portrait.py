@@ -25,6 +25,7 @@ class PortraitPlugin(BasePlugin):
         braille: bool = False,
         canvas_w: int = 840,
         accent_color: str = "#58a6ff",
+        oscillate: bool = False,
         **kwargs
     ) -> Dict[str, Any]:
         conv = AsciiBraillePlugin()
@@ -83,6 +84,16 @@ class PortraitPlugin(BasePlugin):
             f'text-anchor="middle">{html.escape(username)}@github: ~/whoami</text>'
         )
 
+        cx = canvas_w / 2
+        cy = (TITLEBAR_H + ART_H) / 2
+        if oscillate:
+            parts.append(
+                f'<g transform-origin="{cx:.1f} {cy:.1f}">'
+                f'<animateTransform attributeName="transform" type="rotate" values="-2.5 {cx:.1f} {cy:.1f}; 2.5 {cx:.1f} {cy:.1f}; -2.5 {cx:.1f} {cy:.1f}" dur="4s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="translate" values="0 -6; 0 6; 0 -6" dur="3.5s" repeatCount="indefinite" additive="sum"/>'
+                f'<animateTransform attributeName="transform" type="skewX" values="-1.8; 1.8; -1.8" dur="4.2s" repeatCount="indefinite" additive="sum"/>'
+            )
+
         art_top = TITLEBAR_H + PAD * 0.4
         for ry, line in enumerate(lines):
             y = art_top + (ry + 1) * CELL_H - CELL_H * 0.22
@@ -107,6 +118,9 @@ class PortraitPlugin(BasePlugin):
                 f'<set attributeName="opacity" to="0.85" begin="{delay:.3f}s"/>'
                 f'<set attributeName="opacity" to="0" begin="{delay+ROW_DUR:.3f}s"/></rect>'
             )
+
+        if oscillate:
+            parts.append('</g>')
 
         status_line_y = TITLEBAR_H + ART_H + PAD * 0.35
         status_y = status_line_y + 19
