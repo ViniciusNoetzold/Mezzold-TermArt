@@ -26,6 +26,62 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <title>Mezzold TermArt Studio v2.0</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
+  <!-- INSTRUÇÕES DE DEPLOY GITHUB MODAL -->
+  <div id="modal-deploy-instructions" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-brand-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🚀</span>
+          <div>
+            <h3 class="text-base font-bold text-white tracking-wide">Como Publicar no seu Perfil do GitHub</h3>
+            <p class="text-xs text-slate-400">Transforme seu perfil em menos de 1 minuto</p>
+          </div>
+        </div>
+        <button onclick="closeDeployInstructionsModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-lg hover:bg-brand-dark transition">✕</button>
+      </div>
+
+      <div class="flex flex-col gap-3 text-xs text-slate-300">
+        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
+          <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold shrink-0">1</span>
+          <div>
+            <strong class="text-white">Crie o repositório especial com seu username</strong>
+            <p class="text-slate-400 mt-0.5">Acesse <a href="https://github.com/new" target="_blank" class="text-brand-400 underline font-mono">github.com/new</a> e no nome do repositório digite exatamente o seu usuário (ex: <span class="text-white font-mono" id="deploy-modal-user">seu-usuario</span>).</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
+          <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold shrink-0">2</span>
+          <div>
+            <strong class="text-white">Deixe como Public</strong>
+            <p class="text-slate-400 mt-0.5">Marque a opção <strong>Public</strong> para que todos que visitarem seu GitHub consigam ver os SVGs e cards.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
+          <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold shrink-0">3</span>
+          <div>
+            <strong class="text-white">Extraia o arquivo .ZIP ou arraste os arquivos</strong>
+            <p class="text-slate-400 mt-0.5">Clique no botão <span class="text-emerald-400 font-bold">📦 Baixar Repositório (.ZIP)</span>, descompacte no seu computador e faça o commit/upload no GitHub.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
+          <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">✓</span>
+          <div>
+            <strong class="text-emerald-400">Pronto! Seu perfil ganha vida instantaneamente</strong>
+            <p class="text-slate-400 mt-0.5">Seu perfil terá o README com os SVGs interligados e a GitHub Action pronta para manter seus dados atualizados diariamente!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="closeDeployInstructionsModal()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-xl transition">
+          Entendi, vamos lá!
+        </button>
+      </div>
+    </div>
+  </div>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -96,6 +152,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       </button>
       <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>🎵</span> <span>Música & Atividade Dev</span>
+      </button>
+      <button onclick="switchTab('builder')" id="btn-builder" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+        <span>🚀</span> <span>Construtor de Perfil & README</span>
       </button>
       <button onclick="openConfigModal()" id="btn-config" class="tab-btn px-4 py-2 rounded-xl font-bold bg-brand-dark/90 border border-brand-border text-brand-400 hover:text-brand-300 hover:border-brand-500 flex items-center gap-1.5 transition ml-auto shadow-sm">
         <span>⚙️</span> <span>Configurar Perfil Dev</span>
@@ -1329,6 +1388,89 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </button>
         </div>
 
+        <!-- ================= TAB 8: CONSTRUTOR DE PERFIL & README ================= -->
+        <div id="tab-builder" class="tab-content hidden flex flex-col gap-4">
+          <div class="border-b border-brand-border pb-3">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+              <span class="text-brand-400">🚀</span> <span>Construtor de Perfil GitHub</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">Monte e organize a vitrine do seu repositório de perfil. Arraste, mude de ordem e exporte tudo em 1 clique!</p>
+          </div>
+
+          <!-- Presets Rápidos -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs font-semibold text-slate-300">Templates / Presets Rápidos</label>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <button type="button" onclick="applyReadmePreset('cyberpunk')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
+                <span class="font-bold text-brand-400 block">⚡ Cyberpunk Master</span>
+                <span class="text-slate-400 text-[10px]">Header, Badges, Heatmap, Pokémon & Neofetch</span>
+              </button>
+              <button type="button" onclick="applyReadmePreset('minimal')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
+                <span class="font-bold text-emerald-400 block">📊 Stats Minimal</span>
+                <span class="text-slate-400 text-[10px]">Header, Badges, Stats & Streaks</span>
+              </button>
+              <button type="button" onclick="applyReadmePreset('gamer')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
+                <span class="font-bold text-purple-400 block">🎮 Gamer & Chess</span>
+                <span class="text-slate-400 text-[10px]">Header, Pokémon Holo, Chess & Cassette</span>
+              </button>
+              <button type="button" onclick="applyReadmePreset('devops')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
+                <span class="font-bold text-cyan-400 block">☁️ Engenharia & Cloud</span>
+                <span class="text-slate-400 text-[10px]">Header, Badges, Diagram & Neofetch</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Seções Ativas & Reordenação -->
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-slate-300">Seções do seu Perfil (Ordem no README)</label>
+              <span class="text-[10px] text-brand-400" id="builder-count-label">0 ativas</span>
+            </div>
+            <div id="builder-sections-list" class="flex flex-col gap-2 max-h-[340px] overflow-y-auto pr-1">
+              <!-- Rendered dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- Adicionar Novo Bloco -->
+          <div class="flex gap-2 pt-1">
+            <select id="builder-add-select" class="flex-1 bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="header">🌟 Banner 3D / Wordmark</option>
+              <option value="badges">🛡️ Arsenal Tech Stack & Badges</option>
+              <option value="heatmap">📊 Heatmap 3D de Commits</option>
+              <option value="stats">📈 GitHub Stats Card</option>
+              <option value="neofetch">💻 Card Neofetch Specs</option>
+              <option value="pokemon">🎮 Card RPG Pokémon Holo</option>
+              <option value="coding_stats">⚡ Radar de Produtividade & Streaks</option>
+              <option value="music">🎵 Cassete Spotify Hi-Fi</option>
+              <option value="chess">♟️ Xadrez Animado até Cheque-Mate</option>
+              <option value="weather">🌦️ Previsão do Tempo em ASCII</option>
+              <option value="diagram">📐 Diagrama de Topologia / Arquitetura</option>
+              <option value="fortune">🥠 Biscoito da Sorte Hacker / Zen</option>
+            </select>
+            <button onclick="addBuilderBlock()" type="button" class="px-3 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shrink-0">
+              <span>➕</span> <span>Adicionar</span>
+            </button>
+          </div>
+
+          <!-- Botões de Ação Principal -->
+          <div class="flex flex-col gap-2 pt-3 border-t border-brand-border">
+            <button onclick="renderReadmePreview()" class="w-full py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-xs">
+              <span>🔄</span> <span>Atualizar Pré-Visualização</span>
+            </button>
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="downloadProfileZip()" class="py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg transition flex items-center justify-center gap-1.5 text-xs">
+                <span>📦</span> <span>Baixar Repositório (.ZIP)</span>
+              </button>
+              <button onclick="copyReadmeMarkdown()" class="py-2.5 bg-brand-dark/90 hover:bg-brand-dark border border-brand-border text-slate-200 hover:text-white font-bold rounded-xl transition flex items-center justify-center gap-1.5 text-xs">
+                <span>📋</span> <span>Copiar README.md</span>
+              </button>
+            </div>
+            <button onclick="openDeployInstructionsModal()" type="button" class="text-center text-[11px] text-brand-400 hover:underline pt-1">
+              📖 Como subir para o meu perfil no GitHub? (Passo a Passo)
+            </button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1354,11 +1496,66 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       </div>
 
       <!-- Preview Canvas -->
-      <div id="canvas-wrapper" class="w-full min-h-[580px] p-6 rounded-2xl bg-brand-card/70 border border-brand-border flex items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
+      <div id="canvas-wrapper" class="w-full min-h-[580px] p-6 rounded-2xl bg-brand-card/70 border border-brand-border flex flex-col items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
         <div id="svg-display" class="w-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:h-auto">
           <div class="text-center text-slate-500">
             <p class="text-4xl mb-3 animate-pulse">⚡</p>
             <p>Selecione um motor e clique em Gerar para ver o resultado ao vivo!</p>
+          </div>
+        </div>
+
+        <!-- Dedicated Builder Workspace -->
+        <div id="builder-workspace" class="hidden w-full flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-brand-border pb-3">
+            <div class="flex items-center gap-2 text-xs">
+              <button onclick="switchBuilderView('visual')" id="btn-view-visual" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white font-semibold transition">
+                👁️ Preview do Perfil
+              </button>
+              <button onclick="switchBuilderView('code')" id="btn-view-code" class="px-3 py-1.5 rounded-lg bg-brand-dark/80 hover:bg-brand-dark text-slate-300 font-semibold transition">
+                📝 Código README.md
+              </button>
+              <button onclick="switchBuilderView('tree')" id="btn-view-tree" class="px-3 py-1.5 rounded-lg bg-brand-dark/80 hover:bg-brand-dark text-slate-300 font-semibold transition">
+                📁 Estrutura do Repositório
+              </button>
+            </div>
+            <button onclick="downloadProfileZip()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow">
+              <span>📦</span> <span>Baixar .ZIP</span>
+            </button>
+          </div>
+
+          <!-- Visual Profile Preview -->
+          <div id="builder-view-visual" class="w-full flex flex-col items-center gap-6 p-6 bg-[#0d1117] rounded-xl border border-brand-border/60 max-w-[860px] mx-auto shadow-inner">
+            <div id="builder-visual-content" class="w-full flex flex-col items-center gap-5">
+              <div class="text-slate-500 text-center py-10">Carregando preview do perfil...</div>
+            </div>
+          </div>
+
+          <!-- Markdown Code Preview -->
+          <div id="builder-view-code" class="hidden w-full flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400 font-mono">README.md</span>
+              <button onclick="copyReadmeMarkdown()" class="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                <span>📋</span> <span>Copiar Markdown</span>
+              </button>
+            </div>
+            <pre id="builder-markdown-code" class="w-full bg-brand-dark border border-brand-border rounded-xl p-4 text-xs font-mono text-slate-200 overflow-x-auto whitespace-pre-wrap max-h-[600px]"></pre>
+          </div>
+
+          <!-- Repository File Tree Preview -->
+          <div id="builder-view-tree" class="hidden w-full flex flex-col gap-3">
+            <div class="bg-[#0d1117] border border-brand-border/70 rounded-xl overflow-hidden font-mono text-xs">
+              <div class="bg-brand-dark/90 px-4 py-2.5 border-b border-brand-border flex items-center justify-between text-slate-300 font-sans">
+                <span class="flex items-center gap-2">
+                  <span class="text-brand-400">📁</span>
+                  <strong class="text-white" id="tree-repo-name">seu-usuario / seu-usuario</strong>
+                  <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] border border-emerald-500/20">Public</span>
+                </span>
+                <span class="text-slate-500 text-[11px]" id="tree-files-count">0 arquivos gerados</span>
+              </div>
+              <div id="tree-files-list" class="divide-y divide-brand-border/30">
+                <!-- Dynamically filled -->
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1716,6 +1913,17 @@ Sleep 3s
       document.getElementById(`tab-${tabId}`).classList.remove('hidden');
       document.getElementById(`btn-${tabId}`).classList.add('bg-brand-600', 'text-white');
       document.getElementById(`btn-${tabId}`).classList.remove('text-slate-400');
+
+      const svgDisp = document.getElementById('svg-display');
+      const bldDisp = document.getElementById('builder-workspace');
+      if (tabId === 'builder') {
+        if (svgDisp) svgDisp.classList.add('hidden');
+        if (bldDisp) bldDisp.classList.remove('hidden');
+        renderBuilderTab();
+      } else {
+        if (svgDisp) svgDisp.classList.remove('hidden');
+        if (bldDisp) bldDisp.classList.add('hidden');
+      }
     }
 
     function toggleImageEngine() {
@@ -2675,6 +2883,325 @@ Sleep 3s
       if (modal) modal.classList.add('hidden');
     }
 
+    
+    // ==========================================
+    // GITHUB PROFILE & README BUILDER CONTROLLER
+    // ==========================================
+    let builderSections = [];
+    let builderCurrentMarkdown = "";
+    let activeBuilderView = "visual";
+
+    const DEFAULT_BUILDER_BLOCKS = [
+      { id: "header", type: "header", title: "Banner 3D / Wordmark", enabled: true, file: "header.svg", icon: "🌟" },
+      { id: "badges", type: "badges", title: "Arsenal Tech Stack & Badges", enabled: true, file: "tech-stack.svg", icon: "🛡️" },
+      { id: "heatmap", type: "heatmap", title: "Heatmap 3D de Commits", enabled: true, file: "contrib-heatmap.svg", icon: "📊" },
+      { id: "stats", type: "stats", title: "Métricas & Status do GitHub", enabled: true, file: "github-stats.svg", icon: "📈" },
+      { id: "neofetch", type: "neofetch", title: "Card Neofetch macOS", enabled: true, file: "info-card.svg", icon: "💻" },
+      { id: "pokemon", type: "pokemon", title: "Card RPG Holográfico Pokémon", enabled: true, file: "pokemon-card.svg", icon: "🎮" },
+      { id: "coding_stats", type: "coding_stats", title: "Radar de Produtividade & Streaks", enabled: true, file: "coding-stats.svg", icon: "⚡" },
+      { id: "music", type: "music", title: "Cassete Spotify Hi-Fi", enabled: false, file: "music-card.svg", icon: "🎵" },
+      { id: "chess", type: "chess", title: "Partida de Xadrez com Xeque-Mate", enabled: false, file: "chess-board.svg", icon: "♟️" },
+      { id: "weather", type: "weather", title: "Previsão do Tempo em ASCII", enabled: false, file: "weather-card.svg", icon: "🌦️" },
+      { id: "diagram", type: "diagram", title: "Topologia de Arquitetura", enabled: false, file: "architecture.svg", icon: "📐" },
+      { id: "fortune", type: "fortune", title: "Biscoito da Sorte Hacker / Zen", enabled: false, file: "fortune.svg", icon: "🥠" }
+    ];
+
+    function getStoredBuilderSections() {
+      try {
+        const raw = localStorage.getItem('termart_readme_sections');
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return JSON.parse(JSON.stringify(DEFAULT_BUILDER_BLOCKS));
+    }
+
+    function saveStoredBuilderSections(sections) {
+      builderSections = sections;
+      localStorage.setItem('termart_readme_sections', JSON.stringify(sections));
+      renderBuilderSectionsList();
+    }
+
+    function renderBuilderSectionsList() {
+      const listEl = document.getElementById('builder-sections-list');
+      const countEl = document.getElementById('builder-count-label');
+      if (!listEl) return;
+
+      const activeCount = builderSections.filter(s => s.enabled).length;
+      if (countEl) countEl.innerText = `${activeCount} ativas de ${builderSections.length}`;
+
+      listEl.innerHTML = builderSections.map((sec, idx) => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl border ${sec.enabled ? 'bg-brand-dark/70 border-brand-border/90' : 'bg-brand-dark/30 border-brand-border/40 opacity-60'} transition">
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-base shrink-0">${sec.icon || '⚡'}</span>
+            <div class="truncate">
+              <span class="text-xs font-semibold text-white block truncate">${escapeHtml(sec.title)}</span>
+              <span class="text-[10px] text-slate-500 font-mono">${escapeHtml(sec.file)}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button onclick="moveBuilderBlock(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="w-6 h-6 rounded flex items-center justify-center bg-slate-800 hover:bg-slate-700 disabled:opacity-20 text-[10px] text-white transition" title="Mover para Cima">▲</button>
+            <button onclick="moveBuilderBlock(${idx}, 1)" ${idx === builderSections.length - 1 ? 'disabled' : ''} class="w-6 h-6 rounded flex items-center justify-center bg-slate-800 hover:bg-slate-700 disabled:opacity-20 text-[10px] text-white transition" title="Mover para Baixo">▼</button>
+            <button onclick="toggleBuilderBlock(${idx})" class="w-6 h-6 rounded flex items-center justify-center ${sec.enabled ? 'bg-emerald-600/30 text-emerald-400 border border-emerald-500/40' : 'bg-slate-800 text-slate-500'} text-[11px] transition" title="${sec.enabled ? 'Desativar Bloco' : 'Ativar Bloco'}">
+              ${sec.enabled ? '✓' : '✕'}
+            </button>
+            <button onclick="removeBuilderBlock(${idx})" class="w-6 h-6 rounded flex items-center justify-center bg-red-600/20 hover:bg-red-600/40 text-red-400 text-[11px] transition" title="Remover Bloco">
+              🗑️
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function moveBuilderBlock(idx, dir) {
+      const target = idx + dir;
+      if (target < 0 || target >= builderSections.length) return;
+      const temp = builderSections[idx];
+      builderSections[idx] = builderSections[target];
+      builderSections[target] = temp;
+      saveStoredBuilderSections(builderSections);
+      renderReadmePreview();
+    }
+
+    function toggleBuilderBlock(idx) {
+      builderSections[idx].enabled = !builderSections[idx].enabled;
+      saveStoredBuilderSections(builderSections);
+      renderReadmePreview();
+    }
+
+    function removeBuilderBlock(idx) {
+      builderSections.splice(idx, 1);
+      saveStoredBuilderSections(builderSections);
+      renderReadmePreview();
+    }
+
+    function addBuilderBlock() {
+      const sel = document.getElementById('builder-add-select');
+      if (!sel) return;
+      const type = sel.value;
+      const template = DEFAULT_BUILDER_BLOCKS.find(b => b.type === type);
+      if (!template) return;
+
+      const newBlock = JSON.parse(JSON.stringify(template));
+      newBlock.enabled = true;
+      builderSections.push(newBlock);
+      saveStoredBuilderSections(builderSections);
+      renderReadmePreview();
+      showToast(`Bloco ${newBlock.title} adicionado!`);
+    }
+
+    function applyReadmePreset(preset) {
+      let ids = [];
+      if (preset === 'cyberpunk') {
+        ids = ['header', 'badges', 'heatmap', 'pokemon', 'neofetch', 'coding_stats'];
+      } else if (preset === 'minimal') {
+        ids = ['header', 'badges', 'stats', 'coding_stats'];
+      } else if (preset === 'gamer') {
+        ids = ['header', 'pokemon', 'chess', 'music', 'stats'];
+      } else if (preset === 'devops') {
+        ids = ['header', 'badges', 'diagram', 'neofetch', 'heatmap'];
+      }
+
+      const newSections = JSON.parse(JSON.stringify(DEFAULT_BUILDER_BLOCKS));
+      newSections.forEach(s => {
+        s.enabled = ids.includes(s.id);
+      });
+      // Sort in the order of ids
+      newSections.sort((a, b) => {
+        const ia = ids.indexOf(a.id);
+        const ib = ids.indexOf(b.id);
+        if (ia !== -1 && ib !== -1) return ia - ib;
+        if (ia !== -1) return -1;
+        if (ib !== -1) return 1;
+        return 0;
+      });
+
+      saveStoredBuilderSections(newSections);
+      renderReadmePreview();
+      showToast(`Template ${preset.toUpperCase()} aplicado!`);
+    }
+
+    function switchBuilderView(view) {
+      activeBuilderView = view;
+      ['visual', 'code', 'tree'].forEach(v => {
+        document.getElementById(`builder-view-${v}`).classList.toggle('hidden', v !== view);
+        const btn = document.getElementById(`btn-view-${v}`);
+        if (btn) {
+          if (v === view) {
+            btn.classList.add('bg-brand-600', 'text-white');
+            btn.classList.remove('bg-brand-dark/80', 'text-slate-300');
+          } else {
+            btn.classList.remove('bg-brand-600', 'text-white');
+            btn.classList.add('bg-brand-dark/80', 'text-slate-300');
+          }
+        }
+      });
+    }
+
+    async function renderReadmePreview() {
+      const p = getDevProfile() || {};
+      const user = p.github || p.name || 'developer';
+      const name = p.name || user;
+      const city = p.city || 'Curitiba, Brazil';
+
+      // Update repo title in tree view
+      const repoNameEl = document.getElementById('tree-repo-name');
+      if (repoNameEl) repoNameEl.innerText = `${user} / ${user}`;
+
+      const visualContainer = document.getElementById('builder-visual-content');
+      const codeContainer = document.getElementById('builder-markdown-code');
+      const treeContainer = document.getElementById('tree-files-list');
+
+      if (visualContainer) {
+        visualContainer.innerHTML = '<div class="text-brand-400 py-12 flex items-center justify-center gap-2"><span class="animate-spin text-xl">⏳</span> Carregando preview do perfil...</div>';
+      }
+
+      try {
+        const res = await fetch('/api/builder/preview', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: user,
+            name: name,
+            city: city,
+            sections: builderSections
+          })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          builderCurrentMarkdown = data.markdown;
+          if (codeContainer) codeContainer.innerText = data.markdown;
+
+          // Render Visual Cards
+          const active = builderSections.filter(s => s.enabled);
+          if (visualContainer) {
+            visualContainer.innerHTML = `
+              <div class="text-center w-full pb-3 border-b border-slate-800">
+                <h1 class="text-2xl font-bold text-white mb-1">⚡ ${escapeHtml(name)}</h1>
+                <p class="text-xs text-slate-400 mb-2">Software Engineer & Tech Explorer</p>
+                <div class="inline-flex items-center gap-1 px-3 py-1 rounded bg-[#161b22] border border-slate-700 text-xs text-slate-300">
+                  <span class="text-slate-400">GitHub:</span> <strong>@${escapeHtml(user)}</strong>
+                </div>
+              </div>
+              <div class="w-full flex flex-col items-center gap-6">
+                ${active.map(s => `
+                  <div class="w-full flex flex-col items-center">
+                    <div class="w-full max-w-full overflow-x-auto flex justify-center py-2">
+                      <img src="${s.preview_url || '/api/render/' + s.type}" class="max-w-full h-auto rounded-lg shadow-md border border-slate-800/80" alt="${escapeHtml(s.title)}" />
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class="text-[11px] text-slate-500 pt-4 border-t border-slate-800 w-full text-center">
+                ⚡ Built & Crafted with <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" class="text-brand-400 hover:underline">Mezzold TermArt Studio</a>
+              </div>
+            `;
+          }
+
+          // Render Repository File Tree
+          if (treeContainer) {
+            const files = [
+              { name: ".github/workflows/refresh-profile.yml", desc: "Automated telemetry sync workflow", size: "1.2 KB", type: "workflow" },
+              { name: "README.md", desc: "Interactive profile showcase", size: `${(data.markdown.length / 1024).toFixed(1)} KB`, type: "md" },
+              { name: ".gitignore", desc: "Python & temp files ignore", size: "32 B", type: "txt" },
+              ...active.map(s => ({
+                name: s.file,
+                desc: `${s.title} SVG asset`,
+                size: "~15 KB",
+                type: "svg"
+              }))
+            ];
+
+            const countEl = document.getElementById('tree-files-count');
+            if (countEl) countEl.innerText = `${files.length} arquivos no repositório`;
+
+            treeContainer.innerHTML = files.map(f => `
+              <div class="flex items-center justify-between px-4 py-2.5 hover:bg-brand-card/40 transition">
+                <div class="flex items-center gap-3">
+                  <span class="text-slate-400">${f.type === 'svg' ? '🖼️' : (f.type === 'workflow' ? '⚙️' : '📄')}</span>
+                  <span class="text-slate-200 font-bold hover:text-brand-400 transition cursor-pointer">${escapeHtml(f.name)}</span>
+                </div>
+                <div class="flex items-center gap-4 text-xs text-slate-500">
+                  <span class="hidden sm:inline">${escapeHtml(f.desc)}</span>
+                  <span class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border text-slate-400 font-mono text-[10px]">${f.size}</span>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        if (visualContainer) visualContainer.innerHTML = '<div class="text-red-400 py-6">Erro ao conectar ao motor de preview. Tente novamente.</div>';
+      }
+    }
+
+    async function downloadProfileZip() {
+      const p = getDevProfile() || {};
+      const user = p.github || p.name || 'developer';
+      const name = p.name || user;
+      const city = p.city || 'Curitiba, Brazil';
+
+      showToast("Criando pacote completo do repositório (.ZIP)...", 4000);
+
+      try {
+        const res = await fetch('/api/builder/download_zip', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: user,
+            name: name,
+            city: city,
+            sections: builderSections
+          })
+        });
+
+        if (!res.ok) throw new Error("Falha ao gerar ZIP");
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${user}-github-profile.zip`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("✓ Repositório baixado com sucesso! Extraia e faça o upload no GitHub.");
+      } catch (err) {
+        showToast("Erro ao gerar arquivo ZIP do repositório.", 3000);
+      }
+    }
+
+    function copyReadmeMarkdown() {
+      if (!builderCurrentMarkdown) {
+        showToast("Gere a pré-visualização primeiro!");
+        return;
+      }
+      navigator.clipboard.writeText(builderCurrentMarkdown).then(() => {
+        showToast("✓ Código do README.md copiado com sucesso!");
+      }).catch(() => {
+        showToast("Erro ao copiar para a área de transferência.");
+      });
+    }
+
+    function openDeployInstructionsModal() {
+      const p = getDevProfile() || {};
+      const user = p.github || p.name || 'seu-usuario';
+      const span = document.getElementById('deploy-modal-user');
+      if (span) span.innerText = user;
+      const modal = document.getElementById('modal-deploy-instructions');
+      if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeDeployInstructionsModal() {
+      const modal = document.getElementById('modal-deploy-instructions');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function renderBuilderTab() {
+      builderSections = getStoredBuilderSections();
+      renderBuilderSectionsList();
+      // Switch canvas view
+      document.getElementById('svg-display').classList.add('hidden');
+      document.getElementById('builder-workspace').classList.remove('hidden');
+      renderReadmePreview();
+    }
+
     // Initialize defaults
     window.addEventListener('DOMContentLoaded', () => {
       loadVhsPreset();
@@ -3227,3 +3754,65 @@ def launch_studio(port: int = 7860):
     print("Press Ctrl+C to stop the studio.\n")
     webbrowser.open(url)
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="warning")
+
+
+# ==========================================
+# GITHUB PROFILE & README BUILDER ENDPOINTS
+# ==========================================
+from ...modules.profile import readme_builder
+
+@app.post("/api/builder/preview")
+def builder_preview(payload: dict = Body(...)):
+    username = payload.get("username", "developer")
+    name = payload.get("name", username)
+    sections = payload.get("sections", readme_builder.DEFAULT_SECTIONS)
+    
+    # Generate live preview URLs for each section
+    for sec in sections:
+        stype = sec.get("type", "")
+        if stype == "header":
+            sec["preview_url"] = f"/api/render/wordmark?text={name.upper()}"
+        elif stype == "badges":
+            sec["preview_url"] = f"/api/render/tech_stack?username={username}"
+        elif stype == "heatmap":
+            sec["preview_url"] = f"/api/render/heatmap?username={username}"
+        elif stype == "stats":
+            sec["preview_url"] = f"/api/render/stats?username={username}"
+        elif stype == "neofetch":
+            sec["preview_url"] = f"/api/render/neofetch?username={username}&name={name}"
+        elif stype == "pokemon":
+            sec["preview_url"] = f"/api/render/pokemon?pokemon=garchomp&shiny=true&username={username}"
+        elif stype == "coding_stats":
+            sec["preview_url"] = f"/api/render/coding_stats?username={username}"
+        elif stype == "music":
+            sec["preview_url"] = f"/api/render/music?preset=synthwave&username={username}"
+        elif stype == "chess":
+            sec["preview_url"] = f"/api/render/chess?match=immortal&username={username}"
+        elif stype == "weather":
+            city = payload.get("city", "Curitiba, Brazil")
+            sec["preview_url"] = f"/api/render/weather?city={city}&username={username}"
+        elif stype == "diagram":
+            sec["preview_url"] = f"/api/render/diagram?preset=microservices&username={username}"
+        elif stype == "fortune":
+            sec["preview_url"] = f"/api/render/fortune?username={username}"
+
+    readme_md = readme_builder.generate_readme_markdown(username, name, sections)
+    return {
+        "status": "success",
+        "markdown": readme_md,
+        "sections": sections
+    }
+
+@app.post("/api/builder/download_zip")
+def builder_download_zip(payload: dict = Body(...)):
+    username = payload.get("username", "developer")
+    name = payload.get("name", username)
+    city = payload.get("city", "Curitiba, Brazil")
+    sections = payload.get("sections", readme_builder.DEFAULT_SECTIONS)
+    
+    zip_bytes = readme_builder.build_profile_bundle_zip(username, name, city, sections)
+    return Response(
+        content=zip_bytes,
+        media_type="application/zip",
+        headers={"Content-Disposition": f"attachment; filename={username}-profile-repository.zip"}
+    )
