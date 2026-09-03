@@ -27,6 +27,37 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
+  
+  <!-- MODAL DE CONFIGURAÇÃO DE BLOCO DO PERFIL -->
+  <div id="modal-block-config" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
+    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-brand-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl" id="cfg-block-icon">⚙️</span>
+          <div>
+            <h3 class="text-base font-bold text-white tracking-wide" id="cfg-block-title">Configurar Bloco</h3>
+            <p class="text-xs text-slate-400" id="cfg-block-subtitle">Personalize os detalhes e parâmetros desta seção</p>
+          </div>
+        </div>
+        <button onclick="closeBlockConfigModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-lg hover:bg-brand-dark transition">✕</button>
+      </div>
+
+      <!-- Dynamic Form Container -->
+      <div id="cfg-block-form" class="flex flex-col gap-3 text-xs">
+        <!-- Injected dynamically by JS based on block type -->
+      </div>
+
+      <div class="flex gap-2.5 pt-3 border-t border-brand-border">
+        <button onclick="saveBlockConfig()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-xs">
+          <span>💾</span> <span>Salvar & Atualizar Preview</span>
+        </button>
+        <button onclick="closeBlockConfigModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl transition">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- INSTRUÇÕES DE DEPLOY GITHUB MODAL -->
   <div id="modal-deploy-instructions" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
     <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
@@ -1450,6 +1481,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="weather">🌦️ Previsão do Tempo em ASCII</option>
               <option value="diagram">📐 Diagrama de Topologia / Arquitetura</option>
               <option value="fortune">🥠 Biscoito da Sorte Hacker / Zen</option>
+              <option value="custom_svg">🖼️ Arte Customizada / Enviar Meu SVG</option>
             </select>
             <button onclick="addBuilderBlock()" type="button" class="px-3 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shrink-0">
               <span>➕</span> <span>Adicionar</span>
@@ -1498,6 +1530,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </button>
           <button id="btn-download-png" onclick="downloadPng()" class="text-xs px-3.5 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 font-semibold transition flex items-center gap-2 shadow-lg shadow-emerald-500/10" title="Exportar arte em PNG de alta resolução (2x)">
             <span>🖼️</span> <span>Baixar PNG</span>
+          </button>
+          <button id="btn-pin-profile" onclick="pinCurrentToProfile()" class="text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/40 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 font-semibold transition flex items-center gap-2 shadow-lg shadow-purple-500/10" title="Adicionar esta arte gerada diretamente ao seu perfil do GitHub">
+            <span>📌</span> <span>Fixar no Perfil</span>
           </button>
         </div>
       </div>
@@ -3044,6 +3079,9 @@ Sleep 3s
             </div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="openBlockConfigModal(${idx})" class="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-800 hover:bg-brand-600/40 text-slate-300 hover:text-white border border-brand-border text-xs transition" title="Configurar Parâmetros Deste Bloco">
+              ⚙️
+            </button>
             <button onclick="toggleBuilderBlock(${idx})" class="w-7 h-7 rounded-lg flex items-center justify-center ${sec.enabled ? 'bg-emerald-600/25 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-600/40' : 'bg-slate-800 text-slate-500 hover:bg-slate-700'} text-xs font-bold transition" title="${sec.enabled ? 'Desativar Bloco' : 'Ativar Bloco'}">
               ${sec.enabled ? '✓' : '✕'}
             </button>
@@ -3053,6 +3091,248 @@ Sleep 3s
           </div>
         </div>
       `).join('');
+    }
+
+    
+    // ==========================================
+    // BLOCK CONFIGURATION & GALLERY PINNING
+    // ==========================================
+    let editingBlockIdx = null;
+
+    function openBlockConfigModal(idx) {
+      editingBlockIdx = idx;
+      const sec = builderSections[idx];
+      if (!sec) return;
+
+      const modal = document.getElementById('modal-block-config');
+      const iconEl = document.getElementById('cfg-block-icon');
+      const titleEl = document.getElementById('cfg-block-title');
+      const formEl = document.getElementById('cfg-block-form');
+
+      if (iconEl) iconEl.innerText = sec.icon || '⚙️';
+      if (titleEl) titleEl.innerText = `Configurar ${sec.title}`;
+
+      const params = sec.params || {};
+      let html = '';
+
+      if (sec.type === 'chess') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Partida Histórica de Xadrez</label>
+            <select id="cfg-chess-match" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="opera" ${params.match === 'opera' ? 'selected' : ''}>Opera Game (1858) - Paul Morphy vs Allies</option>
+              <option value="immortal" ${params.match === 'immortal' ? 'selected' : ''}>The Immortal Game (1851) - Anderssen vs Kieseritzky</option>
+              <option value="legal" ${params.match === 'legal' ? 'selected' : ''}>Mate de Légal (1750) - Sacrifício Lendário de Dama</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Velocidade dos Lances</label>
+              <select id="cfg-chess-speed" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="0.75" ${params.speed === 0.75 ? 'selected' : ''}>0.75x (Mais Calmo)</option>
+                <option value="1.0" ${(!params.speed || params.speed === 1.0) ? 'selected' : ''}>1.0x (Padrão)</option>
+                <option value="1.5" ${params.speed === 1.5 ? 'selected' : ''}>1.5x (Rápido)</option>
+                <option value="2.0" ${params.speed === 2.0 ? 'selected' : ''}>2.0x (Ultra Veloz)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Animação Automática</label>
+              <label class="flex items-center gap-2 mt-2 cursor-pointer text-slate-300">
+                <input type="checkbox" id="cfg-chess-anim" class="accent-brand-500" ${params.animated !== false ? 'checked' : ''}>
+                <span>Executar lances em loop</span>
+              </label>
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'pokemon') {
+        const pks = [
+          ['gengar', '👻 Gengar'], ['charizard', '🔥 Charizard'], ['rayquaza', '🐉 Rayquaza'],
+          ['mewtwo', '🔮 Mewtwo'], ['lucario', '⚡ Lucario'], ['dragonite', '🐲 Dragonite'],
+          ['blastoise', '💧 Blastoise'], ['venusaur', '🌿 Venusaur'], ['pikachu', '⚡ Pikachu'],
+          ['gyarados', '🌊 Gyarados'], ['alakazam', '🥄 Alakazam'], ['eevee', '🦊 Eevee'],
+          ['snorlax', '💤 Snorlax'], ['umbreon', '🌙 Umbreon'], ['garchomp', '🦈 Garchomp'],
+          ['lugia', '🕊️ Lugia']
+        ];
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Espécie do Pokémon</label>
+            <select id="cfg-pk-name" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              ${pks.map(([id, label]) => `<option value="${id}" ${(params.pokemon || 'garchomp') === id ? 'selected' : ''}>${label}</option>`).join('')}
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Nível RPG</label>
+              <input type="number" id="cfg-pk-level" min="1" max="100" value="${params.level || 100}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Versão Holográfica</label>
+              <label class="flex items-center gap-2 mt-2 cursor-pointer text-slate-300">
+                <input type="checkbox" id="cfg-pk-shiny" class="accent-brand-500" ${params.shiny !== false ? 'checked' : ''}>
+                <span>✨ Modo Ultra Shiny</span>
+              </label>
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'header') {
+        const p = getDevProfile() || {};
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Texto do Banner / Letreiro</label>
+            <input type="text" id="cfg-hdr-text" value="${escapeHtml(params.text || p.name || p.github || 'DEVELOPER')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Estilo da Arte</label>
+            <select id="cfg-hdr-font" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="wordmark" ${(params.font || 'wordmark') === 'wordmark' ? 'selected' : ''}>Letreiro 3D em Wireframe Oscilante</option>
+              <option value="slant" ${params.font === 'slant' ? 'selected' : ''}>Tipografia Slant (Alta Legibilidade)</option>
+              <option value="isometric1" ${params.font === 'isometric1' ? 'selected' : ''}>Tipografia Isométrica 3D</option>
+              <option value="doom" ${params.font === 'doom' ? 'selected' : ''}>Tipografia Doom (Heavy Metal)</option>
+            </select>
+          </div>
+        `;
+      } else if (sec.type === 'weather') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Cidade / Localização</label>
+            <input type="text" id="cfg-we-city" value="${escapeHtml(params.city || 'Curitiba, Brazil')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'music') {
+        html = `
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Título da Música</label>
+              <input type="text" id="cfg-mu-title" placeholder="Resonance" value="${escapeHtml(params.title || '')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Artista</label>
+              <input type="text" id="cfg-mu-artist" placeholder="HOME" value="${escapeHtml(params.artist || '')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Tema do Cassete</label>
+            <select id="cfg-mu-preset" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="synthwave" ${(params.preset || 'synthwave') === 'synthwave' ? 'selected' : ''}>🌆 Synthwave 80s (Rosa Neon / Roxo)</option>
+              <option value="cyberpunk" ${params.preset === 'cyberpunk' ? 'selected' : ''}>⚡ Cyberpunk 2077 (Amarelo / Preto)</option>
+              <option value="lofi" ${params.preset === 'lofi' ? 'selected' : ''}>☕ Lofi Chill (Verde Matcha / Pastel)</option>
+              <option value="metal" ${params.preset === 'metal' ? 'selected' : ''}>🔥 Heavy Metal (Vermelho Sangue / Preto)</option>
+            </select>
+          </div>
+        `;
+      } else if (sec.type === 'badges') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Tecnologias (separadas por vírgula)</label>
+            <textarea id="cfg-bd-techs" rows="3" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">${escapeHtml(params.techs || 'python, typescript, rust, react, nextjs, fastapi, docker, postgresql, tailwind, linux, git')}</textarea>
+          </div>
+        `;
+      } else if (sec.type === 'custom_svg') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Título da Seção no README</label>
+            <input type="text" id="cfg-cust-title" value="${escapeHtml(sec.title)}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nome do Arquivo SVG (no repositório)</label>
+            <input type="text" id="cfg-cust-file" value="${escapeHtml(sec.file || 'custom-art.svg')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+          </div>
+          <div class="flex flex-col gap-1.5 pt-1">
+            <label class="font-semibold text-slate-300">Substituir Arquivo SVG</label>
+            <input type="file" accept=".svg" onchange="handleCustomSvgUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-brand-600 file:text-white file:font-semibold cursor-pointer">
+          </div>
+        `;
+      } else {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Título no README</label>
+            <input type="text" id="cfg-generic-title" value="${escapeHtml(sec.title)}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      }
+
+      formEl.innerHTML = html;
+      modal.classList.remove('hidden');
+    }
+
+    function handleCustomSvgUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        if (editingBlockIdx !== null && builderSections[editingBlockIdx]) {
+          builderSections[editingBlockIdx].svg_data = evt.target.result;
+          showToast(`✓ SVG "${file.name}" carregado!`);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function saveBlockConfig() {
+      if (editingBlockIdx === null || !builderSections[editingBlockIdx]) return;
+      const sec = builderSections[editingBlockIdx];
+      sec.params = sec.params || {};
+
+      if (sec.type === 'chess') {
+        sec.params.match = document.getElementById('cfg-chess-match').value;
+        sec.params.speed = parseFloat(document.getElementById('cfg-chess-speed').value);
+        sec.params.animated = document.getElementById('cfg-chess-anim').checked;
+      } else if (sec.type === 'pokemon') {
+        sec.params.pokemon = document.getElementById('cfg-pk-name').value;
+        sec.params.level = parseInt(document.getElementById('cfg-pk-level').value, 10) || 100;
+        sec.params.shiny = document.getElementById('cfg-pk-shiny').checked;
+      } else if (sec.type === 'header') {
+        sec.params.text = document.getElementById('cfg-hdr-text').value.trim();
+        sec.params.font = document.getElementById('cfg-hdr-font').value;
+      } else if (sec.type === 'weather') {
+        sec.params.city = document.getElementById('cfg-we-city').value.trim();
+      } else if (sec.type === 'music') {
+        sec.params.title = document.getElementById('cfg-mu-title').value.trim();
+        sec.params.artist = document.getElementById('cfg-mu-artist').value.trim();
+        sec.params.preset = document.getElementById('cfg-mu-preset').value;
+      } else if (sec.type === 'badges') {
+        sec.params.techs = document.getElementById('cfg-bd-techs').value.trim();
+      } else if (sec.type === 'custom_svg') {
+        sec.title = document.getElementById('cfg-cust-title').value.trim() || 'Minha Arte SVG';
+        sec.file = document.getElementById('cfg-cust-file').value.trim() || 'custom-art.svg';
+      }
+
+      saveStoredBuilderSections(builderSections);
+      closeBlockConfigModal();
+      renderReadmePreview();
+      showToast(`✓ Bloco "${sec.title}" atualizado com sucesso!`);
+    }
+
+    function closeBlockConfigModal() {
+      editingBlockIdx = null;
+      const modal = document.getElementById('modal-block-config');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    // 1-Click Pin to Profile Feature
+    function pinCurrentToProfile() {
+      if (!currentSvg) {
+        showToast("Nenhuma arte gerada no momento para fixar!");
+        return;
+      }
+
+      const cleanFilename = (currentFilename || 'minha-arte.svg').replace(/[^a-zA-Z0-9._-]/g, '_');
+      const blockTitle = cleanFilename.replace('.svg', '').replace(/[-_]/g, ' ').toUpperCase();
+
+      const newBlock = {
+        id: 'custom_' + Date.now(),
+        type: 'custom_svg',
+        title: `Arte: ${blockTitle}`,
+        file: cleanFilename.endsWith('.svg') ? cleanFilename : `${cleanFilename}.svg`,
+        icon: '🖼️',
+        enabled: true,
+        svg_data: currentSvg,
+        params: {}
+      };
+
+      builderSections.push(newBlock);
+      saveStoredBuilderSections(builderSections);
+      showToast(`📌 Arte "${newBlock.title}" adicionada ao seu Construtor de Perfil!`, 3500);
     }
 
     function handleBlockDragStart(e, idx) {
@@ -3138,6 +3418,13 @@ Sleep 3s
 
       const newBlock = JSON.parse(JSON.stringify(template));
       newBlock.enabled = true;
+      if (type === 'custom_svg') {
+        newBlock.id = 'custom_' + Date.now();
+        newBlock.file = 'custom-art.svg';
+        newBlock.icon = '🖼️';
+        newBlock.title = 'Minha Arte Customizada';
+        newBlock.svg_data = currentSvg || '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="100"><rect width="600" height="100" fill="#0d1117" rx="10"/><text x="300" y="55" fill="#58a6ff" text-anchor="middle" font-family="monospace">ARTE CUSTOMIZADA SVG</text></svg>';
+      }
       builderSections.push(newBlock);
       saveStoredBuilderSections(builderSections);
       renderReadmePreview();
@@ -3917,6 +4204,13 @@ def launch_studio(port: int = 7860):
 # ==========================================
 from ...modules.profile import readme_builder
 
+_BUILDER_CUSTOM_CACHE = {}
+
+@app.get("/api/builder/custom_svg/{sec_id}")
+def get_custom_svg(sec_id: str):
+    svg = _BUILDER_CUSTOM_CACHE.get(sec_id, '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="60"><text x="200" y="35" fill="#58a6ff" text-anchor="middle">Custom SVG</text></svg>')
+    return Response(content=svg, media_type="image/svg+xml")
+
 @app.post("/api/builder/preview")
 def builder_preview(payload: dict = Body(...)):
     import urllib.parse
@@ -3925,17 +4219,29 @@ def builder_preview(payload: dict = Body(...)):
     city = payload.get("city", "Curitiba, Brazil")
     sections = payload.get("sections", readme_builder.DEFAULT_SECTIONS)
 
-    # Safe encoded parameters so names with spaces or accents never break URLs
+    # Safe encoded parameters
     clean_name = name.strip() if name and name.strip() else username
     safe_name = urllib.parse.quote(clean_name.upper())
     safe_user = urllib.parse.quote(username.strip() if username else "developer")
     safe_city = urllib.parse.quote(city.strip() if city else "Curitiba, Brazil")
     
-    # Generate live preview URLs for each section
+    # Generate live preview URLs for each section based on its custom params
     for sec in sections:
         stype = sec.get("type", "")
-        if stype == "header":
-            sec["preview_url"] = f"/api/render/wordmark?text={safe_name}"
+        params = sec.get("params") or {}
+
+        if stype == "custom_svg":
+            sec_id = sec.get("id", "custom")
+            if sec.get("svg_data"):
+                _BUILDER_CUSTOM_CACHE[sec_id] = sec.get("svg_data")
+            sec["preview_url"] = f"/api/builder/custom_svg/{sec_id}"
+        elif stype == "header":
+            hdr_text = urllib.parse.quote((params.get("text") or clean_name).upper())
+            hdr_font = params.get("font", "wordmark")
+            if hdr_font == "wordmark":
+                sec["preview_url"] = f"/api/render/wordmark?text={hdr_text}"
+            else:
+                sec["preview_url"] = f"/api/render/typography?text={hdr_text}&font={hdr_font}&username={safe_user}"
         elif stype == "badges":
             sec["preview_url"] = f"/api/render/tech_stack?username={safe_user}"
         elif stype == "heatmap":
@@ -3945,17 +4251,30 @@ def builder_preview(payload: dict = Body(...)):
         elif stype == "neofetch":
             sec["preview_url"] = f"/api/render/neofetch?username={safe_user}&name={safe_name}"
         elif stype == "pokemon":
-            sec["preview_url"] = f"/api/render/pokemon?pokemon=garchomp&shiny=true&username={safe_user}"
+            pk = params.get("pokemon", "garchomp")
+            shiny = str(params.get("shiny", True)).lower()
+            lvl = params.get("level", 100)
+            sec["preview_url"] = f"/api/render/pokemon?pokemon={pk}&shiny={shiny}&level={lvl}&username={safe_user}"
         elif stype == "coding_stats":
-            sec["preview_url"] = f"/api/render/coding_stats?username={safe_user}"
+            hrs = params.get("hours", 1480)
+            strk = params.get("streak", 48)
+            sec["preview_url"] = f"/api/render/coding_stats?hours={hrs}&streak={strk}&username={safe_user}"
         elif stype == "music":
-            sec["preview_url"] = f"/api/render/music?preset=synthwave&username={safe_user}"
+            preset = params.get("preset", "synthwave")
+            title = urllib.parse.quote(params.get("title") or "")
+            artist = urllib.parse.quote(params.get("artist") or "")
+            sec["preview_url"] = f"/api/render/music?preset={preset}&title={title}&artist={artist}&username={safe_user}"
         elif stype == "chess":
-            sec["preview_url"] = f"/api/render/chess?match=immortal&username={safe_user}"
+            match = params.get("match", "opera")
+            speed = params.get("speed", 1.0)
+            anim = str(params.get("animated", True)).lower()
+            sec["preview_url"] = f"/api/render/chess?match={match}&speed={speed}&animated={anim}&username={safe_user}"
         elif stype == "weather":
-            sec["preview_url"] = f"/api/render/weather?city={safe_city}&username={safe_user}"
+            w_city = urllib.parse.quote(params.get("city") or city)
+            sec["preview_url"] = f"/api/render/weather?city={w_city}&username={safe_user}"
         elif stype == "diagram":
-            sec["preview_url"] = f"/api/render/diagram?preset=microservices&username={safe_user}"
+            preset = params.get("preset", "microservices")
+            sec["preview_url"] = f"/api/render/diagram?preset={preset}&username={safe_user}"
         elif stype == "fortune":
             sec["preview_url"] = f"/api/render/fortune?username={safe_user}"
 

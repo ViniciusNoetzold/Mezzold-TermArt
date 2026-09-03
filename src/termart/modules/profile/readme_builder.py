@@ -2,6 +2,8 @@
 Mezzold TermArt - GitHub Profile & README Studio Builder
 Assembles an interactive, customizable GitHub Profile README.md along with all referenced
 SVGs, GitHub Actions workflows, and exports the complete repository bundle as a ZIP.
+Supports custom parameters per block (chess match, pokemon species, typography text, etc.)
+and custom user-uploaded / gallery SVGs.
 """
 import os
 import io
@@ -10,26 +12,27 @@ from typing import Dict, Any, List
 from ...core.registry import registry
 
 DEFAULT_SECTIONS = [
-    {"id": "header", "type": "header", "title": "Banner & Letreiro 3D", "enabled": True, "file": "header.svg"},
-    {"id": "badges", "type": "badges", "title": "Arsenal de Badges & Tecnologias", "enabled": True, "file": "tech-stack.svg"},
-    {"id": "heatmap", "type": "heatmap", "title": "Heatmap 3D de Contribuições", "enabled": True, "file": "contrib-heatmap.svg"},
-    {"id": "stats", "type": "stats", "title": "Métricas & Status do GitHub", "enabled": True, "file": "github-stats.svg"},
-    {"id": "neofetch", "type": "neofetch", "title": "Card Neofetch macOS", "enabled": True, "file": "info-card.svg"},
-    {"id": "pokemon", "type": "pokemon", "title": "Card RPG Holográfico Pokémon", "enabled": True, "file": "pokemon-card.svg"},
-    {"id": "coding_stats", "type": "coding_stats", "title": "Radar de Produtividade & Streaks", "enabled": True, "file": "coding-stats.svg"},
-    {"id": "music", "type": "music", "title": "Cassete Spotify Hi-Fi & Visualizer", "enabled": False, "file": "music-card.svg"},
-    {"id": "chess", "type": "chess", "title": "Partida de Xadrez com Xeque-Mate", "enabled": False, "file": "chess-board.svg"},
-    {"id": "weather", "type": "weather", "title": "Previsão do Tempo em ASCII", "enabled": False, "file": "weather-card.svg"},
-    {"id": "diagram", "type": "diagram", "title": "Topologia de Arquitetura de Sistemas", "enabled": False, "file": "architecture.svg"},
-    {"id": "fortune", "type": "fortune", "title": "Biscoito da Sorte Hacker / Filosofia", "enabled": False, "file": "fortune.svg"},
+    {"id": "header", "type": "header", "title": "Banner 3D / Wordmark", "enabled": True, "file": "header.svg", "params": {}},
+    {"id": "badges", "type": "badges", "title": "Arsenal de Badges & Tecnologias", "enabled": True, "file": "tech-stack.svg", "params": {}},
+    {"id": "heatmap", "type": "heatmap", "title": "Heatmap 3D de Contribuições", "enabled": True, "file": "contrib-heatmap.svg", "params": {}},
+    {"id": "stats", "type": "stats", "title": "Métricas & Status do GitHub", "enabled": True, "file": "github-stats.svg", "params": {}},
+    {"id": "neofetch", "type": "neofetch", "title": "Card Neofetch macOS", "enabled": True, "file": "info-card.svg", "params": {}},
+    {"id": "pokemon", "type": "pokemon", "title": "Card RPG Holográfico Pokémon", "enabled": True, "file": "pokemon-card.svg", "params": {"pokemon": "garchomp", "shiny": True, "level": 100}},
+    {"id": "coding_stats", "type": "coding_stats", "title": "Radar de Produtividade & Streaks", "enabled": True, "file": "coding-stats.svg", "params": {}},
+    {"id": "chess", "type": "chess", "title": "Partida de Xadrez com Xeque-Mate", "enabled": False, "file": "chess-board.svg", "params": {"match": "opera", "speed": 1.0, "animated": True}},
+    {"id": "music", "type": "music", "title": "Cassete Spotify Hi-Fi", "enabled": False, "file": "music-card.svg", "params": {"preset": "synthwave", "animated": True}},
+    {"id": "weather", "type": "weather", "title": "Previsão do Tempo em ASCII", "enabled": False, "file": "weather-card.svg", "params": {"city": "Curitiba, Brazil"}},
+    {"id": "diagram", "type": "diagram", "title": "Topologia de Arquitetura", "enabled": False, "file": "architecture.svg", "params": {"preset": "microservices"}},
+    {"id": "fortune", "type": "fortune", "title": "Biscoito da Sorte Hacker / Filosofia", "enabled": False, "file": "fortune.svg", "params": {}},
 ]
 
 def generate_readme_markdown(username: str, name: str, sections: List[Dict[str, Any]]) -> str:
     """Generates clean GitHub Flavored Markdown for profile repository README.md"""
+    display_title = name if name and name.strip() else username
     lines = [
         f'<div align="center">',
         f'',
-        f'# ⚡ {name or username}',
+        f'# ⚡ {display_title}',
         f'### Software Engineer & Tech Explorer',
         f'',
         f'[![GitHub](https://img.shields.io/badge/GitHub-{username}-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/{username})',
@@ -41,10 +44,11 @@ def generate_readme_markdown(username: str, name: str, sections: List[Dict[str, 
             continue
         stype = sec.get("type", "")
         sfile = sec.get("file", f"{stype}.svg")
+        stitle = sec.get("title", stype)
 
-        lines.append(f'<!-- SECTION: {sec.get("title", stype).upper()} -->')
+        lines.append(f'<!-- SECTION: {stitle.upper()} -->')
         lines.append(f'<p align="center">')
-        lines.append(f'  <img src="./{sfile}" alt="{sec.get("title", stype)}" />')
+        lines.append(f'  <img src="./{sfile}" alt="{stitle}" />')
         lines.append(f'</p>')
         lines.append(f'')
 
@@ -124,17 +128,32 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                 continue
             stype = sec.get("type", "")
             sfile = sec.get("file", f"{stype}.svg")
+            params = sec.get("params") or {}
 
             svg_content = None
             try:
-                if stype == "header":
-                    p = registry.get("wordmark_3d")
-                    res = p.run(text=name.upper() if name else username.upper(), out_svg="wordmark.svg")
-                    with open(res.get("output_path", "wordmark.svg"), "r", encoding="utf-8") as f:
-                        svg_content = f.read()
+                if stype == "custom_svg":
+                    # Custom user SVG uploaded or picked from gallery
+                    svg_content = sec.get("svg_data") or params.get("svg_data")
+                elif stype == "header":
+                    hdr_text = params.get("text") or (name.upper() if name else username.upper())
+                    font_type = params.get("font", "wordmark")
+                    if font_type == "wordmark":
+                        p = registry.get("wordmark_3d")
+                        res = p.run(text=hdr_text, out_svg="wordmark.svg")
+                        with open(res.get("output_path", "wordmark.svg"), "r", encoding="utf-8") as f:
+                            svg_content = f.read()
+                    else:
+                        p = registry.get("typography")
+                        res = p.run(text=hdr_text, font_name=font_type, theme=params.get("theme", "cyberpunk"), out_svg="typo.svg")
+                        with open(res.get("output_path", "typo.svg"), "r", encoding="utf-8") as f:
+                            svg_content = f.read()
                 elif stype == "badges":
+                    techs = params.get("techs", "python,typescript,rust,react,nextjs,fastapi,docker,postgresql,tailwind,linux,git")
+                    style = params.get("style", "neon")
+                    title = params.get("title", "TECH STACK & CORE ARSENAL")
                     p = registry.get("tech_stack")
-                    res = p.run(username=username, out_svg="tech_stack.svg")
+                    res = p.run(techs=techs, style=style, title=title, username=username, out_svg="tech_stack.svg")
                     with open(res.get("output_path", "tech_stack.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "heatmap":
@@ -149,9 +168,11 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                         svg_content = f.read()
                 elif stype == "neofetch":
                     p = registry.get("neofetch")
+                    disp_name = params.get("title") or name or username
+                    disp_role = params.get("role") or "Software Engineer & Architect"
                     rows = [
-                        ("Title", name or username, "#e3b341"),
-                        ("Role", "Software Engineer & Architect", "#c9d1d9"),
+                        ("Title", disp_name, "#e3b341"),
+                        ("Role", disp_role, "#c9d1d9"),
                         ("Focus", "Systems, Terminal Art, Cloud & APIs", "#39c5cf"),
                         ("Languages", "Python, TypeScript, Rust, Go, SQL", "#56d364"),
                         ("GitHub", f"https://github.com/{username}", "#f0883e")
@@ -160,33 +181,51 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                     with open(res.get("output_path", "info-card.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "pokemon":
+                    pk_name = params.get("pokemon", "garchomp")
+                    pk_shiny = bool(params.get("shiny", True))
+                    pk_level = int(params.get("level", 100))
                     p = registry.get("pokemon_card")
-                    res = p.run(pokemon="garchomp", shiny=True, level=100, username=username, out_svg="pokemon_card.svg")
+                    res = p.run(pokemon=pk_name, shiny=pk_shiny, level=pk_level, username=username, out_svg="pokemon_card.svg")
                     with open(res.get("output_path", "pokemon_card.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "coding_stats":
+                    hrs = int(params.get("hours", 1480))
+                    strk = int(params.get("streak", 48))
+                    rnk = params.get("rank", "S+ Tier (Architect)")
                     p = registry.get("coding_stats")
-                    res = p.run(username=username, out_svg="coding_stats.svg")
+                    res = p.run(hours=hrs, streak=strk, rank=rnk, username=username, out_svg="coding_stats.svg")
                     with open(res.get("output_path", "coding_stats.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "music":
+                    preset = params.get("preset", "synthwave")
+                    m_title = params.get("title") or None
+                    m_artist = params.get("artist") or None
+                    m_anim = bool(params.get("animated", True))
                     p = registry.get("music_card")
-                    res = p.run(preset="synthwave", animated=True, username=username, out_svg="music_card.svg")
+                    res = p.run(preset=preset, custom_title=m_title, custom_artist=m_artist, animated=m_anim, username=username, out_svg="music_card.svg")
                     with open(res.get("output_path", "music_card.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "chess":
+                    match = params.get("match", "opera")
+                    speed = float(params.get("speed", 1.0))
+                    anim = bool(params.get("animated", True))
                     p = registry.get("chess_board")
-                    res = p.run(match="immortal", animated=True, speed=1.5, username=username, out_svg="chess_board.svg")
+                    res = p.run(match=match, animated=anim, speed=speed, username=username, out_svg="chess_board.svg")
                     with open(res.get("output_path", "chess_board.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "weather":
+                    w_city = params.get("city") or city or "Curitiba, Brazil"
+                    w_cond = params.get("condition", "sunny")
+                    w_unit = params.get("unit", "C")
                     p = registry.get("weather_card")
-                    res = p.run(city=city or "Curitiba, Brazil", condition="sunny", unit="C", username=username, out_svg="weather-card.svg")
+                    res = p.run(city=w_city, condition=w_cond, unit=w_unit, username=username, out_svg="weather-card.svg")
                     with open(res.get("output_path", "weather-card.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "diagram":
+                    preset = params.get("preset", "microservices")
+                    diag_title = params.get("title") or None
                     p = registry.get("ascii_diagram")
-                    res = p.run(preset="microservices", username=username, out_svg="ascii_diagram.svg")
+                    res = p.run(preset=preset, title=diag_title, username=username, out_svg="ascii_diagram.svg")
                     with open(res.get("output_path", "ascii_diagram.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "fortune":
