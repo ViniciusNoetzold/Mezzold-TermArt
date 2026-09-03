@@ -188,9 +188,23 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </select>
           </div>
 
-          <div id="city-block">
-            <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
-            <input id="city-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          <div id="city-block" class="flex flex-col gap-3">
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">GitHub Username</label>
+              <input id="city-user" type="text" value="ViniciusNoetzold" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Paleta de Cores da Cidade 3D</label>
+              <select id="city-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="cyberpunk">Cyberpunk Neon (Ciano, Azul & Rosa Choque)</option>
+                <option value="green">GitHub Classic (Verde Esmeralda Original)</option>
+                <option value="tokyo">TokyoNight (Roxo Profundo & Lilás)</option>
+                <option value="sunset">Sunset Gold (Âmbar, Laranja & Dourado)</option>
+                <option value="matrix">Matrix Hacker (Verde Fosforescente)</option>
+                <option value="ocean">Ocean Blue (Azul Turquesa & Mar Profundo)</option>
+                <option value="dracula">Dracula Vampire (Roxo & Rosa Pastel)</option>
+              </select>
+            </div>
           </div>
 
           <div id="wordmark-block" class="hidden flex flex-col gap-3">
@@ -455,7 +469,8 @@ Sleep 3s
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Processando geometria 3D...</div>';
       if (mode === 'city') {
         const user = document.getElementById('city-user').value;
-        const res = await fetch(`/api/render/city?username=${encodeURIComponent(user)}`);
+        const theme = document.getElementById('city-theme').value;
+        const res = await fetch(`/api/render/city?username=${encodeURIComponent(user)}&theme=${encodeURIComponent(theme)}`);
         const svg = await res.text();
         setPreview(svg, `${user}-3d-city.svg`);
       } else if (mode === 'wordmark') {
@@ -544,10 +559,10 @@ def index():
     return HTMLResponse(content=HTML_TEMPLATE)
 
 @app.get("/api/render/city")
-def render_city(username: str = "ViniciusNoetzold"):
+def render_city(username: str = "ViniciusNoetzold", theme: str = "cyberpunk"):
     p = registry.get("isometric_city")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_city.svg")
-    p.run(username=username, out_svg=tmp)
+    p.run(username=username, out_svg=tmp, theme=theme)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")

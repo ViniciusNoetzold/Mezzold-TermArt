@@ -75,8 +75,8 @@ def cmd_heatmap(args):
 
 def cmd_city(args):
     p = registry.get("isometric_city")
-    res = p.run(username=args.username, out_svg=args.out)
-    print(f"[TermArt] ✓ 3D Isometric City generated: {res.get('output_path')} ({res.get('total')} commits)")
+    res = p.run(username=args.username, out_svg=args.out, theme=args.theme)
+    print(f"[TermArt] ✓ 3D Isometric City generated: {res.get('output_path')} ({res.get('total_contributions')} commits • Theme: {res.get('theme')})")
 
 def cmd_neofetch(args):
     p = registry.get("neofetch")
@@ -171,6 +171,7 @@ def main():
     ci_p = sub.add_parser("city", help="Generate 3D isometric voxel contribution skyline SVG")
     ci_p.add_argument("username")
     ci_p.add_argument("--out", default="contrib-3d-city.svg")
+    ci_p.add_argument("--theme", default="green", choices=["green", "cyberpunk", "tokyo", "sunset", "matrix", "ocean", "dracula"], help="Color theme for 3D voxel skyline")
     ci_p.set_defaults(func=cmd_city)
 
     # neofetch
