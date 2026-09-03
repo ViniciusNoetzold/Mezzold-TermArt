@@ -42,21 +42,21 @@ Reúne motores compilados de alta performance em **C**, **Go**, **Rust** e algor
          ┌──────────────────┬─────────────────┼──────────────────┬──────────────────┬─────────────────┐
          ▼                  ▼                 ▼                  ▼                  ▼                 ▼
  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐
- │ 1. Image (12)  │ │ 2. Profile (9) │ │ 3. 3D & Math(4)│ │ 4. FX/Screens(12│ │ 5. Recorder(2) │ │ 6. Animator(1) │
+ │ 1. Image (12)  │ │ 2. Profile (9) │ │ 3. 3D & Math(4)│ │ 4. FX & CRT(12)│ │ 5. Recorder(2) │ │ 6. Animator(1) │
  ├────────────────┤ ├────────────────┤ ├────────────────┤ ├────────────────┤ ├────────────────┤ ├────────────────┤
- │ • Chafa (C)    │ │ • Heatmap      │ │ • 3D City Voxel│ │ • The Matrix   │ │ • VHS (Go)     │ │ • SVG Animator │
- │ • Braille 2x4  │ │   Cascade SVG  │ │ • 3D Wordmark  │ │ • cbonsai Tree │ │   .tape to GIF │ │   Oscillation, │
- │ • TrueColor RGB│ │ • Neofetch Card│ │ • FIGlet Text  │ │ • Asciiquarium │ │ • AGG (Rust)   │ │   Scanline CRT,│
- │ • Drawille HD  │ │ • Dark Stats   │ │ • 3D Donut.c   │ │ • Cowsay Studio│ │   .cast to GIF │ │   Waves & Drop │
- │ • Retro Dither │ │ • Pokemon Card │ └────────────────┘ │ • Tetris Reveal│ └────────────────┘ └────────────────┘
- │ • jp2a Classic │ │ • wttr.in Card │                    │ • BBS CP437 VGA│
- │ • Halftone Dot │ │ • TTY Clock LED│                    │ • QR Code Badge│
- │ • Edge Art Ink │ │ • Chess Match  │                    │ • Pipes.sh Loop│
- │ • Glitch VHS   │ │ • File Tree    │                    │ • CAVA Equalizer
- │ • Pixel Mosaic │ │ • Fortune Card │                    │ • Doom Fire 1992
- │ • Palette Swap │ └────────────────┘                    │ • Synthwave Grid
- │ • Rainbow Wave │                                       │ • Game of Life │
- └────────────────┘                                       └────────────────┘
+ │ • Chafa (C)    │ │ • Heatmap Live │ │ • 3D City Voxel│ │ • The Matrix   │ │ • VHS (Go)     │ │ • SVG Animator │
+ │ • Braille 2x4  │ │ • Neofetch Card│ │ • 3D Wordmark  │ │ • cbonsai Tree │ │   .tape to GIF │ │   Oscillation, │
+ │ • TrueColor RGB│ │ • Dark Stats   │ │ • FIGlet Text  │ │ • Asciiquarium │ │ • AGG (Rust)   │ │   Scanline CRT,│
+ │ • Drawille HD  │ │ • Pokemon Card │ │ • 3D Donut.c   │ │ • Cowsay Studio│ │   .cast to GIF │ │   Waves & Drop │
+ │ • Retro Dither │ │ • wttr.in Card │ │                │ │ • Tetris Reveal│ │                │ │                │
+ │ • jp2a Classic │ │ • TTY Clock LED│ │                │ │ • BBS CP437 VGA│ │                │ │                │
+ │ • Halftone Dot │ │ • Chess Match  │ │                │ │ • QR Code Badge│ │                │ │                │
+ │ • Edge Art Ink │ │ • File Tree    │ │                │ │ • Pipes.sh Loop│ │                │ │                │
+ │ • Glitch VHS   │ │ • Fortune Card │ │                │ │ • CAVA Bars    │ │                │ │                │
+ │ • Pixel Mosaic │ │                │ │                │ │ • Doom Fire    │ │                │ │                │
+ │ • Palette Swap │ │                │ │                │ │ • Synthwave 80s│ │                │ │                │
+ │ • Rainbow Wave │ │                │ │                │ │ • Game of Life │ │                │ │                │
+ └────────────────┘ └────────────────┘ └────────────────┘ └────────────────┘ └────────────────┘ └────────────────┘
 ```
 
 ---
