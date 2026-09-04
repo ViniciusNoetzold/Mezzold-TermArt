@@ -78,7 +78,7 @@ class CyberIdPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "cyber_id.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         role: str = "Principal Systems & AI Architect",
         department: str = "ADVANCED AGENTIC RESEARCH",
         clearance_level: int = 5,

@@ -103,7 +103,7 @@ class RpgSheetPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "rpg_sheet.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         character_name: str = "VINICIUS",
         rpg_class: str = "paladin",
         level: int = 85,

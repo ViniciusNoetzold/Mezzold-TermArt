@@ -248,11 +248,11 @@ def cmd_city(args):
 def cmd_neofetch(args):
     p = registry.get("neofetch")
     rows = [
-        ("Title", "Vinícius de Almeida Noetzold", "#e3b341"),
-        ("Role", "Tech Support Analyst @ Hansen Software", "#c9d1d9"),
+        ("Title", "Developer Profile", "#e3b341"),
+        ("Role", "Software Engineer & Terminal Enthusiast", "#c9d1d9"),
         ("Focus", "Systems, APIs, Automation, QA & AI", "#39c5cf"),
         ("Languages", "Python, Java, TypeScript, JavaScript, SQL", "#56d364"),
-        ("Highlights", "Mezzold Connect, YouTube Trend, QuotePRO, EduSystem", "#f0883e")
+        ("Highlights", "Open Source, Terminal Art, CLI Tools", "#f0883e")
     ]
     res = p.run(rows=rows, out_svg=args.out, username=args.username)
     print(f"[TermArt] ✓ Neofetch card generated: {res.get('output_path')}")
@@ -306,7 +306,7 @@ def main():
     im_p.add_argument("--rows", type=int, default=30)
     im_p.add_argument("--braille", action="store_true")
     im_p.add_argument("--out", default=None, help="Output SVG path")
-    im_p.add_argument("--username", default="ViniciusNoetzold")
+    im_p.add_argument("--username", default="developer")
     im_p.set_defaults(func=cmd_image)
 
     # portrait
@@ -324,7 +324,7 @@ def main():
     si_p.add_argument("image")
     si_p.add_argument("--out", default="signature.svg")
     si_p.add_argument("--title", default="./signature.sh")
-    si_p.add_argument("--username", default="ViniciusNoetzold")
+    si_p.add_argument("--username", default="developer")
     si_p.add_argument("--cols", type=int, default=58)
     si_p.add_argument("--color", default="rgb", choices=["rgb", "cyberpunk", "matrix", "sunset", "tokyo", "mono"], help="Color scheme")
     si_p.add_argument("--anim", default="cascade", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "dvd", "none"], help="Animation mode")
@@ -518,7 +518,7 @@ def main():
 
     # rpg
     rp_p = sub.add_parser("rpg", help="Generate holographic RPG character sheet passport SVG")
-    rp_p.add_argument("--username", default="ViniciusNoetzold")
+    rp_p.add_argument("--username", default="developer")
     rp_p.add_argument("--name", default="VINICIUS")
     rp_p.add_argument("--cls", default="alchemist", choices=["alchemist", "sorcerer", "ninja", "paladin", "shaman"])
     rp_p.add_argument("--level", type=int, default=85)
@@ -527,14 +527,14 @@ def main():
 
     # subway
     su_p = sub.add_parser("subway", help="Generate Git commit subway transit branch map SVG")
-    su_p.add_argument("--username", default="ViniciusNoetzold")
+    su_p.add_argument("--username", default="developer")
     su_p.add_argument("--repo", default="core-platform")
     su_p.add_argument("--out", default="git_subway.svg")
     su_p.set_defaults(func=cmd_git_subway)
 
     # pet
     pe_p = sub.add_parser("pet", help="Generate Tamagotchi 90s LCD virtual dev pet SVG")
-    pe_p.add_argument("--username", default="ViniciusNoetzold")
+    pe_p.add_argument("--username", default="developer")
     pe_p.add_argument("--name", default="PIXEL")
     pe_p.add_argument("--type", default="cat", choices=["cat", "robot", "dragon", "penguin"])
     pe_p.add_argument("--level", type=int, default=42)

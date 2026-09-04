@@ -87,7 +87,7 @@ class AchievementBannerPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "achievement.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         title: str = "10,000 COMMITS: Mestre do Merge sem Conflito",
         description: str = "Subiu código para produção numa sexta-feira sem quebrar nada e resolveu todos os merges.",
         score_points: int = 100,

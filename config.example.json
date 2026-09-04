@@ -18,15 +18,15 @@
   "heatmap": true,
   "city_3d": true,
   "neofetch": [
-    ["Title", "Vinícius de Almeida Noetzold", "#e3b341"],
-    ["Role", "Tech Support Analyst @ Hansen Software", "#c9d1d9"],
-    ["Education", "B.S. in Computer Science (Student)", "#c9d1d9"],
+    ["Title", "Developer Profile", "#e3b341"],
+    ["Role", "Software Engineer & Terminal Enthusiast", "#c9d1d9"],
+    ["Education", "B.S. in Computer Science", "#c9d1d9"],
     ["Focus", "Systems, APIs, Automation, QA & AI", "#39c5cf"],
     ["Languages", "Python, Java, TypeScript, JavaScript, SQL", "#56d364"],
     ["Backend", "Spring Boot, Fastify, Node.js, REST APIs", "#c9d1d9"],
     ["Data & Tools", "PostgreSQL, Redis, SQLite, Docker, Git", "#c9d1d9"],
-    ["Highlights", "Mezzold Connect, YouTube Trend, QuotePRO, EduSystem", "#f0883e"],
-    ["Status", "Connecting Support, Dev and Quality", "#56d364"]
+    ["Highlights", "Open Source, Terminal Art, CLI Tools", "#f0883e"],
+    ["Status", "Building Modern Developer Tools", "#56d364"]
   ],
   "bottom_logo": {
     "image": "assets/mezzold-logo.png",

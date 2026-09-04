@@ -81,7 +81,7 @@ class BtopMonitorPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "btop_monitor.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         theme: str = "catppuccin",
         uptime_days: int = 42,
         canvas_w: int = 680,

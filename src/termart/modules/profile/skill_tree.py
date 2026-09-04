@@ -102,7 +102,7 @@ class SkillTreePlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "skill_tree.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         specialization: str = "Grandmaster Systems Architect",
         points_allocated: int = 48,
         total_points: int = 50,

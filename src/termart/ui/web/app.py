@@ -10,13 +10,25 @@ import tempfile
 import subprocess
 import webbrowser
 from typing import Optional
-from fastapi import FastAPI, UploadFile, File, Form, Response, Body
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi import FastAPI, UploadFile, File, Form, Response, Body, Request, HTTPException
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse, PlainTextResponse
 import uvicorn
 
 from ...core.registry import registry
 
 app = FastAPI(title="Mezzold TermArt Studio", version="2.0.0")
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(), camera=(), microphone=()"
+    if request.url.path.startswith("/api/"):
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+    return response
+
 
 HTML_TEMPLATE = r"""<!DOCTYPE html>
 <html lang="pt-BR" class="dark">
@@ -603,7 +615,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div id="typography-block" class="hidden flex flex-col gap-3">
             <div>
               <label class="text-xs text-slate-400 block mb-1">Texto do Banner ASCII (use \n para nova linha)</label>
-              <textarea id="typo-text" rows="2" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">VINICIUS\nNOETZOLD</textarea>
+              <textarea id="typo-text" rows="2" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">TERMART\nSTUDIO</textarea>
             </div>
             <!-- Typography Mode Switcher: Fonte Única vs Comparar Várias Fontes -->
             <div class="flex p-1 bg-brand-dark rounded-xl border border-brand-border text-xs">
@@ -6309,6 +6321,15 @@ TERMS_BODY = r"""
 """
 
 
+
+@app.get("/ads.txt", response_class=PlainTextResponse)
+def ads_txt_endpoint():
+    return PlainTextResponse("google.com, pub-8865509480539792, DIRECT, f08c47fec0942fa0\n")
+
+@app.get("/robots.txt", response_class=PlainTextResponse)
+def robots_txt_endpoint():
+    return PlainTextResponse("User-agent: *\nAllow: /\nSitemap: https://mezzold-termart.onrender.com/sitemap.xml\n")
+
 @app.get("/privacy", response_class=HTMLResponse)
 def privacy_page():
     html = LEGAL_HTML_TEMPLATE.replace("{title}", "Política de Privacidade").replace("{content}", PRIVACY_BODY)
@@ -6720,9 +6741,15 @@ async def render_image_upload(
     scanline: str = Form("false"),
     file: UploadFile = File(None)
 ):
+    # Sanitize engine parameter against path traversal
+    engine = re.sub(r'[^a-zA-Z0-9_]', '', engine) or "rgb_ascii"
     upload_path = os.path.join(os.path.dirname(__file__), "_upload_temp.png")
     if file:
-        content = await file.read()
+        # Enforce max 15MB file upload limit to prevent denial of service / memory exhaustion
+        MAX_UPLOAD_SIZE = 15 * 1024 * 1024
+        content = await file.read(MAX_UPLOAD_SIZE + 1)
+        if len(content) > MAX_UPLOAD_SIZE:
+            raise HTTPException(status_code=413, detail="Arquivo muito grande. O limite máximo é de 15MB.")
         with open(upload_path, "wb") as f:
             f.write(content)
     else:
@@ -7085,6 +7112,8 @@ def launch_studio(port: int = 7860):
 from ...modules.profile import readme_builder
 
 _BUILDER_CUSTOM_CACHE = {}
+_MAX_CACHE_SIZE = 100
+
 
 @app.get("/api/builder/custom_svg/{sec_id}")
 def get_custom_svg(sec_id: str):
@@ -7120,6 +7149,8 @@ def builder_preview(payload: dict = Body(...)):
         if stype == "custom_svg":
             sec_id = sec.get("id", "custom")
             if sec.get("svg_data"):
+                if len(_BUILDER_CUSTOM_CACHE) >= _MAX_CACHE_SIZE:
+                    _BUILDER_CUSTOM_CACHE.pop(next(iter(_BUILDER_CUSTOM_CACHE)))
                 _BUILDER_CUSTOM_CACHE[sec_id] = sec.get("svg_data")
             sec["preview_url"] = f"/api/builder/custom_svg/{sec_id}"
         elif stype == "header":
@@ -7269,10 +7300,11 @@ def builder_download_zip(payload: dict = Body(...)):
     sections = payload.get("sections", readme_builder.DEFAULT_SECTIONS)
     
     zip_bytes = readme_builder.build_profile_bundle_zip(username, name, city, sections)
+    safe_dl_user = re.sub(r'[^a-zA-Z0-9_\-]', '', username) or "developer"
     return Response(
         content=zip_bytes,
         media_type="application/zip",
-        headers={"Content-Disposition": f"attachment; filename={username}-profile-repository.zip"}
+        headers={"Content-Disposition": f'attachment; filename="{safe_dl_user}-profile-repository.zip"'}
     )
 
 

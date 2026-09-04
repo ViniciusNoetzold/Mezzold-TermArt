@@ -63,7 +63,7 @@ class GitGraphPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "git_graph.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         repo_name: str = "core-platform",
         theme: str = "neon_cyber",
         canvas_w: int = 680,

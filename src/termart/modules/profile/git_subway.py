@@ -18,7 +18,7 @@ class GitSubwayPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "git_subway.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         repo_name: str = "core-platform",
         canvas_w: int = 800,
         canvas_h: int = 380,

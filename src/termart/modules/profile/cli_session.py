@@ -67,7 +67,7 @@ class CliSessionPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "cli_session.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         role: str = "Full-Stack & Systems Architect",
         theme: str = "ghostty_dark",
         canvas_w: int = 680,

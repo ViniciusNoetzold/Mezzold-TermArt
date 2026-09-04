@@ -446,7 +446,7 @@ class DevPetPlugin(BasePlugin):
     def run(
         self,
         out_svg: str = "dev_pet.svg",
-        username: str = "ViniciusNoetzold",
+        username: str = "developer",
         pet_name: str = "KERNEL",
         pet_type: str = "mametchi",
         level: int = 42,
