@@ -25,7 +25,7 @@ DEFAULT_SECTIONS = [
     {"id": "diagram", "type": "diagram", "title": "Topologia de Arquitetura", "enabled": False, "file": "architecture.svg", "params": {"preset": "microservices"}},
     {"id": "rpg", "type": "rpg_sheet", "title": "Passaporte RPG do Desenvolvedor", "enabled": False, "file": "rpg-sheet.svg", "params": {"cls": "alchemist", "level": 85}},
     {"id": "subway", "type": "git_subway", "title": "Mapa de Metrô dos Commits (Git Branches)", "enabled": False, "file": "git-subway.svg", "params": {"repo": "core-platform"}},
-    {"id": "pet", "type": "dev_pet", "title": "Tamagotchi Dev Pet Virtual 1996", "enabled": False, "file": "dev-pet.svg", "params": {"type": "cat", "name": "KERNEL"}},
+    {"id": "pet", "type": "dev_pet", "title": "Tamagotchi Dev Pet Virtual 1996", "enabled": False, "file": "dev-pet.svg", "params": {"type": "mametchi", "name": "KERNEL"}},
     {"id": "mario", "type": "mario", "title": "Super Mario Bros NES World 1-1 Runner", "enabled": False, "file": "mario-runner.svg", "params": {"world": "1-1", "score": 2450}},
     {"id": "invaders", "type": "space_invaders", "title": "Space Invaders Arcade 1978", "enabled": False, "file": "space-invaders.svg", "params": {"score": 1978}},
     {"id": "pacman", "type": "pacman", "title": "Pac-Man Arcade Maze 1980", "enabled": False, "file": "pacman-chase.svg", "params": {"score": 333360}},
@@ -251,7 +251,7 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                         svg_content = f.read()
                 elif stype == "dev_pet":
                     p = registry.get("dev_pet")
-                    p_type = params.get("type", "cat")
+                    p_type = params.get("type", "mametchi")
                     p_name = params.get("name", "KERNEL")
                     res = p.run(username=username, pet_name=p_name, pet_type=p_type, out_svg="dev-pet.svg")
                     with open(res.get("output_path", "dev-pet.svg"), "r", encoding="utf-8") as f:

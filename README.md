@@ -207,7 +207,7 @@ Uma área exclusiva no aplicativo para você planejar, montar e exportar a vitri
 | :--- | :--- |
 | **`rpg_sheet`** | **[NOVO]** Passaporte RPG D&D com 5 classes, barras de HP/Mana/Stamina, atributos e inventário. |
 | **`git_subway`** | **[NOVO]** Mapa de metrô das branches e commits estilo trânsito rápido de Tóquio/Londres com trem animado. |
-| **`dev_pet`** | **[NOVO]** Tamagotchi Virtual Dev Pet 1996 com display LCD, medidor de café e animação de respiração. |
+| **`dev_pet`** | **[NOVO]** Tamagotchi Virtual Dev Pet Bandai 1996 autêntico com matriz LCD 16x16 pixels nítida, 10 mascotes clássicos (Mametchi, Kuchipatchi, Ginjirotchi, Maskutchi, Marutchi, Babytchi, Oyajitchi, etc.), animação de 2 frames (passo/fala), ícones de hardware originais (comida, remédio, banho, alerta) e casing com 3 botões. |
 | **`pokemon_card`** | Card de batalha holográfico com 16 espécies, modo Shiny e atributos RPG. |
 | **`chess_board`** | Tabuleiro de xadrez com reprodução de lances e **suporte a importação de partidas via PGN**! |
 | **`weather_card`** | Radar meteorológico completo no estilo terminal `wttr.in`. |

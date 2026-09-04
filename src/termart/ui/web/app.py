@@ -951,10 +951,20 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <div>
                 <label class="text-xs text-slate-400 block mb-1">Mascote Pixel-Art</label>
                 <select id="pet-type" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
-                  <option value="cat">🐱 Gatinho Unix (Cat)</option>
-                  <option value="robot">🤖 Cyber Droid (Robot)</option>
-                  <option value="dragon">🐲 Mini Dragão (Dragon)</option>
-                  <option value="penguin">🐧 Linux Tux (Penguin)</option>
+                  <option value="mametchi" selected>⭐ Mametchi 1996 (Mascote Gênio #1 Bandai)</option>
+                  <option value="kuchipatchi">🦆 Kuchipatchi (Comilão Bico-de-Pato)</option>
+                  <option value="ginjirotchi">🐧 Ginjirotchi (Pinguim Atleta Nadador)</option>
+                  <option value="maskutchi">🥷 Maskutchi (Ninja Mascarado Secreto)</option>
+                  <option value="marutchi">🟢 Marutchi (Bouncing Toddler)</option>
+                  <option value="babytchi">👶 Babytchi (Recém-Nascido com Topete)</option>
+                  <option value="oyajitchi">👴 Oyajitchi (Bigode Clássico de Terno)</option>
+                  <option value="tamatchi">🌱 Tamatchi (Jovem com Orelhinhas)</option>
+                  <option value="nyorotchi">🐍 Nyorotchi (Cobra Ondulante)</option>
+                  <option value="tarakotchi">👄 Tarakotchi (Bocão Alienígena)</option>
+                  <option value="cat">🐱 Pixel Cat (Mametchi)</option>
+                  <option value="robot">🤖 Cyber Droid (Maskutchi)</option>
+                  <option value="dragon">🐲 Mini Dragão (Kuchipatchi)</option>
+                  <option value="penguin">🐧 Linux Tux (Ginjirotchi)</option>
                 </select>
               </div>
               <div>
@@ -3416,7 +3426,7 @@ Sleep 3s
       { id: "fortune", type: "fortune", title: "Biscoito da Sorte Hacker / Zen", enabled: false, file: "fortune.svg", icon: "🥠" },
       { id: "rpg", type: "rpg_sheet", title: "Passaporte RPG do Desenvolvedor", enabled: false, file: "rpg-sheet.svg", icon: "⚔️", params: { cls: "alchemist", level: 85 } },
       { id: "subway", type: "git_subway", title: "Mapa de Metrô dos Commits (Branches)", enabled: false, file: "git-subway.svg", icon: "🗺️", params: { repo: "core-platform" } },
-      { id: "pet", type: "dev_pet", title: "Tamagotchi Dev Pet Virtual 1996", enabled: false, file: "dev-pet.svg", icon: "👾", params: { type: "cat", name: "KERNEL" } },
+      { id: "pet", type: "dev_pet", title: "Tamagotchi Dev Pet Virtual 1996", enabled: false, file: "dev-pet.svg", icon: "👾", params: { type: "mametchi", name: "KERNEL" } },
       { id: "mario", type: "mario", title: "Super Mario Bros NES World 1-1 Runner", enabled: false, file: "mario-runner.svg", icon: "🍄", params: { world: "1-1", score: 2450 } },
       { id: "invaders", type: "space_invaders", title: "Space Invaders Arcade 1978", enabled: false, file: "space-invaders.svg", icon: "👾", params: { score: 1978 } },
       { id: "pacman", type: "pacman", title: "Pac-Man Arcade Maze 1980", enabled: false, file: "pacman-chase.svg", icon: "ᗧ", params: { score: 333360 } },
@@ -3564,10 +3574,20 @@ Sleep 3s
           <div class="flex flex-col gap-1.5">
             <label class="font-semibold text-slate-300">Espécie do Pet Virtual</label>
             <select id="cfg-pet-type" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-              <option value="cat" ${(params.type || 'cat') === 'cat' ? 'selected' : ''}>🐱 Pixel Cat</option>
-              <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Robo-Byte</option>
-              <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐉 Dev Drake</option>
-              <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Tux Junior</option>
+              <option value="mametchi" ${(params.type || 'mametchi') === 'mametchi' ? 'selected' : ''}>⭐ Mametchi 1996 (Mascote Gênio #1 Bandai)</option>
+              <option value="kuchipatchi" ${params.type === 'kuchipatchi' ? 'selected' : ''}>🦆 Kuchipatchi (Comilão Bico-de-Pato)</option>
+              <option value="ginjirotchi" ${params.type === 'ginjirotchi' ? 'selected' : ''}>🐧 Ginjirotchi (Pinguim Atleta Nadador)</option>
+              <option value="maskutchi" ${params.type === 'maskutchi' ? 'selected' : ''}>🥷 Maskutchi (Ninja Mascarado Secreto)</option>
+              <option value="marutchi" ${params.type === 'marutchi' ? 'selected' : ''}>🟢 Marutchi (Bouncing Toddler)</option>
+              <option value="babytchi" ${params.type === 'babytchi' ? 'selected' : ''}>👶 Babytchi (Recém-Nascido com Topete)</option>
+              <option value="oyajitchi" ${params.type === 'oyajitchi' ? 'selected' : ''}>👴 Oyajitchi (Bigode Clássico de Terno)</option>
+              <option value="tamatchi" ${params.type === 'tamatchi' ? 'selected' : ''}>🌱 Tamatchi (Jovem com Orelhinhas)</option>
+              <option value="nyorotchi" ${params.type === 'nyorotchi' ? 'selected' : ''}>🐍 Nyorotchi (Cobra Ondulante)</option>
+              <option value="tarakotchi" ${params.type === 'tarakotchi' ? 'selected' : ''}>👄 Tarakotchi (Bocão Alienígena)</option>
+              <option value="cat" ${params.type === 'cat' ? 'selected' : ''}>🐱 Pixel Cat (Mametchi)</option>
+              <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Cyber Droid (Maskutchi)</option>
+              <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐲 Mini Dragão (Kuchipatchi)</option>
+              <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Linux Tux (Ginjirotchi)</option>
             </select>
           </div>
           <div class="flex flex-col gap-1.5">
@@ -3586,6 +3606,20 @@ Sleep 3s
               <label class="font-semibold text-slate-300 block mb-1">Pontuação</label>
               <input type="number" id="cfg-mario-score" value="${params.score || 2450}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
             </div>
+          </div>
+        `;
+      } else if (sec.type === 'invaders' || sec.type === 'space_invaders') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Score do Arcade Space Invaders</label>
+            <input type="number" id="cfg-invaders-score" value="${params.score || 1978}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'pacman') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Score do Pac-Man (1UP)</label>
+            <input type="number" id="cfg-pacman-score" value="${params.score || 333360}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
           </div>
         `;
       } else if (sec.type === 'dvd') {
@@ -3740,76 +3774,23 @@ Sleep 3s
         sec.params.speed = parseFloat(document.getElementById('cfg-chess-speed').value);
         sec.params.animated = document.getElementById('cfg-chess-anim').checked;
       } else if (sec.type === 'rpg' || sec.type === 'rpg_sheet') {
-        html = `
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Classe do Desenvolvedor</label>
-            <select id="cfg-rpg-cls" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-              <option value="alchemist" ${(params.cls || 'alchemist') === 'alchemist' ? 'selected' : ''}>🧙‍♂️ Fullstack Alchemist (Node + Python + Rust)</option>
-              <option value="sorcerer" ${params.cls === 'sorcerer' ? 'selected' : ''}>🧙 Systems Sorcerer (C / C++ / Kernel / ASM)</option>
-              <option value="ninja" ${params.cls === 'ninja' ? 'selected' : ''}>🥷 Cyber Ninja (SecOps / PenTest / Linux)</option>
-              <option value="paladin" ${params.cls === 'paladin' ? 'selected' : ''}>🛡️ Data Paladin (PostgreSQL / ML / BigData)</option>
-              <option value="shaman" ${params.cls === 'shaman' ? 'selected' : ''}>⚡ Cloud Shaman (K8s / Terraform / AWS)</option>
-            </select>
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Nível do Personagem</label>
-            <input type="number" id="cfg-rpg-level" min="1" max="999" value="${params.level || 85}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-          </div>
-        `;
+        sec.params.cls = document.getElementById('cfg-rpg-cls') ? document.getElementById('cfg-rpg-cls').value : 'alchemist';
+        sec.params.level = document.getElementById('cfg-rpg-level') ? (parseInt(document.getElementById('cfg-rpg-level').value, 10) || 85) : 85;
       } else if (sec.type === 'subway' || sec.type === 'git_subway') {
-        html = `
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Nome do Repositório / Rede</label>
-            <input type="text" id="cfg-sub-repo" value="${escapeHtml(params.repo || 'core-platform')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-          </div>
-        `;
+        sec.params.repo = document.getElementById('cfg-sub-repo') ? document.getElementById('cfg-sub-repo').value.trim() : 'core-platform';
       } else if (sec.type === 'pet' || sec.type === 'dev_pet') {
-        html = `
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Espécie do Pet Virtual</label>
-            <select id="cfg-pet-type" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-              <option value="cat" ${(params.type || 'cat') === 'cat' ? 'selected' : ''}>🐱 Pixel Cat</option>
-              <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Robo-Byte</option>
-              <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐉 Dev Drake</option>
-              <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Tux Junior</option>
-            </select>
-          </div>
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Nome do Pet</label>
-            <input type="text" id="cfg-pet-name" value="${escapeHtml(params.name || 'KERNEL')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-          </div>
-        `;
+        sec.params.type = document.getElementById('cfg-pet-type') ? document.getElementById('cfg-pet-type').value : 'mametchi';
+        sec.params.name = document.getElementById('cfg-pet-name') ? document.getElementById('cfg-pet-name').value.trim() : 'KERNEL';
       } else if (sec.type === 'mario') {
-        html = `
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="font-semibold text-slate-300 block mb-1">Mundo (World)</label>
-              <input type="text" id="cfg-mario-world" value="${escapeHtml(params.world || '1-1')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-            </div>
-            <div>
-              <label class="font-semibold text-slate-300 block mb-1">Pontuação</label>
-              <input type="number" id="cfg-mario-score" value="${params.score || 2450}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-            </div>
-          </div>
-        `;
+        sec.params.world = document.getElementById('cfg-mario-world') ? document.getElementById('cfg-mario-world').value.trim() : '1-1';
+        sec.params.score = document.getElementById('cfg-mario-score') ? (parseInt(document.getElementById('cfg-mario-score').value, 10) || 2450) : 2450;
+      } else if (sec.type === 'invaders' || sec.type === 'space_invaders') {
+        sec.params.score = document.getElementById('cfg-invaders-score') ? (parseInt(document.getElementById('cfg-invaders-score').value, 10) || 1978) : 1978;
+      } else if (sec.type === 'pacman') {
+        sec.params.score = document.getElementById('cfg-pacman-score') ? (parseInt(document.getElementById('cfg-pacman-score').value, 10) || 333360) : 333360;
       } else if (sec.type === 'dvd') {
-        html = `
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="font-semibold text-slate-300 block mb-1">Texto do Logo</label>
-              <input type="text" id="cfg-dvd-text" value="${escapeHtml(params.text || 'DVD')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-            </div>
-            <div>
-              <label class="font-semibold text-slate-300 block mb-1">Velocidade</label>
-              <select id="cfg-dvd-speed" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-                <option value="0.75" ${params.speed === 0.75 ? 'selected' : ''}>0.75x</option>
-                <option value="1.0" ${(!params.speed || params.speed === 1.0) ? 'selected' : ''}>1.0x</option>
-                <option value="1.5" ${params.speed === 1.5 ? 'selected' : ''}>1.5x</option>
-                <option value="2.0" ${params.speed === 2.0 ? 'selected' : ''}>2.0x</option>
-              </select>
-            </div>
-          </div>
-        `;
+        sec.params.text = document.getElementById('cfg-dvd-text') ? document.getElementById('cfg-dvd-text').value.trim() : 'DVD';
+        sec.params.speed = document.getElementById('cfg-dvd-speed') ? (parseFloat(document.getElementById('cfg-dvd-speed').value) || 1.0) : 1.0;
       } else if (sec.type === 'pokemon') {
         sec.params.pokemon = document.getElementById('cfg-pk-name').value;
         sec.params.level = parseInt(document.getElementById('cfg-pk-level').value, 10) || 100;
