@@ -23,6 +23,12 @@ DEFAULT_SECTIONS = [
     {"id": "music", "type": "music", "title": "Cassete Spotify Hi-Fi", "enabled": False, "file": "music-card.svg", "params": {"preset": "synthwave", "animated": True}},
     {"id": "weather", "type": "weather", "title": "Previsão do Tempo em ASCII", "enabled": False, "file": "weather-card.svg", "params": {"city": "Curitiba, Brazil"}},
     {"id": "diagram", "type": "diagram", "title": "Topologia de Arquitetura", "enabled": False, "file": "architecture.svg", "params": {"preset": "microservices"}},
+    {"id": "rpg", "type": "rpg_sheet", "title": "Passaporte RPG do Desenvolvedor", "enabled": False, "file": "rpg-sheet.svg", "params": {"cls": "alchemist", "level": 85}},
+    {"id": "subway", "type": "git_subway", "title": "Mapa de Metrô dos Commits (Git Branches)", "enabled": False, "file": "git-subway.svg", "params": {"repo": "core-platform"}},
+    {"id": "pet", "type": "dev_pet", "title": "Tamagotchi Dev Pet Virtual 1996", "enabled": False, "file": "dev-pet.svg", "params": {"type": "cat", "name": "KERNEL"}},
+    {"id": "mario", "type": "mario", "title": "Super Mario Bros NES World 1-1 Runner", "enabled": False, "file": "mario-runner.svg", "params": {"world": "1-1", "score": 2450}},
+    {"id": "invaders", "type": "space_invaders", "title": "Space Invaders Arcade 1978", "enabled": False, "file": "space-invaders.svg", "params": {"score": 1978}},
+    {"id": "pacman", "type": "pacman", "title": "Pac-Man Arcade Maze 1980", "enabled": False, "file": "pacman-chase.svg", "params": {"score": 333360}},
     {"id": "dvd", "type": "dvd", "title": "Screensaver DVD Bouncing Retro", "enabled": False, "file": "dvd-screensaver.svg", "params": {"text": "DVD", "speed": 1.0}},
     {"id": "fortune", "type": "fortune", "title": "Biscoito da Sorte Hacker / Filosofia", "enabled": False, "file": "fortune.svg", "params": {}},
 ]
@@ -208,10 +214,11 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                         svg_content = f.read()
                 elif stype == "chess":
                     match = params.get("match", "opera")
+                    c_pgn = params.get("pgn", None)
                     speed = float(params.get("speed", 1.0))
                     anim = bool(params.get("animated", True))
                     p = registry.get("chess_board")
-                    res = p.run(match=match, animated=anim, speed=speed, username=username, out_svg="chess_board.svg")
+                    res = p.run(match=match, pgn=c_pgn, animated=anim, speed=speed, username=username, out_svg="chess_board.svg")
                     with open(res.get("output_path", "chess_board.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "weather":
@@ -228,6 +235,45 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                     p = registry.get("ascii_diagram")
                     res = p.run(preset=preset, title=diag_title, username=username, out_svg="ascii_diagram.svg")
                     with open(res.get("output_path", "ascii_diagram.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "rpg_sheet":
+                    p = registry.get("rpg_sheet")
+                    r_cls = params.get("cls", "alchemist")
+                    r_lvl = int(params.get("level", 85))
+                    res = p.run(username=username, character_name=name or username, rpg_class=r_cls, level=r_lvl, out_svg="rpg-sheet.svg")
+                    with open(res.get("output_path", "rpg-sheet.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "git_subway":
+                    p = registry.get("git_subway")
+                    r_repo = params.get("repo", "core-platform")
+                    res = p.run(username=username, repo_name=r_repo, out_svg="git-subway.svg")
+                    with open(res.get("output_path", "git-subway.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "dev_pet":
+                    p = registry.get("dev_pet")
+                    p_type = params.get("type", "cat")
+                    p_name = params.get("name", "KERNEL")
+                    res = p.run(username=username, pet_name=p_name, pet_type=p_type, out_svg="dev-pet.svg")
+                    with open(res.get("output_path", "dev-pet.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "mario":
+                    p = registry.get("mario")
+                    m_world = params.get("world", "1-1")
+                    m_score = int(params.get("score", 2450))
+                    res = p.run(username=name or username, world=m_world, score=m_score, out_svg="mario-runner.svg")
+                    with open(res.get("output_path", "mario-runner.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "space_invaders":
+                    p = registry.get("space_invaders")
+                    s_score = int(params.get("score", 1978))
+                    res = p.run(username=username, score=s_score, out_svg="space-invaders.svg")
+                    with open(res.get("output_path", "space-invaders.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "pacman":
+                    p = registry.get("pacman")
+                    pa_score = int(params.get("score", 333360))
+                    res = p.run(username=username, score=pa_score, out_svg="pacman-chase.svg")
+                    with open(res.get("output_path", "pacman-chase.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "dvd":
                     dvd_text = params.get("text", "DVD")

@@ -148,6 +148,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         </div>
       </div>
       <div class="flex items-center gap-3 text-xs">
+        <button id="btn-sound-toggle" onclick="toggleAudioFx()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-dark/90 hover:bg-brand-dark border border-brand-border text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm" title="Ligar / Desligar Efeitos Sonoros Retrô">
+          <span id="sound-icon">🔊</span>
+          <span id="sound-label">Som: ON</span>
+        </button>
         <button onclick="openConfigModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-dark/90 hover:bg-brand-dark border border-brand-border text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm" title="Configurar Perfil e GitHub">
           <span class="text-brand-400">⚙️</span>
           <span id="header-user-badge">Perfil: <strong class="text-white">Convidado</strong></span>
@@ -999,6 +1003,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Efeito / Screensaver</label>
             <select id="fx-engine" onchange="toggleFxEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="mario">🍄 Super Mario Bros NES (World 1-1 Runner &amp; Coin Jump)</option>
+              <option value="space_invaders">👾 Space Invaders Arcade 1978 (Laser Cannon Defense)</option>
+              <option value="pacman">ᗧ••• Pac-Man Terminal Maze 1980 (Chomp &amp; 4 Ghosts)</option>
+              <option value="starfield">🌌 Starfield 3D (Hiperespaço Star Wars Warp 60fps)</option>
+              <option value="cyberpunk_city">🌧️ Cyberpunk City (Chuva Noturna Neo-Tokyo em Kanji)</option>
               <option value="dvd">📀 DVD Bouncing Screensaver (Quicando nas Bordas &amp; Cantos)</option>
               <option value="pipes">🌀 Pipes.sh (Canos Procedurais em Loop Infinito)</option>
               <option value="cmatrix">🟢 The Matrix (Chuva Digital Katakana 60fps)</option>
@@ -1015,7 +1024,48 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </select>
           </div>
 
-                    <!-- FX DVD options -->
+                              <!-- FX Mario options -->
+          <div id="fx-opt-mario" class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Mundo (World)</label>
+              <input id="mario-world" type="text" value="1-1" placeholder="1-1" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Pontuação</label>
+              <input id="mario-score" type="number" value="2450" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <!-- FX Space Invaders options -->
+          <div id="fx-opt-invaders" class="hidden flex flex-col gap-2">
+            <label class="text-xs text-slate-400 block mb-1">Score Inicial</label>
+            <input id="invaders-score" type="number" value="1978" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <!-- FX Pacman options -->
+          <div id="fx-opt-pacman" class="hidden flex flex-col gap-2">
+            <label class="text-xs text-slate-400 block mb-1">Score / 1UP</label>
+            <input id="pacman-score" type="number" value="333360" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <!-- FX Starfield options -->
+          <div id="fx-opt-starfield" class="hidden flex flex-col gap-2">
+            <label class="text-xs text-slate-400 block mb-1">Velocidade de Dobra (Warp Speed)</label>
+            <select id="starfield-warp" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="0.75">Warp 5.0 (Cruzeiro Espacial)</option>
+              <option value="1.0" selected>Warp 9.8 (Hiperespaço Standard)</option>
+              <option value="1.5">Warp 12.0 (Velocidade da Luz)</option>
+              <option value="2.0">Ludicrous Speed (Espaço Profundo)</option>
+            </select>
+          </div>
+
+          <!-- FX Cyberpunk City options -->
+          <div id="fx-opt-city" class="hidden flex flex-col gap-2">
+            <label class="text-xs text-slate-400 block mb-1">Nome da Metrópole</label>
+            <input id="city-name" type="text" value="NEO-TOKYO" placeholder="ex: NEO-TOKYO, CYBER-CITY" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+          </div>
+
+          <!-- FX DVD options -->
           <div id="fx-opt-dvd" class="grid grid-cols-2 gap-3">
             <div>
               <label class="text-xs text-slate-400 block mb-1">Texto do Logo</label>
@@ -1501,6 +1551,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="chess">♟️ Xadrez Animado até Cheque-Mate</option>
               <option value="weather">🌦️ Previsão do Tempo em ASCII</option>
               <option value="diagram">📐 Diagrama de Topologia / Arquitetura</option>
+              <option value="rpg">⚔️ Passaporte RPG do Desenvolvedor (Classes, HP/Mana &amp; Gear)</option>
+              <option value="subway">🗺️ Mapa de Metrô dos Commits (Git Branch Subway)</option>
+              <option value="pet">👾 Tamagotchi Dev Pet Virtual 1996</option>
+              <option value="mario">🍄 Super Mario Bros NES World 1-1 Runner</option>
+              <option value="invaders">👾 Space Invaders Arcade 1978</option>
+              <option value="pacman">ᗧ••• Pac-Man Terminal Arcade</option>
+              <option value="dvd">📀 DVD Bouncing Screensaver Retro</option>
               <option value="fortune">🥠 Biscoito da Sorte Hacker / Zen</option>
               <option value="custom_svg">🖼️ Arte Customizada / Enviar Meu SVG</option>
             </select>
@@ -1967,7 +2024,114 @@ Sleep 3s
 `
     };
 
+
+    // ==========================================
+    // WEB AUDIO API NATIVE CHIPTUNE SYNTHESIZER
+    // ==========================================
+    let audioFxEnabled = localStorage.getItem('termart_sound_enabled') !== 'false';
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) audioCtx = new AudioContext();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSwitchSound() {
+      if (!audioFxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        const now = ctx.currentTime;
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(80, now + 0.04);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } catch (e) {}
+    }
+
+    function playMarioCoinSound() {
+      if (!audioFxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        // Note 1: B5 (987.77 Hz)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(987.77, now);
+        gain1.gain.setValueAtTime(0.12, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.09);
+
+        // Note 2: E6 (1318.51 Hz) starting after 0.08s
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(1318.51, now + 0.08);
+        gain2.gain.setValueAtTime(0.15, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.08);
+        osc2.stop(now + 0.40);
+      } catch (e) {}
+    }
+
+    function playGameBoyBeep() {
+      if (!audioFxEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1046.5, now);
+        osc.frequency.setValueAtTime(2093.0, now + 0.07);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      } catch (e) {}
+    }
+
+    function toggleAudioFx() {
+      audioFxEnabled = !audioFxEnabled;
+      localStorage.setItem('termart_sound_enabled', audioFxEnabled ? 'true' : 'false');
+      updateSoundButtonUI();
+      if (audioFxEnabled) playMarioCoinSound();
+    }
+
+    function updateSoundButtonUI() {
+      const icon = document.getElementById('sound-icon');
+      const label = document.getElementById('sound-label');
+      if (icon && label) {
+        icon.innerText = audioFxEnabled ? '🔊' : '🔇';
+        label.innerText = audioFxEnabled ? 'Som: ON' : 'Som: MUDO';
+      }
+    }
+
     function switchTab(tabId) {
+      if (typeof playSwitchSound === 'function') playSwitchSound();
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(el => {
         el.classList.remove('bg-brand-600', 'text-white');
@@ -1998,6 +2162,12 @@ Sleep 3s
 
     function toggleFxEngine() {
       const fx = document.getElementById('fx-engine').value;
+      const setH = (id, hide) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', hide); };
+      setH('fx-opt-mario', fx !== 'mario');
+      setH('fx-opt-invaders', fx !== 'space_invaders');
+      setH('fx-opt-pacman', fx !== 'pacman');
+      setH('fx-opt-starfield', fx !== 'starfield');
+      setH('fx-opt-city', fx !== 'cyberpunk_city');
       const dvdEl = document.getElementById('fx-opt-dvd'); if (dvdEl) dvdEl.classList.toggle('hidden', fx !== 'dvd');
       document.getElementById('fx-opt-pipes').classList.toggle('hidden', fx !== 'pipes');
       document.getElementById('fx-opt-cmatrix').classList.toggle('hidden', fx !== 'cmatrix');
@@ -2647,7 +2817,18 @@ Sleep 3s
       formData.append('engine', fx);
       formData.append('username', user);
 
-      if (fx === 'dvd') {
+      if (fx === 'mario') {
+        formData.append('mario_world', document.getElementById('mario-world').value);
+        formData.append('mario_score', document.getElementById('mario-score').value);
+      } else if (fx === 'space_invaders') {
+        formData.append('invaders_score', document.getElementById('invaders-score').value);
+      } else if (fx === 'pacman') {
+        formData.append('pacman_score', document.getElementById('pacman-score').value);
+      } else if (fx === 'starfield') {
+        formData.append('starfield_warp', document.getElementById('starfield-warp').value);
+      } else if (fx === 'cyberpunk_city') {
+        formData.append('city_name', document.getElementById('city-name').value);
+      } else if (fx === 'dvd') {
         formData.append('dvd_text', document.getElementById('dvd-text').value);
         formData.append('dvd_speed', document.getElementById('dvd-speed').value);
       } else if (fx === 'pipes') {
@@ -3095,7 +3276,14 @@ Sleep 3s
       { id: "chess", type: "chess", title: "Partida de Xadrez com Xeque-Mate", enabled: false, file: "chess-board.svg", icon: "♟️" },
       { id: "weather", type: "weather", title: "Previsão do Tempo em ASCII", enabled: false, file: "weather-card.svg", icon: "🌦️" },
       { id: "diagram", type: "diagram", title: "Topologia de Arquitetura", enabled: false, file: "architecture.svg", icon: "📐" },
-      { id: "fortune", type: "fortune", title: "Biscoito da Sorte Hacker / Zen", enabled: false, file: "fortune.svg", icon: "🥠" }
+      { id: "fortune", type: "fortune", title: "Biscoito da Sorte Hacker / Zen", enabled: false, file: "fortune.svg", icon: "🥠" },
+      { id: "rpg", type: "rpg_sheet", title: "Passaporte RPG do Desenvolvedor", enabled: false, file: "rpg-sheet.svg", icon: "⚔️", params: { cls: "alchemist", level: 85 } },
+      { id: "subway", type: "git_subway", title: "Mapa de Metrô dos Commits (Branches)", enabled: false, file: "git-subway.svg", icon: "🗺️", params: { repo: "core-platform" } },
+      { id: "pet", type: "dev_pet", title: "Tamagotchi Dev Pet Virtual 1996", enabled: false, file: "dev-pet.svg", icon: "👾", params: { type: "cat", name: "KERNEL" } },
+      { id: "mario", type: "mario", title: "Super Mario Bros NES World 1-1 Runner", enabled: false, file: "mario-runner.svg", icon: "🍄", params: { world: "1-1", score: 2450 } },
+      { id: "invaders", type: "space_invaders", title: "Space Invaders Arcade 1978", enabled: false, file: "space-invaders.svg", icon: "👾", params: { score: 1978 } },
+      { id: "pacman", type: "pacman", title: "Pac-Man Arcade Maze 1980", enabled: false, file: "pacman-chase.svg", icon: "ᗧ", params: { score: 333360 } },
+      { id: "dvd", type: "dvd", title: "Screensaver DVD Bouncing Retro", enabled: false, file: "dvd-screensaver.svg", icon: "📀", params: { text: "DVD", speed: 1.0 } }
     ];
 
     function getStoredBuilderSections() {
@@ -3203,6 +3391,81 @@ Sleep 3s
                 <input type="checkbox" id="cfg-chess-anim" class="accent-brand-500" ${params.animated !== false ? 'checked' : ''}>
                 <span>Executar lances em loop</span>
               </label>
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5 mt-2">
+            <label class="font-semibold text-slate-300">Importar Partida Própria (Cole o PGN do Chess.com ou Lichess)</label>
+            <textarea id="cfg-chess-pgn" rows="2" placeholder="Cole aqui seu PGN ex: 1. e4 e5 2. Nf3... (opcional)" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">${escapeHtml(params.pgn || '')}</textarea>
+          </div>
+        `;
+      } else if (sec.type === 'rpg' || sec.type === 'rpg_sheet') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Classe do Desenvolvedor</label>
+            <select id="cfg-rpg-cls" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="alchemist" ${(params.cls || 'alchemist') === 'alchemist' ? 'selected' : ''}>🧙‍♂️ Fullstack Alchemist (Node + Python + Rust)</option>
+              <option value="sorcerer" ${params.cls === 'sorcerer' ? 'selected' : ''}>🧙 Systems Sorcerer (C / C++ / Kernel / ASM)</option>
+              <option value="ninja" ${params.cls === 'ninja' ? 'selected' : ''}>🥷 Cyber Ninja (SecOps / PenTest / Linux)</option>
+              <option value="paladin" ${params.cls === 'paladin' ? 'selected' : ''}>🛡️ Data Paladin (PostgreSQL / ML / BigData)</option>
+              <option value="shaman" ${params.cls === 'shaman' ? 'selected' : ''}>⚡ Cloud Shaman (K8s / Terraform / AWS)</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nível do Personagem</label>
+            <input type="number" id="cfg-rpg-level" min="1" max="999" value="${params.level || 85}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'subway' || sec.type === 'git_subway') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nome do Repositório / Rede</label>
+            <input type="text" id="cfg-sub-repo" value="${escapeHtml(params.repo || 'core-platform')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'pet' || sec.type === 'dev_pet') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Espécie do Pet Virtual</label>
+            <select id="cfg-pet-type" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="cat" ${(params.type || 'cat') === 'cat' ? 'selected' : ''}>🐱 Pixel Cat</option>
+              <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Robo-Byte</option>
+              <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐉 Dev Drake</option>
+              <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Tux Junior</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nome do Pet</label>
+            <input type="text" id="cfg-pet-name" value="${escapeHtml(params.name || 'KERNEL')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'mario') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Mundo (World)</label>
+              <input type="text" id="cfg-mario-world" value="${escapeHtml(params.world || '1-1')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Pontuação</label>
+              <input type="number" id="cfg-mario-score" value="${params.score || 2450}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'dvd') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Texto do Logo</label>
+              <input type="text" id="cfg-dvd-text" value="${escapeHtml(params.text || 'DVD')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Velocidade</label>
+              <select id="cfg-dvd-speed" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="0.75" ${params.speed === 0.75 ? 'selected' : ''}>0.75x</option>
+                <option value="1.0" ${(!params.speed || params.speed === 1.0) ? 'selected' : ''}>1.0x</option>
+                <option value="1.5" ${params.speed === 1.5 ? 'selected' : ''}>1.5x</option>
+                <option value="2.0" ${params.speed === 2.0 ? 'selected' : ''}>2.0x</option>
+              </select>
             </div>
           </div>
         `;
@@ -3339,6 +3602,77 @@ Sleep 3s
         sec.params.match = document.getElementById('cfg-chess-match').value;
         sec.params.speed = parseFloat(document.getElementById('cfg-chess-speed').value);
         sec.params.animated = document.getElementById('cfg-chess-anim').checked;
+      } else if (sec.type === 'rpg' || sec.type === 'rpg_sheet') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Classe do Desenvolvedor</label>
+            <select id="cfg-rpg-cls" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="alchemist" ${(params.cls || 'alchemist') === 'alchemist' ? 'selected' : ''}>🧙‍♂️ Fullstack Alchemist (Node + Python + Rust)</option>
+              <option value="sorcerer" ${params.cls === 'sorcerer' ? 'selected' : ''}>🧙 Systems Sorcerer (C / C++ / Kernel / ASM)</option>
+              <option value="ninja" ${params.cls === 'ninja' ? 'selected' : ''}>🥷 Cyber Ninja (SecOps / PenTest / Linux)</option>
+              <option value="paladin" ${params.cls === 'paladin' ? 'selected' : ''}>🛡️ Data Paladin (PostgreSQL / ML / BigData)</option>
+              <option value="shaman" ${params.cls === 'shaman' ? 'selected' : ''}>⚡ Cloud Shaman (K8s / Terraform / AWS)</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nível do Personagem</label>
+            <input type="number" id="cfg-rpg-level" min="1" max="999" value="${params.level || 85}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'subway' || sec.type === 'git_subway') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nome do Repositório / Rede</label>
+            <input type="text" id="cfg-sub-repo" value="${escapeHtml(params.repo || 'core-platform')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'pet' || sec.type === 'dev_pet') {
+        html = `
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Espécie do Pet Virtual</label>
+            <select id="cfg-pet-type" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+              <option value="cat" ${(params.type || 'cat') === 'cat' ? 'selected' : ''}>🐱 Pixel Cat</option>
+              <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Robo-Byte</option>
+              <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐉 Dev Drake</option>
+              <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Tux Junior</option>
+            </select>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="font-semibold text-slate-300">Nome do Pet</label>
+            <input type="text" id="cfg-pet-name" value="${escapeHtml(params.name || 'KERNEL')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'mario') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Mundo (World)</label>
+              <input type="text" id="cfg-mario-world" value="${escapeHtml(params.world || '1-1')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Pontuação</label>
+              <input type="number" id="cfg-mario-score" value="${params.score || 2450}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'dvd') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Texto do Logo</label>
+              <input type="text" id="cfg-dvd-text" value="${escapeHtml(params.text || 'DVD')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Velocidade</label>
+              <select id="cfg-dvd-speed" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="0.75" ${params.speed === 0.75 ? 'selected' : ''}>0.75x</option>
+                <option value="1.0" ${(!params.speed || params.speed === 1.0) ? 'selected' : ''}>1.0x</option>
+                <option value="1.5" ${params.speed === 1.5 ? 'selected' : ''}>1.5x</option>
+                <option value="2.0" ${params.speed === 2.0 ? 'selected' : ''}>2.0x</option>
+              </select>
+            </div>
+          </div>
+        `;
       } else if (sec.type === 'pokemon') {
         sec.params.pokemon = document.getElementById('cfg-pk-name').value;
         sec.params.level = parseInt(document.getElementById('cfg-pk-level').value, 10) || 100;
@@ -3498,13 +3832,13 @@ Sleep 3s
     function applyReadmePreset(preset) {
       let ids = [];
       if (preset === 'cyberpunk') {
-        ids = ['header', 'badges', 'heatmap', 'pokemon', 'neofetch', 'coding_stats'];
+        ids = ['header', 'rpg', 'music', 'badges', 'coding_stats', 'neofetch'];
       } else if (preset === 'minimal') {
-        ids = ['header', 'badges', 'stats', 'coding_stats'];
+        ids = ['header', 'subway', 'neofetch', 'heatmap', 'badges'];
       } else if (preset === 'gamer') {
-        ids = ['header', 'pokemon', 'chess', 'music', 'stats'];
+        ids = ['mario', 'pokemon', 'pacman', 'dvd', 'pet', 'chess'];
       } else if (preset === 'devops') {
-        ids = ['header', 'badges', 'diagram', 'neofetch', 'heatmap'];
+        ids = ['header', 'subway', 'badges', 'diagram', 'neofetch', 'heatmap'];
       }
 
       const newSections = JSON.parse(JSON.stringify(DEFAULT_BUILDER_BLOCKS));
@@ -3910,13 +4244,13 @@ def render_clock(color: str = "phosphor", format_mode: str = "24h", username: st
     return Response(content=svg, media_type="image/svg+xml")
 
 @app.get("/api/render/chess")
-def render_chess(match: str = "opera", animated: bool = True, speed: float = 1.0, username: str = "grandmaster"):
+def render_chess(match: str = "opera", animated: bool = True, speed: float = 1.0, username: str = "grandmaster", pgn: Optional[str] = None):
     import importlib
     from ...modules.profile import chess_board
     importlib.reload(chess_board)
     p = registry.get("chess_board")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_ch.svg")
-    p.run(match=match, animated=animated, speed=speed, out_svg=tmp, username=username)
+    p.run(match=match, pgn=pgn, animated=animated, speed=speed, out_svg=tmp, username=username)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
@@ -3980,6 +4314,107 @@ def render_diagram(preset: str = "microservices", title: str = None, username: s
     p = registry.get("ascii_diagram")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_di.svg")
     p.run(preset=preset, title=title, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/dvd")
+def render_dvd(text: str = "DVD", speed: float = 1.0, username: str = "retro_fan"):
+    p = registry.get("dvd")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_dvd.svg")
+    p.run(text=text, speed=float(speed), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/mario")
+def render_mario(world: str = "1-1", score: int = 2450, coins: int = 14, username: str = "MARIO"):
+    p = registry.get("mario")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_mario.svg")
+    p.run(world=world, score=int(score), coins=int(coins), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/space_invaders")
+def render_space_invaders(score: int = 1978, username: str = "defender"):
+    p = registry.get("space_invaders")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_invaders.svg")
+    p.run(score=int(score), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/pacman")
+def render_pacman(score: int = 333360, username: str = "waka_waka"):
+    p = registry.get("pacman")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_pacman.svg")
+    p.run(score=int(score), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/starfield")
+def render_starfield(warp_speed: float = 1.0, username: str = "skywalker"):
+    p = registry.get("starfield")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_starfield.svg")
+    p.run(warp_speed=float(warp_speed), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/cyberpunk_city")
+@app.get("/api/render/skyline")
+def render_cyberpunk_city(city_name: str = "NEO-TOKYO", username: str = "netrunner"):
+    p = registry.get("cyberpunk_city")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_skyline.svg")
+    p.run(city_name=city_name, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/rpg_sheet")
+@app.get("/api/render/rpg")
+def render_rpg_sheet(
+    cls: str = "alchemist",
+    level: int = 85,
+    name: Optional[str] = None,
+    hp: int = 96,
+    mana: int = 91,
+    stamina: int = 98,
+    username: str = "hero"
+):
+    p = registry.get("rpg_sheet")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_rpg.svg")
+    char_name = name if name else username.upper()
+    p.run(character_name=char_name, rpg_class=cls, level=int(level), hp=int(hp), mana=int(mana), stamina=int(stamina), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/git_subway")
+@app.get("/api/render/subway")
+def render_git_subway(repo: str = "core-platform", username: str = "commuter"):
+    p = registry.get("git_subway")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_subway.svg")
+    p.run(repo_name=repo, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/dev_pet")
+@app.get("/api/render/pet")
+def render_dev_pet(
+    type: str = "cat",
+    name: str = "KERNEL",
+    level: int = 42,
+    happiness: int = 98,
+    coffee_level: int = 100,
+    username: str = "tamer"
+):
+    p = registry.get("dev_pet")
+    tmp = os.path.join(os.path.dirname(__file__), "_temp_pet.svg")
+    p.run(pet_name=name, pet_type=type, level=int(level), happiness=int(happiness), coffee_level=int(coffee_level), username=username, out_svg=tmp)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
@@ -4127,7 +4562,13 @@ async def render_image_batch(
 
 @app.post("/api/render/fx")
 async def render_fx_endpoint(
-    engine: str = Form("dvd"),
+    engine: str = Form("mario"),
+    mario_world: str = Form("1-1"),
+    mario_score: int = Form(2450),
+    invaders_score: int = Form(1978),
+    pacman_score: int = Form(333360),
+    starfield_warp: float = Form(1.0),
+    city_name: str = Form("NEO-TOKYO"),
     dvd_text: str = Form("DVD"),
     dvd_speed: float = Form(1.0),
     username: str = Form("developer"),
@@ -4147,7 +4588,18 @@ async def render_fx_endpoint(
     out_svg = os.path.join(os.path.dirname(__file__), f"_temp_fx_{engine}.svg")
     kwargs = {"out_svg": out_svg, "username": username}
     
-    if engine == "dvd":
+    if engine == "mario":
+        kwargs["world"] = mario_world
+        kwargs["score"] = mario_score
+    elif engine == "space_invaders":
+        kwargs["score"] = invaders_score
+    elif engine == "pacman":
+        kwargs["score"] = pacman_score
+    elif engine == "starfield":
+        kwargs["warp_speed"] = starfield_warp
+    elif engine == "cyberpunk_city":
+        kwargs["city_name"] = city_name
+    elif engine == "dvd":
         kwargs["text"] = dvd_text
         kwargs["speed"] = dvd_speed
     elif engine == "pipes":
@@ -4382,6 +4834,31 @@ def builder_preview(payload: dict = Body(...)):
         elif stype == "diagram":
             preset = params.get("preset", "microservices")
             sec["preview_url"] = f"/api/render/diagram?preset={preset}&username={safe_user}"
+        elif stype in ("rpg", "rpg_sheet"):
+            r_cls = params.get("cls", "alchemist")
+            r_lvl = params.get("level", 85)
+            sec["preview_url"] = f"/api/render/rpg_sheet?cls={r_cls}&level={r_lvl}&name={safe_name}&username={safe_user}"
+        elif stype in ("subway", "git_subway"):
+            r_repo = urllib.parse.quote(params.get("repo", "core-platform"))
+            sec["preview_url"] = f"/api/render/git_subway?repo={r_repo}&username={safe_user}"
+        elif stype in ("pet", "dev_pet"):
+            p_type = params.get("type", "cat")
+            p_name = urllib.parse.quote(params.get("name", "KERNEL"))
+            sec["preview_url"] = f"/api/render/dev_pet?type={p_type}&name={p_name}&username={safe_user}"
+        elif stype == "mario":
+            m_world = urllib.parse.quote(params.get("world", "1-1"))
+            m_score = params.get("score", 2450)
+            sec["preview_url"] = f"/api/render/mario?world={m_world}&score={m_score}&username={safe_user}"
+        elif stype == "space_invaders":
+            s_score = params.get("score", 1978)
+            sec["preview_url"] = f"/api/render/space_invaders?score={s_score}&username={safe_user}"
+        elif stype == "pacman":
+            pa_score = params.get("score", 333360)
+            sec["preview_url"] = f"/api/render/pacman?score={pa_score}&username={safe_user}"
+        elif stype == "dvd":
+            d_text = urllib.parse.quote(params.get("text", "DVD"))
+            d_spd = params.get("speed", 1.0)
+            sec["preview_url"] = f"/api/render/dvd?text={d_text}&speed={d_spd}&username={safe_user}"
         elif stype == "fortune":
             sec["preview_url"] = f"/api/render/fortune?username={safe_user}"
 

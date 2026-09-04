@@ -4,6 +4,7 @@ Renders an authentic 8x8 ASCII / Unicode chessboard with full game replay animat
 from move 1 all the way to checkmate, square highlights, move transcripts, and victory banners in pure SVG.
 """
 import os
+import re
 import copy
 import html
 from typing import Dict, Any, List
@@ -20,6 +21,100 @@ START_BOARD = [
     ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
     ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"]
 ]
+
+
+def parse_pgn_to_moves(pgn_str: str):
+    """
+    Parses a user-supplied PGN string into a sequence of moves for the terminal board.
+    Supports standard PGN with move numbers, SAN notations, and captures.
+    """
+    # Remove headers [Event ...], [White ...] etc.
+    clean = re.sub(r'\[[^\]]*\]', '', pgn_str)
+    # Remove comments { ... }
+    clean = re.sub(r'\{[^\}]*\}', '', clean)
+    # Remove annotations ($1, etc.)
+    clean = re.sub(r'\$\d+', '', clean)
+    
+    # Tokenize words
+    tokens = clean.split()
+    moves = []
+    
+    # Simple algebraic square pattern
+    sq_pat = re.compile(r'([a-h][1-8])')
+    
+    move_num = 1
+    is_white = True
+    
+    for tok in tokens:
+        tok = tok.strip()
+        if not tok or tok in ("1-0", "0-1", "1/2-1/2", "*"):
+            continue
+        if re.match(r'^\d+\.', tok):
+            # Move number like 1. or 1...
+            tok = re.sub(r'^\d+\.+', '', tok)
+            if not tok:
+                continue
+        
+        # Check castling
+        if tok in ("O-O", "0-0"):
+            if is_white:
+                moves.append(("e1", "g1", f"{move_num}. O-O", False, ("h1", "f1")))
+            else:
+                moves.append(("e8", "g8", f"{move_num}... O-O", False, ("h8", "f8")))
+            if not is_white:
+                move_num += 1
+            is_white = not is_white
+            continue
+        elif tok in ("O-O-O", "0-0-0"):
+            if is_white:
+                moves.append(("e1", "c1", f"{move_num}. O-O-O", False, ("a1", "d1")))
+            else:
+                moves.append(("e8", "c8", f"{move_num}... O-O-O", False, ("a8", "d8")))
+            if not is_white:
+                move_num += 1
+            is_white = not is_white
+            continue
+            
+        sqs = sq_pat.findall(tok)
+        is_mate = "#" in tok
+        prefix = f"{move_num}. {tok}" if is_white else f"{move_num}... {tok}"
+        
+        if len(sqs) >= 2:
+            from_sq = sqs[0]
+            to_sq = sqs[1]
+            moves.append((from_sq, to_sq, prefix, is_mate))
+        elif len(sqs) == 1:
+            to_sq = sqs[0]
+            # Infer plausible from_sq based on standard opening heuristics
+            if tok[0].islower(): # Pawn move
+                file_char = tok[0]
+                if "x" in tok: # Pawn capture, e.g. exd5
+                    rank = int(to_sq[1])
+                    from_rank = rank - 1 if is_white else rank + 1
+                    from_sq = f"{file_char}{from_rank}"
+                else:
+                    rank = int(to_sq[1])
+                    from_rank = rank - 1 if is_white else rank + 1
+                    from_sq = f"{file_char}{from_rank}"
+            elif tok[0] == "N":
+                from_sq = "b1" if is_white and to_sq in ("c3", "a3", "d2") else ("g1" if is_white else ("b8" if to_sq in ("c6", "a6", "d7") else "g8"))
+            elif tok[0] == "B":
+                from_sq = "f1" if is_white and to_sq in ("c4", "b5", "e2", "d3") else ("c1" if is_white else ("f8" if to_sq in ("c5", "b4", "e7") else "c8"))
+            elif tok[0] == "Q":
+                from_sq = "d1" if is_white else "d8"
+            elif tok[0] == "K":
+                from_sq = "e1" if is_white else "e8"
+            elif tok[0] == "R":
+                from_sq = "a1" if is_white and to_sq[0] in "abcd" else ("h1" if is_white else ("a8" if to_sq[0] in "abcd" else "h8"))
+            else:
+                from_sq = to_sq
+            moves.append((from_sq, to_sq, prefix, is_mate))
+            
+        if not is_white:
+            move_num += 1
+        is_white = not is_white
+        
+    return moves
 
 CHESS_MATCHES = {
     "opera": {
@@ -219,6 +314,7 @@ class ChessBoardPlugin(BasePlugin):
     def run(
         self,
         match: str = "opera",
+        pgn: str = None,
         animated: bool = True,
         speed: float = 1.0,
         out_svg: str = "chess_board.svg",
@@ -226,7 +322,21 @@ class ChessBoardPlugin(BasePlugin):
         **kwargs
     ) -> Dict[str, Any]:
         match_key = match.lower()
-        data = CHESS_MATCHES.get(match_key, CHESS_MATCHES["opera"])
+        if pgn and pgn.strip():
+            parsed_moves = parse_pgn_to_moves(pgn)
+            if parsed_moves:
+                data = {
+                    "title": "Partida Customizada (Import PGN)",
+                    "event": "Chess.com / Lichess Game Replay",
+                    "result": "Game Replay in Terminal",
+                    "mate_desc": "Reprodução do PGN importado pelo usuário",
+                    "step_time": 1.0,
+                    "moves": parsed_moves
+                }
+            else:
+                data = CHESS_MATCHES.get(match_key, CHESS_MATCHES["opera"])
+        else:
+            data = CHESS_MATCHES.get(match_key, CHESS_MATCHES["opera"])
         moves = data["moves"]
         frames = simulate_game(moves)
         n_frames = len(frames)

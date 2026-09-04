@@ -53,7 +53,15 @@ ENGINES_TO_TEST = [
     ("tech_stack", {"techs": "python,rust,react", "style": "neon"}),
     ("music_card", {"preset": "synthwave"}),
     ("coding_stats", {"hours": 1200, "streak": 30}),
-    ("ascii_diagram", {"preset": "microservices"})
+    ("ascii_diagram", {"preset": "microservices"}),
+    ("mario", {"username": "MARIO"}),
+    ("space_invaders", {"username": "DEFENDER"}),
+    ("pacman", {"username": "PACMAN"}),
+    ("starfield", {"username": "WARP"}),
+    ("cyberpunk_city", {"username": "CYBER"}),
+    ("rpg_sheet", {"username": "VINICIUS"}),
+    ("git_subway", {"username": "VINICIUS"}),
+    ("dev_pet", {"username": "VINICIUS"})
 ]
 
 def run_suite():

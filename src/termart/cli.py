@@ -122,6 +122,55 @@ def cmd_fortune(args):
     res = p.run(out_svg=args.out, username=args.username)
     print(f"[TermArt] ✓ Fortune banner generated: {res.get('output_path')}")
 
+
+def cmd_mario(args):
+    p = registry.get("mario")
+    out = args.out or "mario_runner.svg"
+    res = p.run(username=args.username, world=args.world, score=args.score, out_svg=out)
+    print(f"\033[92m✓\033[0m Super Mario Bros NES Runner generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_space_invaders(args):
+    p = registry.get("space_invaders")
+    out = args.out or "space_invaders.svg"
+    res = p.run(username=args.username, score=args.score, out_svg=out)
+    print(f"\033[92m✓\033[0m Space Invaders Arcade generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_pacman(args):
+    p = registry.get("pacman")
+    out = args.out or "pacman_chase.svg"
+    res = p.run(username=args.username, score=args.score, out_svg=out)
+    print(f"\033[92m✓\033[0m Pac-Man Terminal Maze generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_starfield(args):
+    p = registry.get("starfield")
+    out = args.out or "starfield_3d.svg"
+    res = p.run(username=args.username, warp_speed=args.warp, out_svg=out)
+    print(f"\033[92m✓\033[0m Starfield 3D Hyperspace Warp generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_cyberpunk_city(args):
+    p = registry.get("cyberpunk_city")
+    out = args.out or "cyberpunk_city.svg"
+    res = p.run(username=args.username, city_name=args.city, out_svg=out)
+    print(f"\033[92m✓\033[0m Cyberpunk City Skyline generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_rpg_sheet(args):
+    p = registry.get("rpg_sheet")
+    out = args.out or "rpg_sheet.svg"
+    res = p.run(username=args.username, character_name=args.name, rpg_class=args.cls, level=args.level, out_svg=out)
+    print(f"\033[92m✓\033[0m RPG Character Sheet generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_git_subway(args):
+    p = registry.get("git_subway")
+    out = args.out or "git_subway.svg"
+    res = p.run(username=args.username, repo_name=args.repo, out_svg=out)
+    print(f"\033[92m✓\033[0m Git Subway Map generated: \033[1m{res.get('output_path')}\033[0m")
+
+def cmd_dev_pet(args):
+    p = registry.get("dev_pet")
+    out = args.out or "dev_pet.svg"
+    res = p.run(username=args.username, pet_name=args.name, pet_type=args.type, level=args.level, out_svg=out)
+    print(f"\033[92m✓\033[0m Tamagotchi Virtual Dev Pet generated: \033[1m{res.get('output_path')}\033[0m")
+
 def cmd_dvd(args):
     p = registry.get("dvd")
     out = args.out or "dvd_screensaver.svg"
@@ -430,6 +479,67 @@ def main():
     fo_p.add_argument("--out", default="fortune_banner.svg")
     fo_p.add_argument("--username", default="philosopher")
     fo_p.set_defaults(func=cmd_fortune)
+
+    # mario
+    ma_p = sub.add_parser("mario", help="Generate Super Mario Bros NES World 1-1 runner SVG")
+    ma_p.add_argument("--username", default="MARIO")
+    ma_p.add_argument("--world", default="1-1")
+    ma_p.add_argument("--score", type=int, default=2450)
+    ma_p.add_argument("--out", default="mario_runner.svg")
+    ma_p.set_defaults(func=cmd_mario)
+
+    # space_invaders
+    sp_p = sub.add_parser("invaders", help="Generate Space Invaders arcade defense SVG")
+    sp_p.add_argument("--username", default="DEFENDER")
+    sp_p.add_argument("--score", type=int, default=1978)
+    sp_p.add_argument("--out", default="space_invaders.svg")
+    sp_p.set_defaults(func=cmd_space_invaders)
+
+    # pacman
+    pa_p = sub.add_parser("pacman", help="Generate Pac-Man terminal arcade maze SVG")
+    pa_p.add_argument("--username", default="PACMAN")
+    pa_p.add_argument("--score", type=int, default=333360)
+    pa_p.add_argument("--out", default="pacman_chase.svg")
+    pa_p.set_defaults(func=cmd_pacman)
+
+    # starfield
+    st_p = sub.add_parser("starfield", help="Generate 3D starfield hyperspace warp jump SVG")
+    st_p.add_argument("--username", default="SKYWALKER")
+    st_p.add_argument("--warp", type=float, default=1.0)
+    st_p.add_argument("--out", default="starfield_3d.svg")
+    st_p.set_defaults(func=cmd_starfield)
+
+    # skyline
+    sk_p = sub.add_parser("skyline", help="Generate Cyberpunk Neo-Tokyo night rain skyline SVG")
+    sk_p.add_argument("--username", default="NETRUNNER")
+    sk_p.add_argument("--city", default="NEO-TOKYO")
+    sk_p.add_argument("--out", default="cyberpunk_city.svg")
+    sk_p.set_defaults(func=cmd_cyberpunk_city)
+
+    # rpg
+    rp_p = sub.add_parser("rpg", help="Generate holographic RPG character sheet passport SVG")
+    rp_p.add_argument("--username", default="ViniciusNoetzold")
+    rp_p.add_argument("--name", default="VINICIUS")
+    rp_p.add_argument("--cls", default="alchemist", choices=["alchemist", "sorcerer", "ninja", "paladin", "shaman"])
+    rp_p.add_argument("--level", type=int, default=85)
+    rp_p.add_argument("--out", default="rpg_sheet.svg")
+    rp_p.set_defaults(func=cmd_rpg_sheet)
+
+    # subway
+    su_p = sub.add_parser("subway", help="Generate Git commit subway transit branch map SVG")
+    su_p.add_argument("--username", default="ViniciusNoetzold")
+    su_p.add_argument("--repo", default="core-platform")
+    su_p.add_argument("--out", default="git_subway.svg")
+    su_p.set_defaults(func=cmd_git_subway)
+
+    # pet
+    pe_p = sub.add_parser("pet", help="Generate Tamagotchi 90s LCD virtual dev pet SVG")
+    pe_p.add_argument("--username", default="ViniciusNoetzold")
+    pe_p.add_argument("--name", default="PIXEL")
+    pe_p.add_argument("--type", default="cat", choices=["cat", "robot", "dragon", "penguin"])
+    pe_p.add_argument("--level", type=int, default=42)
+    pe_p.add_argument("--out", default="dev_pet.svg")
+    pe_p.set_defaults(func=cmd_dev_pet)
 
     # dvd
     dvd_p = sub.add_parser("dvd", help="Generate classic bouncing DVD screensaver SVG with exact corner hits")
