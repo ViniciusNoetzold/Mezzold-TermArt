@@ -34,31 +34,138 @@ DEFAULT_SECTIONS = [
 ]
 
 def generate_readme_markdown(username: str, name: str, sections: List[Dict[str, Any]]) -> str:
-    """Generates clean GitHub Flavored Markdown for profile repository README.md"""
+    """
+    Generates clean GitHub Flavored Markdown for profile repository README.md
+    with advanced multi-column side-by-side layouts, table galleries,
+    terminal prompt banners, and collapsible accordion details.
+    """
     display_title = name if name and name.strip() else username
     lines = [
         f'<div align="center">',
         f'',
         f'# ⚡ {display_title}',
-        f'### Software Engineer & Tech Explorer',
+        f'### Software Engineer & Systems Architect',
         f'',
         f'[![GitHub](https://img.shields.io/badge/GitHub-{username}-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/{username})',
         f'',
     ]
 
-    for sec in sections:
-        if not sec.get("enabled", True):
+    active_secs = [s for s in sections if s.get("enabled", True)]
+
+    # Group consecutive active blocks into layout rows
+    rows: List[List[Dict[str, Any]]] = []
+    current_row: List[Dict[str, Any]] = []
+    current_width_sum = 0.0
+
+    def parse_width_num(w_val: Any) -> float:
+        if not w_val:
+            return 100.0
+        w_str = str(w_val).strip()
+        if w_str.endswith("%"):
+            try:
+                return float(w_str.rstrip("%"))
+            except ValueError:
+                return 100.0
+        return 100.0
+
+    for sec in active_secs:
+        w_num = parse_width_num(sec.get("width", "100%"))
+        layout_mode = sec.get("layout_mode", "inline")
+        is_details = layout_mode == "details"
+
+        if is_details or w_num >= 98.0:
+            if current_row:
+                rows.append(current_row)
+                current_row = []
+                current_width_sum = 0.0
+            rows.append([sec])
+        else:
+            row_mode = current_row[0].get("layout_mode", "inline") if current_row else layout_mode
+            if (layout_mode != row_mode) or (current_width_sum + w_num > 102.0):
+                if current_row:
+                    rows.append(current_row)
+                    current_row = []
+                    current_width_sum = 0.0
+            current_row.append(sec)
+            current_width_sum += w_num
+
+    if current_row:
+        rows.append(current_row)
+
+    # Render each row to Markdown / GitHub HTML
+    for row in rows:
+        if not row:
             continue
-        stype = sec.get("type", "")
-        sfile = sec.get("file", f"{stype}.svg")
-        stitle = sec.get("title", stype)
 
-        lines.append(f'<!-- SECTION: {stitle.upper()} -->')
-        lines.append(f'<p align="center">')
-        lines.append(f'  <img src="./{sfile}" alt="{stitle}" />')
-        lines.append(f'</p>')
-        lines.append(f'')
+        prompts = [s.get("terminal_prompt") or s.get("prompt") for s in row if (s.get("terminal_prompt") or s.get("prompt"))]
+        if prompts:
+            lines.append(f'<p align="center">')
+            lines.append(f'  <code>{prompts[0]}</code>')
+            lines.append(f'</p>')
 
+        if len(row) == 1:
+            sec = row[0]
+            stype = sec.get("type", "")
+            sfile = sec.get("file", f"{stype}.svg")
+            stitle = sec.get("title", stype)
+            w_str = str(sec.get("width") or "100%").strip()
+            layout_mode = sec.get("layout_mode", "inline")
+            summary_txt = sec.get("details_summary") or f"▶ ✨ [ Clique para Expandir {stitle} ]"
+
+            lines.append(f'<!-- SECTION: {stitle.upper()} -->')
+
+            if layout_mode == "details":
+                lines.append(f'<details>')
+                lines.append(f'  <summary><b>{summary_txt}</b></summary>')
+                lines.append(f'  <br/>')
+                lines.append(f'  <p align="center">')
+                lines.append(f'    <img src="./{sfile}" width="{w_str}" alt="{stitle}" />')
+                lines.append(f'  </p>')
+                lines.append(f'</details>')
+            elif layout_mode == "table_card":
+                lines.append(f'<table align="center" width="100%">')
+                lines.append(f'  <tr>')
+                lines.append(f'    <th align="center"><b>{stitle}</b></th>')
+                lines.append(f'  </tr>')
+                lines.append(f'  <tr>')
+                lines.append(f'    <td align="center"><img src="./{sfile}" width="{w_str}" alt="{stitle}" /></td>')
+                lines.append(f'  </tr>')
+                lines.append(f'</table>')
+            else:
+                lines.append(f'<p align="center">')
+                lines.append(f'  <img src="./{sfile}" width="{w_str}" alt="{stitle}" />')
+                lines.append(f'</p>')
+
+            lines.append(f'')
+
+        else:
+            titles = [s.get("title", s.get("type", "")) for s in row]
+            lines.append(f'<!-- SECTION: MULTI-COLUMN ({", ".join(titles).upper()}) -->')
+
+            is_table = any(s.get("layout_mode") == "table_card" for s in row)
+            col_pct = f"{int(100 / len(row))}%"
+
+            if is_table:
+                lines.append(f'<table align="center" width="100%">')
+                lines.append(f'  <tr>')
+                for s in row:
+                    lines.append(f'    <th align="center" width="{col_pct}"><b>{s.get("title")}</b></th>')
+                lines.append(f'  </tr>')
+                lines.append(f'  <tr>')
+                for s in row:
+                    sfile = s.get("file", f'{s.get("type")}.svg')
+                    lines.append(f'    <td align="center" width="{col_pct}"><img src="./{sfile}" width="100%" alt="{s.get("title")}" /></td>')
+                lines.append(f'  </tr>')
+                lines.append(f'</table>')
+            else:
+                lines.append(f'<p align="center">')
+                for s in row:
+                    sfile = s.get("file", f'{s.get("type")}.svg')
+                    w = s.get("width") or (f"{int(98 / len(row))}%")
+                    lines.append(f'  <img src="./{sfile}" width="{w}" alt="{s.get("title")}" />')
+                lines.append(f'</p>')
+
+            lines.append(f'')
     lines.extend([
         f'---',
         f'',

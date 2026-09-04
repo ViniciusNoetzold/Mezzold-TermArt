@@ -1730,11 +1730,16 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
         <!-- ================= TAB 8: CONSTRUTOR DE PERFIL & README ================= -->
         <div id="tab-builder" class="tab-content hidden flex flex-col gap-4">
-          <div class="border-b border-brand-border pb-3">
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span class="text-brand-400">🚀</span> <span>Construtor de Perfil GitHub</span>
-            </h2>
-            <p class="text-xs text-slate-400 mt-1">Monte e organize a vitrine do seu repositório de perfil. Arraste, mude de ordem e exporte tudo em 1 clique!</p>
+          <div class="border-b border-brand-border pb-3 flex items-center justify-between gap-3">
+            <div>
+              <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <span class="text-brand-400">🚀</span> <span>Construtor de Perfil GitHub</span>
+              </h2>
+              <p class="text-xs text-slate-400 mt-0.5">Monte sua vitrine de perfil: lado a lado (50%), colunas, galerias e exporte tudo em 1 clique!</p>
+            </div>
+            <button type="button" onclick="openDeployInstructionsModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-white text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95 shrink-0" title="Guia Passo a Passo: Como colocar na página inicial do seu GitHub">
+              <span>📖</span> <span>Como Ativar no Perfil</span>
+            </button>
           </div>
 
           <!-- Presets Rápidos de 1 Clique -->
@@ -1957,57 +1962,93 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- INSTRUÇÕES DE DEPLOY GITHUB MODAL -->
+  <!-- INSTRUÇÕES DE DEPLOY GITHUB MODAL COMPLETO -->
   <div id="modal-deploy-instructions" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
-    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-2xl w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-2.5">
-          <span class="text-2xl">🚀</span>
+          <span class="text-2xl">📖</span>
           <div>
-            <h3 class="text-base font-bold text-white tracking-wide">Como Publicar no seu Perfil do GitHub</h3>
-            <p class="text-xs text-slate-400">Transforme seu perfil em menos de 1 minuto</p>
+            <h3 class="text-base font-bold text-white tracking-wide">Como Ativar na Primeira Página do seu GitHub</h3>
+            <p class="text-xs text-slate-400">Tutorial Completo: Faça seu perfil virar uma vitrine profissional de impacto</p>
           </div>
         </div>
         <button onclick="closeDeployInstructionsModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-xl hover:bg-white/5 transition">✕</button>
       </div>
 
-      <div class="flex flex-col gap-3 text-xs text-slate-300">
-        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
-          <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">1</span>
-          <div>
-            <strong class="text-white">Crie o repositório especial com seu username</strong>
-            <p class="text-slate-400 mt-0.5">Acesse <a href="https://github.com/new" target="_blank" class="text-sky-400 hover:underline font-mono">github.com/new</a> e no nome do repositório digite exatamente o seu usuário (ex: <span class="text-white font-mono" id="deploy-modal-user">seu-usuario</span>).</p>
+      <div class="flex flex-col gap-3.5 text-xs text-slate-300">
+        <!-- Passo 1 -->
+        <div class="flex gap-3.5 items-start bg-slate-900/80 p-4 rounded-2xl border border-sky-500/20 shadow-sm">
+          <span class="w-7 h-7 rounded-xl bg-sky-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-md shadow-sky-600/30">1</span>
+          <div class="flex flex-col gap-1">
+            <strong class="text-white text-sm">Crie o Repositório Especial Secreto do GitHub</strong>
+            <p class="text-slate-400">O GitHub possui uma funcionalidade especial: quando você cria um repositório com <strong>o mesmo nome do seu usuário</strong> (ex: <code class="text-sky-300 bg-black/50 px-1.5 py-0.5 rounded font-mono" id="deploy-modal-user">seu-usuario/seu-usuario</code>), o arquivo <code>README.md</code> dele vira automaticamente a apresentação oficial da sua homepage!</p>
+            <div class="mt-1 flex items-center gap-2">
+              <a href="https://github.com/new" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold text-[11px] transition shadow">
+                <span>Criar Repositório no GitHub</span> <span class="text-sky-200">↗</span>
+              </a>
+              <span class="text-[11px] text-amber-400/90 font-medium">⚠️ Deve ser marcado como <strong>Public</strong>!</span>
+            </div>
           </div>
         </div>
 
-        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
-          <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">2</span>
-          <div>
-            <strong class="text-white">Deixe como Public</strong>
-            <p class="text-slate-400 mt-0.5">Marque a opção <strong>Public</strong> para que todos que visitarem seu GitHub consigam ver os SVGs e cards.</p>
+        <!-- Passo 2 -->
+        <div class="flex gap-3.5 items-start bg-slate-900/80 p-4 rounded-2xl border border-purple-500/20 shadow-sm">
+          <span class="w-7 h-7 rounded-xl bg-purple-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-md shadow-purple-600/30">2</span>
+          <div class="flex flex-col gap-1">
+            <strong class="text-white text-sm">Exporte o Pacote Completo (.ZIP) no TermArt</strong>
+            <p class="text-slate-400">Personalize a ordem e os formatos dos blocos na aba ao lado (use o botão <span class="text-sky-300 font-mono font-bold bg-slate-800 px-1.5 py-0.5 rounded">50% ⇋</span> para colocar cards lado a lado!). Em seguida, clique no botão <span class="text-emerald-400 font-bold">📦 Baixar Repositório (.ZIP)</span>.</p>
+            <div class="p-2 rounded-lg bg-black/40 border border-white/5 text-[11px] text-slate-400">
+              <span class="text-slate-300 font-semibold">O ZIP já inclui tudo pronto:</span>
+              <ul class="list-disc list-inside mt-1 text-slate-400 space-y-0.5">
+                <li><code>README.md</code> com código responsivo e centralizado</li>
+                <li>Todos os arquivos <code>.svg</code> gerados em alta fidelidade</li>
+                <li><code>.github/workflows/refresh-profile.yml</code> (GitHub Action de sincronização)</li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
-          <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">3</span>
-          <div>
-            <strong class="text-white">Extraia o arquivo .ZIP ou arraste os arquivos</strong>
-            <p class="text-slate-400 mt-0.5">Clique no botão <span class="text-emerald-400 font-bold">📦 Baixar Repositório (.ZIP)</span>, descompacte no seu computador e faça o commit/upload no GitHub.</p>
+        <!-- Passo 3 -->
+        <div class="flex gap-3.5 items-start bg-slate-900/80 p-4 rounded-2xl border border-emerald-500/20 shadow-sm">
+          <span class="w-7 h-7 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-md shadow-emerald-600/30">3</span>
+          <div class="flex flex-col gap-1">
+            <strong class="text-white text-sm">Publique os Arquivos no Repositório</strong>
+            <p class="text-slate-400">Você pode publicar de duas maneiras muito simples:</p>
+            <div class="grid grid-cols-2 gap-2 mt-1">
+              <div class="p-2.5 rounded-xl bg-black/40 border border-white/5">
+                <span class="font-bold text-sky-400 block mb-1">Método A: Via Navegador (Sem código)</span>
+                <span class="text-[10px] text-slate-400">Descompacte o ZIP. No GitHub, clique em <strong>Add file</strong> → <strong>Upload files</strong>, arraste os arquivos e clique em <strong>Commit changes</strong>.</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-black/40 border border-white/5">
+                <span class="font-bold text-purple-400 block mb-1">Método B: Via Terminal Git</span>
+                <pre class="text-[9.5px] font-mono text-emerald-400 bg-black/60 p-1.5 rounded overflow-x-auto select-all">git clone https://github.com/USER/USER.git
+cp -r /pasta-extraida/* USER/
+cd USER && git add -A && git commit -m "feat: profile art" && git push</pre>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
-          <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">✓</span>
-          <div>
-            <strong class="text-emerald-400">Pronto! Seu perfil ganha vida instantaneamente</strong>
-            <p class="text-slate-400 mt-0.5">Seu perfil terá o README com os SVGs interligados e a GitHub Action pronta para manter seus dados atualizados diariamente!</p>
+        <!-- Passo 4 (Dicas Pro) -->
+        <div class="flex gap-3.5 items-start bg-slate-900/80 p-4 rounded-2xl border border-amber-500/20 shadow-sm">
+          <span class="w-7 h-7 rounded-xl bg-amber-600 text-white flex items-center justify-center font-black text-sm shrink-0 shadow-md shadow-amber-600/30">✨</span>
+          <div class="flex flex-col gap-1">
+            <strong class="text-white text-sm">Dicas Pro de Layout do Mezzold TermArt</strong>
+            <ul class="list-disc list-inside text-slate-400 space-y-1 text-[11px]">
+              <li><strong>Lado a Lado (50% / 50%):</strong> Clique no botão de largura em 2 blocos consecutivos para deixá-los com <code class="text-sky-300">50% ⇋</code>. O README os agrupa automaticamente na mesma linha!</li>
+              <li><strong>Moldura de Galeria 2x2:</strong> No ⚙️ de qualquer card, escolha <em>"🖼️ Moldura de Galeria"</em> para renderizar com cabeçalhos elegantes.</li>
+              <li><strong>Acervo Colapsável:</strong> Ative <em>"📁 Colapsável (&lt;details&gt;)"</em> para criar gavetas retráteis que deixam o perfil limpo e interativo.</li>
+              <li><strong>Prompt de Terminal:</strong> Adicione comandos como <code class="text-emerald-400">usuario@github ~ $ ./gallery.sh</code> no topo de qualquer seção.</li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <div class="flex justify-end pt-2">
+      <div class="flex justify-between items-center pt-2 border-t border-white/10">
+        <span class="text-[11px] text-slate-500">Pronto para transformar seu perfil no GitHub?</span>
         <button onclick="closeDeployInstructionsModal()" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-sky-600/20 active:scale-95">
-          Entendi, vamos lá!
+          Entendi, vamos criar!
         </button>
       </div>
     </div>
@@ -3738,6 +3779,23 @@ Sleep 3s
       renderBuilderSectionsList();
     }
 
+    function cycleBlockWidth(idx) {
+      const sec = builderSections[idx];
+      if (!sec) return;
+      if (!sec.width || sec.width === '100%') {
+        sec.width = '49%';
+        showToast(`"${sec.title}" agora está em 50% (Lado a Lado)!`);
+      } else if (sec.width === '49%' || sec.width === '50%') {
+        sec.width = '32%';
+        showToast(`"${sec.title}" agora está em 33% (3 Colunas)!`);
+      } else {
+        sec.width = '100%';
+        showToast(`"${sec.title}" agora está em 100% (Largura Total)!`);
+      }
+      saveStoredBuilderSections(builderSections);
+      renderReadmePreview();
+    }
+
     let draggedBlockIdx = null;
 
     function renderBuilderSectionsList() {
@@ -3767,6 +3825,9 @@ Sleep 3s
             </div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="cycleBlockWidth(${idx})" class="px-2 py-1 rounded-lg text-[10px] font-mono font-bold border transition ${sec.width === '49%' || sec.width === '50%' ? 'bg-sky-500/20 text-sky-400 border-sky-500/40' : (sec.width === '32%' || sec.width === '33%' ? 'bg-purple-500/20 text-purple-400 border-purple-500/40' : 'bg-slate-800 text-slate-400 border-slate-700')}" title="Clique para alternar: 100% (Linha Cheia) / 50% (Lado a Lado) / 33% (3 Colunas)">
+              ${sec.width === '49%' || sec.width === '50%' ? '50% ⇋' : (sec.width === '32%' || sec.width === '33%' ? '33% ⇋' : '100%')}
+            </button>
             <button onclick="openBlockConfigModal(${idx})" class="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-800 hover:bg-brand-600/40 text-slate-300 hover:text-white border border-brand-border text-xs transition" title="Configurar Parâmetros Deste Bloco">
               ⚙️
             </button>
@@ -4038,7 +4099,59 @@ Sleep 3s
         `;
       }
 
-      formEl.innerHTML = html;
+      // Common layout & styling options for EVERY block
+      const wVal = sec.width || '100%';
+      const isPresetW = ['100%', '49%', '50%', '32%', '33%', '60%', '40%'].includes(wVal);
+      const customW = !isPresetW ? wVal : (sec.custom_width || '');
+
+      const layoutSectionHtml = `
+        <div class="mt-4 pt-3 border-t border-brand-border/80 flex flex-col gap-3">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-sky-400 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><span>📐</span> <span>Layout &amp; Dimensões no GitHub</span></span>
+            <span class="text-[9.5px] px-2 py-0.5 rounded bg-sky-500/10 border border-sky-500/20 text-sky-300 font-mono">MULTI-COLUNA</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Largura / Disposição</label>
+              <select id="cfg-block-width" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="100%" ${wVal === '100%' ? 'selected' : ''}>100% (Largura Total - Linha Única)</option>
+                <option value="49%" ${wVal === '49%' || wVal === '50%' ? 'selected' : ''}>49% (Lado a Lado - 2 Colunas)</option>
+                <option value="32%" ${wVal === '32%' || wVal === '33%' ? 'selected' : ''}>32% (Lado a Lado - 3 Colunas)</option>
+                <option value="60%" ${wVal === '60%' ? 'selected' : ''}>60% (Destaque Largo)</option>
+                <option value="40%" ${wVal === '40%' ? 'selected' : ''}>40% (Coluna Menor)</option>
+                <option value="custom" ${!isPresetW ? 'selected' : ''}>Personalizada (px ou %)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Largura Custom (se selecionada)</label>
+              <input type="text" id="cfg-block-custom-width" placeholder="ex: 450px ou 70%" value="${escapeHtml(customW)}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Estilo de Apresentação</label>
+              <select id="cfg-block-layout-mode" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="inline" ${sec.layout_mode === 'inline' || !sec.layout_mode ? 'selected' : ''}>Padrão (Imagem Direta)</option>
+                <option value="table_card" ${sec.layout_mode === 'table_card' ? 'selected' : ''}>🖼️ Moldura de Galeria (com Título)</option>
+                <option value="details" ${sec.layout_mode === 'details' ? 'selected' : ''}>📁 Colapsável (&lt;details&gt;&lt;summary&gt;)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Texto do Colapsável (se ativado)</label>
+              <input type="text" id="cfg-block-details-summary" placeholder="▶ ✨ [ Clique para Expandir ]" value="${escapeHtml(sec.details_summary || '▶ ✨ [ Clique para Expandir o Acervo ]')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-300 block mb-1">Prompt de Terminal no Topo (Opcional)</label>
+            <input type="text" id="cfg-block-terminal-prompt" placeholder="ex: vinicius@github ~ $ ./gallery.sh --sanctuary" value="${escapeHtml(sec.terminal_prompt || '')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+          </div>
+        </div>
+      `;
+
+      formEl.innerHTML = html + layoutSectionHtml;
       modal.classList.remove('hidden');
     }
 
@@ -4102,10 +4215,19 @@ Sleep 3s
         sec.file = document.getElementById('cfg-cust-file').value.trim() || 'custom-art.svg';
       }
 
+      // Save common layout & dimension options
+      const chosenWidth = document.getElementById('cfg-block-width').value;
+      const customWidth = document.getElementById('cfg-block-custom-width').value.trim();
+      sec.width = chosenWidth === 'custom' && customWidth ? customWidth : chosenWidth;
+      sec.custom_width = customWidth;
+      sec.layout_mode = document.getElementById('cfg-block-layout-mode').value;
+      sec.details_summary = document.getElementById('cfg-block-details-summary').value.trim();
+      sec.terminal_prompt = document.getElementById('cfg-block-terminal-prompt').value.trim();
+
       saveStoredBuilderSections(builderSections);
       closeBlockConfigModal();
       renderReadmePreview();
-      showToast(`✓ Bloco "${sec.title}" atualizado com sucesso!`);
+      showToast(`✓ Bloco "${sec.title}" e layout salvos com sucesso!`);
     }
 
     function closeBlockConfigModal() {
@@ -4132,6 +4254,10 @@ Sleep 3s
         file: cleanFilename.endsWith('.svg') ? cleanFilename : `${cleanFilename}.svg`,
         icon: '🖼️',
         enabled: true,
+        width: '100%',
+        layout_mode: 'inline',
+        terminal_prompt: '',
+        details_summary: '',
         svg_data: currentSvg,
         preview_url: `/api/builder/custom_svg/${blockId}`,
         params: {}
@@ -4344,35 +4470,133 @@ Sleep 3s
                   <span class="text-slate-400">GitHub:</span> <strong>@${escapeHtml(user)}</strong>
                 </div>
               </div>
-              <div class="w-full flex flex-col items-center gap-6">
-                ${active.map(s => {
-                  if (s.type === 'custom_svg' && s.svg_data) {
+              <div class="w-full flex flex-col items-center gap-5">
+                ${(() => {
+                  // Group active blocks into rows
+                  const visualRows = [];
+                  let curRow = [];
+                  let curWidthSum = 0;
+
+                  function getNumWidth(w) {
+                    if (!w) return 100;
+                    const str = String(w).trim();
+                    if (str.endsWith('%')) {
+                      const parsed = parseFloat(str);
+                      return isNaN(parsed) ? 100 : parsed;
+                    }
+                    return 100;
+                  }
+
+                  active.forEach(sec => {
+                    const wNum = getNumWidth(sec.width);
+                    const isDetails = sec.layout_mode === 'details';
+                    if (isDetails || wNum >= 98) {
+                      if (curRow.length > 0) {
+                        visualRows.push(curRow);
+                        curRow = [];
+                        curWidthSum = 0;
+                      }
+                      visualRows.push([sec]);
+                    } else {
+                      const rowMode = curRow.length > 0 ? (curRow[0].layout_mode || 'inline') : (sec.layout_mode || 'inline');
+                      if ((sec.layout_mode || 'inline') !== rowMode || (curWidthSum + wNum > 102)) {
+                        if (curRow.length > 0) {
+                          visualRows.push(curRow);
+                          curRow = [];
+                          curWidthSum = 0;
+                        }
+                      }
+                      curRow.push(sec);
+                      curWidthSum += wNum;
+                    }
+                  });
+                  if (curRow.length > 0) visualRows.push(curRow);
+
+                  function renderSingleVisual(s, countInRow) {
+                    let imgSrc = s.preview_url;
+                    if (!imgSrc) {
+                      if (s.type === 'custom_svg') {
+                        imgSrc = `/api/builder/custom_svg/${s.id || 'custom'}`;
+                      } else if (s.type === 'header') {
+                        imgSrc = `/api/render/wordmark?text=${encodeURIComponent((name || user).toUpperCase())}`;
+                      } else {
+                        imgSrc = `/api/render/${s.type}`;
+                      }
+                    }
+
+                    const innerMedia = (s.type === 'custom_svg' && s.svg_data)
+                      ? `<div class="w-full overflow-hidden flex justify-center [&>svg]:max-w-full [&>svg]:h-auto">${s.svg_data}</div>`
+                      : `<img src="${imgSrc}" class="w-full h-auto rounded-lg" alt="${escapeHtml(s.title)}" />`;
+
+                    let cssW = '100%';
+                    if (countInRow === 2 || s.width === '49%' || s.width === '50%') {
+                      cssW = 'calc(50% - 0.5rem)';
+                    } else if (countInRow === 3 || s.width === '32%' || s.width === '33%') {
+                      cssW = 'calc(33.333% - 0.5rem)';
+                    } else if (s.width && s.width !== '100%') {
+                      cssW = s.width;
+                    }
+
+                    if (s.layout_mode === 'table_card') {
+                      return `
+                        <div class="flex flex-col items-center rounded-2xl bg-slate-900/80 border border-slate-700/70 p-3 shadow-lg" style="width: ${cssW}; max-width: 100%;">
+                          <div class="text-xs font-bold text-slate-200 mb-2 flex items-center gap-1.5 text-center">
+                            <span>${s.icon || '🖼️'}</span> <span>${escapeHtml(s.title)}</span>
+                          </div>
+                          <div class="w-full overflow-hidden flex justify-center py-1">
+                            ${innerMedia}
+                          </div>
+                        </div>
+                      `;
+                    }
+
                     return `
-                      <div class="w-full flex flex-col items-center">
-                        <div class="w-full max-w-full overflow-x-auto flex justify-center py-2 [&>svg]:max-w-full [&>svg]:h-auto rounded-lg shadow-md border border-slate-800/80">
-                          ${s.svg_data}
+                      <div class="flex flex-col items-center" style="width: ${cssW}; max-width: 100%;">
+                        <div class="w-full overflow-hidden flex justify-center py-1 [&>img]:shadow-md [&>img]:border [&>img]:border-slate-800/80">
+                          ${innerMedia}
                         </div>
                       </div>
                     `;
                   }
-                  let imgSrc = s.preview_url;
-                  if (!imgSrc) {
-                    if (s.type === 'custom_svg') {
-                      imgSrc = `/api/builder/custom_svg/${s.id || 'custom'}`;
-                    } else if (s.type === 'header') {
-                      imgSrc = `/api/render/wordmark?text=${encodeURIComponent((name || user).toUpperCase())}`;
-                    } else {
-                      imgSrc = `/api/render/${s.type}`;
-                    }
-                  }
-                  return `
-                    <div class="w-full flex flex-col items-center">
-                      <div class="w-full max-w-full overflow-x-auto flex justify-center py-2">
-                        <img src="${imgSrc}" class="max-w-full h-auto rounded-lg shadow-md border border-slate-800/80" alt="${escapeHtml(s.title)}" />
+
+                  return visualRows.map(row => {
+                    const prompt = row.find(s => s.terminal_prompt)?.terminal_prompt;
+                    const promptHtml = prompt ? `
+                      <div class="w-full flex justify-center my-1.5">
+                        <span class="px-3 py-1 rounded-xl bg-[#161b22] border border-slate-700 text-xs font-mono text-slate-300 shadow-sm">
+                          <code>${escapeHtml(prompt)}</code>
+                        </span>
                       </div>
-                    </div>
-                  `;
-                }).join('')}
+                    ` : '';
+
+                    if (row.length === 1 && row[0].layout_mode === 'details') {
+                      const s = row[0];
+                      const summaryTxt = s.details_summary || `▶ ✨ [ Clique para Expandir ${s.title} ]`;
+                      return `
+                        <div class="w-full flex flex-col items-center">
+                          ${promptHtml}
+                          <details class="w-full rounded-2xl bg-slate-900/60 border border-slate-800 p-3 shadow-md group">
+                            <summary class="cursor-pointer font-bold text-xs text-sky-400 hover:text-sky-300 select-none py-1">
+                              ${escapeHtml(summaryTxt)}
+                            </summary>
+                            <div class="pt-3 flex justify-center">
+                              ${renderSingleVisual(s, 1)}
+                            </div>
+                          </details>
+                        </div>
+                      `;
+                    }
+
+                    return `
+                      <div class="w-full flex flex-col items-center">
+                        ${promptHtml}
+                        <div class="w-full flex flex-row flex-wrap justify-center items-stretch gap-4 py-1">
+                          ${row.map(s => renderSingleVisual(s, row.length)).join('')}
+                        </div>
+                      </div>
+                    `;
+                  }).join('');
+                })()}
               </div>
               <div class="text-[11px] text-slate-500 pt-4 border-t border-slate-800 w-full text-center">
                 ⚡ Built & Crafted with <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" class="text-brand-400 hover:underline">Mezzold TermArt Studio</a>
