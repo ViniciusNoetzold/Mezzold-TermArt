@@ -5664,6 +5664,11 @@ Sleep 3s
 def index():
     return HTMLResponse(content=HTML_TEMPLATE)
 
+@app.get("/healthz")
+@app.get("/health")
+def healthz():
+    return {"status": "ok", "service": "Mezzold TermArt", "version": "2.5.0"}
+
 @app.get("/api/render/city")
 def render_city(username: str = "developer", theme: str = "cyberpunk"):
     p = registry.get("isometric_city")

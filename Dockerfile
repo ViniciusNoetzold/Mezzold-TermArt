@@ -1,4 +1,4 @@
-﻿FROM python:3.11-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -19,6 +19,7 @@ COPY . .
 ENV PYTHONPATH=/app/src
 ENV PORT=7860
 ENV HEADLESS=1
+ENV PYTHONUNBUFFERED=1
 
 EXPOSE 7860
 
