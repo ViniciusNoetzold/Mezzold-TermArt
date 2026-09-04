@@ -2404,6 +2404,58 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
   <!-- MODAL DE CONFIGURAÇÃO DE BLOCO DO PERFIL -->
   
+  
+  <!-- ================= MODAL DETECTOR DE ADBLOCK ================= -->
+  <div id="modal-adblock-detected" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-2xl hidden transition-all p-4">
+    <div class="bg-[#0e1424] border border-amber-500/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl flex flex-col gap-5 relative animate-fade-in ring-1 ring-white/10 text-center">
+      <!-- Icon Glow -->
+      <div class="mx-auto w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/10">
+        🛡️
+      </div>
+
+      <!-- Header & Message -->
+      <div class="flex flex-col gap-2">
+        <span class="text-[10px] uppercase tracking-widest text-amber-400 font-bold font-mono">Bloqueador de Anúncios Detectado</span>
+        <h3 class="text-lg sm:text-xl font-black text-white tracking-wide">Contribua com nosso trabalho</h3>
+        <p class="text-xs text-slate-300 leading-relaxed mt-1">
+          O <strong>Mezzold TermArt Studio</strong> é uma ferramenta 100% gratuita, sem anúncios pop-up invasivos ou redirecionamentos forçados. 
+          Nossos servidores e recursos computacionais são mantidos unicamente pelo anúncio discreto no rodapé.
+        </p>
+        <p class="text-xs text-slate-400">
+          Por favor, <strong>desative o AdBlock</strong> ou adicione nosso site à lista de permissões para continuar usando e criando suas artes.
+        </p>
+      </div>
+
+      <!-- Simple 2-Step Guide -->
+      <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/5 text-left text-xs text-slate-300 flex flex-col gap-2">
+        <span class="font-bold text-white text-[11px] flex items-center gap-1.5">
+          <span>⚡</span> Como desativar em 5 segundos:
+        </span>
+        <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-400">
+          <li>Clique no ícone da extensão do seu AdBlock (ou escudo do navegador) no topo;</li>
+          <li>Selecione <strong>"Pausar neste site"</strong> ou <strong>"Desativar"</strong>;</li>
+          <li>Clique no botão abaixo para recarregar a página!</li>
+        </ol>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
+        <button onclick="checkAdblockAgain()" class="flex-1 py-3 bg-gradient-to-r from-amber-500 via-sky-600 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold rounded-xl transition shadow-lg shadow-sky-600/30 text-xs active:scale-95 flex items-center justify-center gap-2">
+          <span>🔄</span> <span>Já desativei, recarregar página</span>
+        </button>
+      </div>
+
+      <!-- Alternative Footer Note -->
+      <div class="text-[11px] text-slate-500 flex items-center justify-center gap-3 pt-1 border-t border-white/5">
+        <span>Criado com dedicação por Vinícius Noetzold</span>
+        <span>•</span>
+        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="text-sky-400 hover:underline">
+          GitHub ⭐
+        </a>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= COOKIE CONSENT BANNER (LGPD / GDPR) ================= -->
   <div id="cookie-banner" class="fixed bottom-3 inset-x-3 sm:bottom-6 sm:inset-x-auto sm:right-6 sm:max-w-lg z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-500 ease-out">
     <div class="rounded-2xl border border-sky-500/30 bg-[#0b1120]/95 backdrop-blur-2xl p-4 sm:p-5 shadow-2xl shadow-black/80 flex flex-col gap-3.5 ring-1 ring-white/10">
@@ -6205,6 +6257,68 @@ Sleep 3s
       }
     }
 
+    
+    // ================= ADBLOCK DETECTION ENGINE =================
+    async function checkAdBlocker() {
+      let isBlocked = false;
+
+      // Check 1: Bait DOM element with standard ad classes
+      try {
+        const bait = document.createElement('div');
+        bait.className = 'adsbox ad-placement pub_300x250 pub_728x90 text-ad textAd text_ad text_ads text-ads ad-server';
+        bait.style.position = 'absolute';
+        bait.style.left = '-9999px';
+        bait.style.top = '-9999px';
+        bait.style.width = '1px';
+        bait.style.height = '1px';
+        bait.innerHTML = '&nbsp;';
+        document.body.appendChild(bait);
+
+        const style = window.getComputedStyle(bait);
+        if (
+          bait.offsetHeight === 0 ||
+          bait.offsetParent === null ||
+          style.display === 'none' ||
+          style.visibility === 'hidden'
+        ) {
+          isBlocked = true;
+        }
+        document.body.removeChild(bait);
+      } catch (e) {
+        // Ignored
+      }
+
+      // Check 2: Network probe to Google AdSense script
+      if (!isBlocked) {
+        try {
+          const req = new Request('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+            method: 'HEAD',
+            mode: 'no-cors'
+          });
+          await fetch(req);
+        } catch (err) {
+          // If network request to Google ad server fails, AdBlock / DNS sinkhole blocked it
+          isBlocked = true;
+        }
+      }
+
+      if (isBlocked) {
+        showAdBlockModal();
+      }
+    }
+
+    function showAdBlockModal() {
+      const modal = document.getElementById('modal-adblock-detected');
+      if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function checkAdblockAgain() {
+      window.location.reload();
+    }
+
     // Initialize defaults
     window.addEventListener('DOMContentLoaded', () => {
       loadVhsPreset();
@@ -6217,6 +6331,7 @@ Sleep 3s
         openConfigModal();
       }
       initCookieConsent();
+      setTimeout(checkAdBlocker, 1200);
     });
   </script>
 </body>

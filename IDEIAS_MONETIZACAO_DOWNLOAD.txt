@@ -43,6 +43,32 @@ No modal de download do ZIP ou no README gerado, podemos colocar:
 - Muitas vezes, uma única doação voluntária de R$ 10 ou R$ 20 via PIX rende mais
   do que centenas de visualizações de anúncios.
 
+
+3. DETECTOR DE ADBLOCK & POP-UP CONSTRUTIVO ("DESATIVE O ADBLOCK")
+-------------------------------------------------------------------------------
+Por que implementar o detector de AdBlock:
+- Mais de 40% a 60% dos desenvolvedores e estudantes de TI utilizam extensões
+  de bloqueio como uBlock Origin, AdBlock Plus, AdGuard ou Brave Shields.
+- Como o Mezzold TermArt não utiliza pop-ups intrusivos, pegadinhas ou múltiplos
+  anúncios piscando na tela, é 100% ético e legítimo pedir a colaboração do
+  usuário para colocar o domínio na lista de permissões.
+
+Como funciona a detecção técnica implementada:
+1. Elemento Isca (Bait DOM): Criação de um elemento invisível temporário com
+   classes publicitárias padrão ('adsbox', 'pub_300x250'). Extensões de AdBlock
+   injetam regras CSS globais que colapsam esse elemento imediatamente.
+2. Probe de Rede (Network Catch): Requisição leve via HEAD ao script oficial do
+   Google AdSense. Se o navegador interceptar com 'ERR_BLOCKED_BY_CLIENT',
+   o sistema confirma a presença do bloqueador ativo.
+
+Mensagem e Abordagem com o Usuário:
+- Título: "🛡️ Bloqueador de Anúncios Detectado"
+- Apelo Central: "Contribua com nosso trabalho, desative o AdBlock"
+- Justificativa Clara: O estúdio é gratuito e os servidores no Render são mantidos
+  pelo patrocínio de rodapé.
+- Passo a Passo Simples: Tutorial em 3 etapas de 5 segundos para pausar a extensão.
+- Botão Direto: "Já desativei, recarregar página 🔄" (executa reload instantâneo).
+
 ===============================================================================
 Registrado em: 04 de Setembro de 2026
 Projeto: Mezzold TermArt Studio
