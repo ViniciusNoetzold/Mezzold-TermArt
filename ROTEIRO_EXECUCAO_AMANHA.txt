@@ -1,0 +1,46 @@
+===============================================================================
+             MEZZOLD TERMART STUDIO - ROTEIRO DE EXECUÇÃO
+===============================================================================
+Planejamento das ações para amanhã e próximos passos da aplicação:
+
+ETAPA 1: VERIFICAR SEGURANÇA E AMBIENTE (1 MINUTO)
+-------------------------------------------------------------------------------
+[ ] Dê dois cliques em 'auditoria_seguranca.bat' para conferir o status verde.
+[ ] Inicie o servidor local para desenvolvimento clicando em 'iniciar_studio.bat'.
+
+
+ETAPA 2: ACOMPANHAR STATUS NO GOOGLE ADSENSE
+-------------------------------------------------------------------------------
+[ ] Acesse o painel do Google AdSense (adsense.google.com).
+[ ] Vá em Sites -> mezzold-termart.onrender.com.
+[ ] Verifique se o status do 'ads.txt' foi atualizado de "Não encontrado" para
+    "Autorizado / Encontrado".
+    * Lembre-se: O robô do Google leva de 24h a 48h no ciclo padrão.
+    * O arquivo já está 100% acessível em:
+      https://mezzold-termart.onrender.com/ads.txt
+
+
+ETAPA 3: IMPLEMENTAÇÃO DO MODAL DE PREPARAÇÃO DO DOWNLOAD (.ZIP)
+-------------------------------------------------------------------------------
+Conforme estruturado no arquivo 'IDEIAS_MONETIZACAO_DOWNLOAD.txt':
+[ ] Quando o usuário clicar em [ 📦 Baixar Repositório (.ZIP) ]:
+    1. Abre o modal estilizado no tema cyberpunk/terminal.
+    2. Barra de progresso animada de 4 segundos:
+       "📦 Empacotando seu Perfil GitHub..."
+       [ ■■■■■■■■■□□□ ] 75%
+    3. Exibe o espaço publicitário / parceiro Mezzold TermArt.
+    4. Ao final dos 4 segundos, o arquivo .zip baixa automaticamente.
+    5. Botão opcional: "Apoiar com PIX / Café ☕".
+
+
+ETAPA 4: TESTAR E SUBIR AS ATUALIZAÇÕES
+-------------------------------------------------------------------------------
+[ ] Executar 'python tests\test_all_engines.py' para garantir que os 49 motores
+    estão funcionando perfeitamente.
+[ ] Fazer o commit e push para o GitHub:
+    git add .
+    git commit -m "feat: modal de preparacao de download e otimizacoes"
+    git push origin main
+[ ] O Render atualizará automaticamente em 1 a 2 minutos.
+
+===============================================================================
