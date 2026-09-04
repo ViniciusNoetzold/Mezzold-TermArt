@@ -2284,7 +2284,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
 
     <!-- Elegant Unobtrusive Sponsor / Ad Banner Container -->
-    <div id="ad-container-footer" class="max-w-[1600px] w-full mx-auto px-6 py-4 mt-4">
+    <div id="ad-container-footer" class="col-span-1 lg:col-span-12 max-w-[1600px] w-full mx-auto px-2 sm:px-6 py-4 mt-4">
       <div class="rounded-2xl border border-white/5 bg-[#0a0f1d]/70 backdrop-blur-md p-3.5 flex flex-col items-center justify-center min-h-[90px] text-center relative overflow-hidden shadow-lg shadow-black/20">
         <div class="flex items-center gap-2 mb-1.5">
           <span class="text-[9px] uppercase tracking-widest text-slate-500 font-semibold px-2 py-0.5 rounded bg-white/5 border border-white/5">Patrocinado • Mezzold TermArt</span>
@@ -2305,6 +2305,41 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
   </main>
 
+  <!-- Footer & Legal Center -->
+  <footer class="mt-auto border-t border-white/5 bg-[#0a0f1d]/90 backdrop-blur-xl py-6 px-4 sm:px-6">
+    <div class="max-w-[1600px] w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
+        <span class="font-bold text-white flex items-center gap-1.5">
+          <span class="text-sky-400 font-mono">⚡</span> Mezzold TermArt Studio
+          <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold font-mono">v2.5</span>
+        </span>
+        <span class="hidden sm:inline text-slate-600">•</span>
+        <span class="text-slate-400">Criado com 💜 por <strong class="text-slate-200">Vinícius Noetzold</strong></span>
+        <span class="hidden sm:inline text-slate-600">•</span>
+        <span class="text-[11px] text-slate-500">Licença MIT (Open-Source)</span>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-4 text-xs">
+        <button onclick="openPrivacyModal('privacy')" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline">
+          Política de Privacidade
+        </button>
+        <span class="text-slate-600">•</span>
+        <button onclick="openPrivacyModal('terms')" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline">
+          Termos de Uso
+        </button>
+        <span class="text-slate-600">•</span>
+        <button onclick="openCookiePreferencesModal()" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline flex items-center gap-1">
+          <span>🍪</span> Gerenciar Cookies
+        </button>
+        <span class="text-slate-600">•</span>
+        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="hover:text-white transition flex items-center gap-1 text-slate-300">
+          <span>GitHub</span><span>↗</span>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+
   <!-- Floating Mobile Quick Switcher Button (Controls <-> Canvas) -->
   <div id="mobile-quick-nav" class="lg:hidden fixed bottom-5 right-4 z-40 flex items-center gap-2">
     <button onclick="toggleMobileViewScroll()" id="btn-mobile-scroll" class="px-4 py-2.5 rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 text-white text-xs font-bold shadow-xl shadow-sky-600/40 border border-white/20 flex items-center gap-2 active:scale-95 transition backdrop-blur-md">
@@ -2319,6 +2354,234 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </div>
 
   <!-- MODAL DE CONFIGURAÇÃO DE BLOCO DO PERFIL -->
+  
+  <!-- ================= COOKIE CONSENT BANNER (LGPD / GDPR) ================= -->
+  <div id="cookie-banner" class="fixed bottom-3 inset-x-3 sm:bottom-6 sm:inset-x-auto sm:right-6 sm:max-w-lg z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-500 ease-out">
+    <div class="rounded-2xl border border-sky-500/30 bg-[#0b1120]/95 backdrop-blur-2xl p-4 sm:p-5 shadow-2xl shadow-black/80 flex flex-col gap-3.5 ring-1 ring-white/10">
+      <div class="flex items-start gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-xl shrink-0 shadow-inner">
+          🍪
+        </div>
+        <div class="flex flex-col gap-1 min-w-0 flex-1">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-bold text-white tracking-wide flex items-center gap-1.5">
+              <span>Privacidade &amp; Cookies</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-mono font-semibold">LGPD / GDPR</span>
+            </h4>
+            <button onclick="closeCookieBannerTemporarily()" class="text-slate-400 hover:text-white text-xs p-1 rounded hover:bg-white/5 transition" title="Fechar temporariamente">✕</button>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            Utilizamos armazenamento local para guardar suas preferências e temas, além de cookies do Google para métricas anônimas e exibição de anúncios que mantêm esta ferramenta gratuita.
+          </p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
+        <div class="flex items-center gap-2">
+          <button onclick="openPrivacyModal()" class="text-[11px] text-sky-400 hover:text-sky-300 hover:underline">
+            Política de Privacidade
+          </button>
+          <span class="text-slate-600 text-xs">•</span>
+          <button onclick="openCookiePreferencesModal()" class="text-[11px] text-slate-400 hover:text-white hover:underline">
+            Personalizar
+          </button>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="acceptEssentialCookies()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-semibold transition active:scale-95">
+            Apenas Essenciais
+          </button>
+          <button onclick="acceptAllCookies()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-[11px] font-bold shadow-md shadow-sky-600/30 transition active:scale-95">
+            Aceitar Todos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL PREFERÊNCIAS DE COOKIES ================= -->
+  <div id="modal-cookie-prefs" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
+    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🍪</span>
+          <div>
+            <h3 class="text-base font-bold text-white tracking-wide">Preferências de Cookies</h3>
+            <p class="text-xs text-slate-400">Escolha quais tipos de dados e cookies você autoriza</p>
+          </div>
+        </div>
+        <button onclick="closeCookiePreferencesModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-xl hover:bg-white/5 transition">✕</button>
+      </div>
+
+      <div class="flex flex-col gap-3 text-xs">
+        <!-- Essenciais -->
+        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-white/5 flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center gap-1.5">
+              <strong class="text-white text-sm">Cookies Essenciais &amp; LocalStorage</strong>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-mono">Obrigatório</span>
+            </div>
+            <p class="text-slate-400 text-[11px]">Necessários para salvar seu perfil de desenvolvedor, preferências de som, temas da interface e histórico de criações no seu navegador.</p>
+          </div>
+          <input type="checkbox" checked disabled class="mt-1 h-4 w-4 rounded accent-sky-500 cursor-not-allowed opacity-80">
+        </div>
+
+        <!-- Métricas / Analytics -->
+        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-white/5 flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <strong class="text-white text-sm">Métricas &amp; Desempenho (GTM)</strong>
+            <p class="text-slate-400 text-[11px]">Coleta estatísticas anônimas sobre o uso e erros das ferramentas para nos ajudar a melhorar a plataforma.</p>
+          </div>
+          <input id="pref-cookie-analytics" type="checkbox" checked class="mt-1 h-4 w-4 rounded accent-sky-500 cursor-pointer">
+        </div>
+
+        <!-- Publicidade Google AdSense -->
+        <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-white/5 flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-1">
+            <strong class="text-white text-sm">Publicidade Patrocinada (Google AdSense)</strong>
+            <p class="text-slate-400 text-[11px]">Permite ao Google exibir anúncios contextuais relevantes no banner do rodapé para custear a infraestrutura do estúdio.</p>
+          </div>
+          <input id="pref-cookie-ads" type="checkbox" checked class="mt-1 h-4 w-4 rounded accent-sky-500 cursor-pointer">
+        </div>
+      </div>
+
+      <div class="flex gap-2.5 pt-3 border-t border-white/10">
+        <button onclick="saveCustomCookiePrefs()" class="flex-1 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold rounded-xl transition shadow-lg text-xs active:scale-95">
+          Salvar Minhas Escolhas
+        </button>
+        <button onclick="acceptAllCookies()" class="px-4 py-2.5 bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl transition active:scale-95">
+          Aceitar Todos
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL POLÍTICA DE PRIVACIDADE & TERMOS ================= -->
+  <div id="modal-privacy-policy" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
+    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-5 sm:p-7 max-w-3xl w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in max-h-[92vh]">
+      <!-- Header -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">📜</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white tracking-wide">Política de Privacidade &amp; Termos de Uso</h3>
+            <p class="text-xs text-slate-400">Transparência total, LGPD (Brasil), GDPR (UE) e Diretrizes do Google AdSense</p>
+          </div>
+        </div>
+        <button onclick="closePrivacyModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-xl hover:bg-white/5 transition">✕</button>
+      </div>
+
+      <!-- Navigation Tabs for Policy -->
+      <div class="flex gap-2 border-b border-white/5 pb-2 text-xs">
+        <button id="tab-legal-privacy-btn" onclick="switchLegalTab('privacy')" class="px-3 py-1.5 rounded-lg bg-sky-600 text-white font-semibold transition">
+          Política de Privacidade
+        </button>
+        <button id="tab-legal-terms-btn" onclick="switchLegalTab('terms')" class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-semibold transition">
+          Termos de Uso &amp; Licença MIT
+        </button>
+        <a href="/privacy" target="_blank" class="ml-auto text-[11px] text-sky-400 hover:text-sky-300 flex items-center gap-1 py-1.5">
+          <span>Abrir em Nova Aba</span> <span>↗</span>
+        </a>
+      </div>
+
+      <!-- Content Scrollable -->
+      <div class="overflow-y-auto pr-1 flex flex-col gap-4 text-xs text-slate-300 leading-relaxed custom-scroll">
+        <!-- SEÇÃO PRIVACIDADE -->
+        <div id="legal-content-privacy" class="flex flex-col gap-3.5">
+          <div class="p-3 rounded-xl bg-sky-950/40 border border-sky-500/20 text-sky-200 text-[11px]">
+            <strong>Resumo em uma frase:</strong> Nós não vendemos seus dados, suas fotos não ficam salvas em nossos servidores e você tem controle total sobre os cookies e artes geradas.
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+              <span>1. Quem Somos e Nosso Compromisso</span>
+            </h4>
+            <p class="text-slate-300">
+              O <strong>Mezzold TermArt Studio</strong> é desenvolvido por <strong>Vinícius Noetzold</strong> como uma suíte de código aberto voltada para desenvolvedores, designers e entusiastas de terminal. Temos o compromisso irrestrito de respeitar sua privacidade e cumprir a <strong>Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018)</strong> e o <strong>Regulamento Geral de Proteção de Dados (GDPR - Regulamento UE 2016/679)</strong>.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+              <span>2. Processamento Local e Não Retenção de Conteúdo</span>
+            </h4>
+            <ul class="list-disc list-inside space-y-1 text-slate-300">
+              <li><strong>Imagens e Uploads:</strong> Fotos e arquivos enviados para conversão (JPEG, PNG, GIF, WebP) são processados instantaneamente em memória de execução para gerar o SVG/ASCII. <strong>Nenhum arquivo pessoal é armazenado permanentemente em nossos servidores ou bancos de dados.</strong></li>
+              <li><strong>Textos e Banners:</strong> O conteúdo de texto que você digita é renderizado pontualmente e não é indexado ou compartilhado.</li>
+              <li><strong>Dados de Perfil:</strong> Informações como username do GitHub, título e conquistas são salvas exclusivamente no armazenamento local do seu navegador (<code>localStorage</code>).</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+              <span>3. Cookies e Publicidade de Terceiros (Google AdSense &amp; GTM)</span>
+            </h4>
+            <p class="text-slate-300 mb-2">
+              Para custear os servidores e manter a aplicação gratuita para todos os usuários, utilizamos serviços do Google:
+            </p>
+            <div class="p-3 rounded-xl bg-slate-900/90 border border-white/5 space-y-2 text-[11.5px]">
+              <p>• <strong>Google AdSense:</strong> O Google, como fornecedor terceirizado, utiliza cookies para veicular anúncios neste site. O uso de cookies de publicidade (incluindo o cookie DoubleClick) permite ao Google e a seus parceiros veicular anúncios com base nas visitas anteriores feitas a este ou a outros sites na Internet.</p>
+              <p>• <strong>Desativação de Publicidade Personalizada:</strong> Você pode optar por desativar a publicidade personalizada a qualquer momento acessando as <a href="https://adssettings.google.com/" target="_blank" class="text-sky-400 underline font-semibold">Configurações de Anúncios do Google</a> ou visitando o site <a href="https://www.aboutads.info/" target="_blank" class="text-sky-400 underline font-semibold">aboutads.info</a>.</p>
+              <p>• <strong>Google Tag Manager:</strong> Permite monitorar de forma agregada e anônima o volume de visitantes e estabilidade dos motores de arte.</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+              <span>4. Seus Direitos (LGPD &amp; GDPR)</span>
+            </h4>
+            <p class="text-slate-300">
+              Você tem o direito de revogar seu consentimento de cookies a qualquer momento, de exportar suas artes livremente e de apagar quaisquer dados locais simplesmente limpando os dados de navegação ou clicando em <em>"Redefinir Perfil"</em> nas configurações.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1 flex items-center gap-1.5">
+              <span>5. Contato</span>
+            </h4>
+            <p class="text-slate-300">
+              Dúvidas sobre privacidade e termos podem ser encaminhadas diretamente pelo nosso repositório no GitHub: <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="text-sky-400 hover:underline font-semibold">github.com/ViniciusNoetzold/Mezzold-TermArt</a>.
+            </p>
+          </div>
+        </div>
+
+        <!-- SEÇÃO TERMOS DE USO -->
+        <div id="legal-content-terms" class="flex flex-col gap-3.5 hidden">
+          <div class="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/20 text-indigo-200 text-[11px]">
+            <strong>Licença MIT:</strong> Todo o software é livre. As artes que você cria no estúdio são 100% suas, para qualquer finalidade pessoal ou comercial.
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1">1. Propriedade Intelectual das Criações</h4>
+            <p class="text-slate-300">
+              Você detém a total titularidade sobre as artes, vetores SVG, arquivos ZIP e textos gerados por meio do Mezzold TermArt. Você é livre para utilizá-los em perfis do GitHub, sites comerciais, artigos, apresentações ou mídias sociais.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1">2. Condições de Uso</h4>
+            <p class="text-slate-300">
+              Ao utilizar este serviço, você concorda em não empregar os motores de renderização para produzir ou disseminar material ilícito, difamatório ou que viole direitos de propriedade intelectual de terceiros.
+            </p>
+          </div>
+
+          <div>
+            <h4 class="text-sm font-bold text-white mb-1">3. Isenção de Garantias</h4>
+            <p class="text-slate-300">
+              O software é fornecido "no estado em que se encontra" (as is), sem garantias de qualquer tipo, expressas ou implícitas. Os mantenedores não se responsabilizam por eventuais interrupções temporárias do serviço ou inconsistências visuais em terminais legados.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex justify-between items-center pt-3 border-t border-white/10">
+        <span class="text-[11px] text-slate-500">Última atualização: Setembro de 2026</span>
+        <button onclick="closePrivacyModal()" class="px-5 py-2 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-sky-600/20 active:scale-95">
+          Compreendido
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="modal-block-config" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
     <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
       <div class="flex items-center justify-between border-b border-white/10 pb-3">
@@ -5752,6 +6015,127 @@ Sleep 3s
       renderReadmePreview();
     }
 
+    
+    // ================= COOKIES & PRIVACY POLICY (LGPD/GDPR) =================
+    function initCookieConsent() {
+      const consent = localStorage.getItem('termart_cookies_consent');
+      if (!consent) {
+        setTimeout(() => {
+          const banner = document.getElementById('cookie-banner');
+          if (banner) {
+            banner.classList.remove('translate-y-32', 'opacity-0', 'pointer-events-none');
+          }
+        }, 800);
+      } else if (consent === 'all') {
+        enableOptionalTracking();
+      }
+    }
+
+    function acceptAllCookies() {
+      localStorage.setItem('termart_cookies_consent', 'all');
+      localStorage.setItem('termart_cookies_analytics', 'true');
+      localStorage.setItem('termart_cookies_ads', 'true');
+      hideCookieBanner();
+      closeCookiePreferencesModal();
+      enableOptionalTracking();
+      showToast('✓ Preferências salvas: Todos os cookies aceitos.');
+    }
+
+    function acceptEssentialCookies() {
+      localStorage.setItem('termart_cookies_consent', 'essential');
+      localStorage.setItem('termart_cookies_analytics', 'false');
+      localStorage.setItem('termart_cookies_ads', 'false');
+      hideCookieBanner();
+      closeCookiePreferencesModal();
+      showToast('✓ Preferências salvas: Apenas cookies essenciais ativados.');
+    }
+
+    function saveCustomCookiePrefs() {
+      const analytics = document.getElementById('pref-cookie-analytics')?.checked ?? true;
+      const ads = document.getElementById('pref-cookie-ads')?.checked ?? true;
+      localStorage.setItem('termart_cookies_consent', 'custom');
+      localStorage.setItem('termart_cookies_analytics', analytics ? 'true' : 'false');
+      localStorage.setItem('termart_cookies_ads', ads ? 'true' : 'false');
+      hideCookieBanner();
+      closeCookiePreferencesModal();
+      if (analytics || ads) enableOptionalTracking();
+      showToast('✓ Suas preferências de privacidade foram atualizadas!');
+    }
+
+    function hideCookieBanner() {
+      const banner = document.getElementById('cookie-banner');
+      if (banner) {
+        banner.classList.add('translate-y-32', 'opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function closeCookieBannerTemporarily() {
+      hideCookieBanner();
+    }
+
+    function openCookiePreferencesModal() {
+      const modal = document.getElementById('modal-cookie-prefs');
+      if (!modal) return;
+      const analytics = localStorage.getItem('termart_cookies_analytics') !== 'false';
+      const ads = localStorage.getItem('termart_cookies_ads') !== 'false';
+      const chkAnalytics = document.getElementById('pref-cookie-analytics');
+      const chkAds = document.getElementById('pref-cookie-ads');
+      if (chkAnalytics) chkAnalytics.checked = analytics;
+      if (chkAds) chkAds.checked = ads;
+      modal.classList.remove('hidden');
+    }
+
+    function closeCookiePreferencesModal() {
+      const modal = document.getElementById('modal-cookie-prefs');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function openPrivacyModal(section = 'privacy') {
+      const modal = document.getElementById('modal-privacy-policy');
+      if (!modal) return;
+      switchLegalTab(section);
+      modal.classList.remove('hidden');
+    }
+
+    function closePrivacyModal() {
+      const modal = document.getElementById('modal-privacy-policy');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function switchLegalTab(tab) {
+      const btnPrivacy = document.getElementById('tab-legal-privacy-btn');
+      const btnTerms = document.getElementById('tab-legal-terms-btn');
+      const secPrivacy = document.getElementById('legal-content-privacy');
+      const secTerms = document.getElementById('legal-content-terms');
+
+      if (tab === 'privacy') {
+        btnPrivacy?.classList.add('bg-sky-600', 'text-white');
+        btnPrivacy?.classList.remove('text-slate-400');
+        btnTerms?.classList.remove('bg-sky-600', 'text-white');
+        btnTerms?.classList.add('text-slate-400');
+        secPrivacy?.classList.remove('hidden');
+        secTerms?.classList.add('hidden');
+      } else {
+        btnTerms?.classList.add('bg-sky-600', 'text-white');
+        btnTerms?.classList.remove('text-slate-400');
+        btnPrivacy?.classList.remove('bg-sky-600', 'text-white');
+        btnPrivacy?.classList.add('text-slate-400');
+        secTerms?.classList.remove('hidden');
+        secPrivacy?.classList.add('hidden');
+      }
+    }
+
+    function enableOptionalTracking() {
+      // Signals consent state to Google Tag Manager and AdSense if available
+      if (typeof window.dataLayer !== 'undefined') {
+        window.dataLayer.push({
+          'event': 'cookie_consent_update',
+          'analytics_storage': 'granted',
+          'ad_storage': 'granted'
+        });
+      }
+    }
+
     // Initialize defaults
     window.addEventListener('DOMContentLoaded', () => {
       loadVhsPreset();
@@ -5763,11 +6147,177 @@ Sleep 3s
         // First access: open onboarding modal!
         openConfigModal();
       }
+      initCookieConsent();
     });
   </script>
 </body>
 </html>
 """
+
+
+LEGAL_HTML_TEMPLATE = r"""<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} — Mezzold TermArt Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#0284c7',
+              600: '#0369a1',
+              dark: '#0e1424',
+              surface: '#0a0f1d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#07090e] text-slate-200 font-sans min-h-screen flex flex-col antialiased selection:bg-sky-500/30 selection:text-sky-200">
+  <!-- Header -->
+  <header class="border-b border-white/5 bg-[#0a0f1d]/90 backdrop-blur-xl sticky top-0 z-50 px-4 sm:px-6 py-3.5 shadow-lg">
+    <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 hover:opacity-90 transition">
+        <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent font-black tracking-wider text-base sm:text-lg">⚡ MEZZOLD TERMART</span>
+        <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold font-mono">v2.5</span>
+      </a>
+      <a href="/" class="px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-sky-400 font-semibold transition flex items-center gap-1.5">
+        <span>←</span> <span>Voltar ao Studio</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Legal Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-8 flex flex-col gap-6 text-sm text-slate-300 leading-relaxed">
+    <div class="rounded-3xl bg-[#0a0f1d]/70 border border-white/10 p-6 sm:p-10 shadow-2xl backdrop-blur-xl flex flex-col gap-6">
+      {content}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5 bg-[#0a0f1d]/85 py-6 px-4 text-center text-xs text-slate-500">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span>© 2026 Mezzold TermArt Studio • Criado por Vinícius Noetzold</span>
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="/privacy" class="hover:text-white transition">Política de Privacidade</a>
+        <span>•</span>
+        <a href="/terms" class="hover:text-white transition">Termos de Uso</a>
+        <span>•</span>
+        <a href="/" class="hover:text-white transition">Abrir Studio</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+"""
+
+PRIVACY_BODY = r"""
+      <div class="border-b border-white/10 pb-4">
+        <span class="text-xs uppercase tracking-widest text-sky-400 font-bold">Conformidade Legal • LGPD &amp; GDPR</span>
+        <h1 class="text-2xl sm:text-3xl font-black text-white mt-1">Política de Privacidade</h1>
+        <p class="text-xs text-slate-400 mt-1">Última atualização: 04 de Setembro de 2026</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-sky-950/30 border border-sky-500/20 text-sky-200 text-xs">
+        <strong>Compromisso de Privacidade:</strong> O Mezzold TermArt Studio respeita a privacidade de todos os seus usuários. Nós não coletamos, vendemos ou armazenamos de forma permanente seus arquivos pessoais, imagens ou criações.
+      </div>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">1. Informações Gerais e Responsável</h2>
+        <p>O <strong>Mezzold TermArt Studio</strong> é um projeto e serviço de software de código aberto desenvolvido por <strong>Vinícius Noetzold</strong>. Esta Política de Privacidade descreve de forma clara e transparente como tratamos informações e dados, de acordo com a <strong>Lei Geral de Proteção de Dados (LGPD - Lei Federal nº 13.709/2018 do Brasil)</strong> e o <strong>Regulamento Geral de Proteção de Dados (GDPR - Regulamento UE 2016/679)</strong>.</p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">2. Dados Processados e Arquivos</h2>
+        <p>Ao utilizar os motores de arte do estúdio:</p>
+        <ul class="list-disc list-inside space-y-1 pl-2">
+          <li><strong>Imagens enviadas:</strong> Imagens (PNG, JPG, WebP, GIF ou SVG) carregadas pelo usuário são processadas instantaneamente e de forma estritamente volátil na memória para converter os pixels em representações ASCII/Braille/SVG. <strong>Nenhuma imagem é salva de modo permanente em servidores ou bancos de dados.</strong></li>
+          <li><strong>Textos e Comandos:</strong> Textos digitados para banners e telas são renderizados pontualmente e não sofrem mineração ou repasse a terceiros.</li>
+          <li><strong>Configurações Locais:</strong> Configurações de perfil (como usuário do GitHub, tema e histórico de criações) ficam guardadas unicamente no armazenamento local (<code>localStorage</code>) do seu próprio navegador.</li>
+        </ul>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">3. Cookies e Publicidade de Terceiros (Google AdSense)</h2>
+        <p>Para manter o Mezzold TermArt Studio 100% gratuito e disponível mundialmente, exibimos patrocínios e anúncios contextuais fornecidos pelo <strong>Google AdSense</strong>:</p>
+        <div class="p-4 rounded-2xl bg-slate-900/90 border border-white/5 space-y-2 text-xs text-slate-300">
+          <p>• <strong>Uso de Cookies por Terceiros:</strong> O Google e seus parceiros terceirizados utilizam cookies para veicular anúncios neste site com base em visitas anteriores feitas pelo usuário a este ou outros sites na Web.</p>
+          <p>• <strong>Cookie DoubleClick:</strong> O uso de cookies de publicidade permite ao Google e a seus parceiros veicular anúncios para os usuários com base nas visitas feitas aos seus sites e/ou a outros sites na Internet.</p>
+          <p>• <strong>Como Desativar:</strong> Os usuários podem desativar o uso de cookies para publicidade personalizada acessando as <a href="https://adssettings.google.com/" target="_blank" class="text-sky-400 underline font-semibold">Configurações de Anúncios do Google</a>. Alternativamente, você pode desativar o uso de cookies de terceiros para publicidade personalizada visitando <a href="https://www.aboutads.info/" target="_blank" class="text-sky-400 underline font-semibold">aboutads.info</a>.</p>
+          <p>• <strong>Google Tag Manager:</strong> Utilizamos o contêiner GTM para obter métricas de navegação agregadas e anônimas (navegador utilizado, resolução aproximada e erros operacionais), sem identificação individual.</p>
+        </div>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">4. Seus Direitos como Titular (LGPD e GDPR)</h2>
+        <p>Você tem total direito de:</p>
+        <ul class="list-disc list-inside space-y-1 pl-2">
+          <li>Acessar ou apagar os dados locais armazenados em seu dispositivo a qualquer momento;</li>
+          <li>Revogar ou alterar seu consentimento de cookies através do botão <em>"Gerenciar Cookies"</em> no rodapé do estúdio;</li>
+          <li>Utilizar a aplicação sem qualquer exigência de fornecimento de dados pessoais sensíveis (como CPF, documentos ou senhas).</li>
+        </ul>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">5. Segurança da Informação</h2>
+        <p>Todas as requisições realizadas com o estúdio são protegidas por protocolos de criptografia <strong>HTTPS / TLS</strong>. Não praticamos a comercialização de quaisquer dados ou metadados de navegação com terceiros ou data brokers.</p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">6. Contato e Dúvidas</h2>
+        <p>Em caso de dúvidas, solicitações ou sugestões sobre esta política, sinta-se à vontade para abrir uma issue ou discussão em nosso repositório oficial no GitHub: <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="text-sky-400 hover:underline font-semibold">https://github.com/ViniciusNoetzold/Mezzold-TermArt</a>.</p>
+      </section>
+"""
+
+TERMS_BODY = r"""
+      <div class="border-b border-white/10 pb-4">
+        <span class="text-xs uppercase tracking-widest text-indigo-400 font-bold">Termos &amp; Licenciamento • Licença MIT</span>
+        <h1 class="text-2xl sm:text-3xl font-black text-white mt-1">Termos de Uso</h1>
+        <p class="text-xs text-slate-400 mt-1">Última atualização: 04 de Setembro de 2026</p>
+      </div>
+
+      <div class="p-4 rounded-2xl bg-indigo-950/30 border border-indigo-500/20 text-indigo-200 text-xs">
+        <strong>Software Livre e Aberto:</strong> O Mezzold TermArt Studio é regido pela Licença MIT. Você pode usar e exportar todas as artes geradas tanto para fins pessoais quanto comerciais.
+      </div>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">1. Propriedade dos Conteúdos Gerados</h2>
+        <p>Todos os arquivos vetoriais SVG, sequências de caracteres ASCII/ANSI, animações e arquivos ZIP gerados com base nos seus inputs (fotos, textos ou códigos) são de sua exclusiva propriedade intelectual. Você possui total liberdade para utilizá-los em perfis do GitHub, repositórios, websites, redes sociais ou materiais impressos.</p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">2. Responsabilidade pelo Uso</h2>
+        <p>O usuário é inteiramente responsável pelos textos, imagens e dados que submete à ferramenta. É proibido utilizar a plataforma para gerar ou disseminar conteúdo que viole a legislação vigente, viole direitos autorais de terceiros sem autorização, ou configure assédio ou preconceito.</p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">3. Isenção de Garantias (Licença MIT)</h2>
+        <p>O software é disponibilizado "como está" (as is), sem garantias expressas ou implícitas de qualquer espécie, incluindo, sem limitação, garantias de comercialização ou adequação a uma finalidade específica. Em nenhuma hipótese o autor ou mantenedores serão responsáveis por quaisquer reivindicações ou danos decorrentes do uso da aplicação.</p>
+      </section>
+
+      <section class="flex flex-col gap-2">
+        <h2 class="text-base sm:text-lg font-bold text-white">4. Modificações dos Termos</h2>
+        <p>Estes termos podem ser atualizados periodicamente para refletir novas funcionalidades da aplicação. Recomendamos que consulte esta página periodicamente.</p>
+      </section>
+"""
+
+
+@app.get("/privacy", response_class=HTMLResponse)
+def privacy_page():
+    html = LEGAL_HTML_TEMPLATE.replace("{title}", "Política de Privacidade").replace("{content}", PRIVACY_BODY)
+    return HTMLResponse(content=html)
+
+@app.get("/terms", response_class=HTMLResponse)
+def terms_page():
+    html = LEGAL_HTML_TEMPLATE.replace("{title}", "Termos de Uso").replace("{content}", TERMS_BODY)
+    return HTMLResponse(content=html)
 
 @app.get("/", response_class=HTMLResponse)
 def index():
