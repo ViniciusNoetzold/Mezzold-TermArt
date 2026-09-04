@@ -1,0 +1,12 @@
+﻿services:
+  - type: web
+    name: mezzold-termart
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python termstudio.py
+    envVars:
+      - key: PYTHONPATH
+        value: src
+      - key: HEADLESS
+        value: 1
+    plan: free

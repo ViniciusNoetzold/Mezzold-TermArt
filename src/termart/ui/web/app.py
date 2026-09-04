@@ -4867,10 +4867,20 @@ def compile_agg_cast(payload: dict = Body(...)):
         return {"status": "error", "message": str(e)}
 
 def launch_studio(port: int = 7860):
+    env_port = os.environ.get("PORT")
+    if env_port:
+        try:
+            port = int(env_port)
+        except ValueError:
+            pass
     url = f"http://localhost:{port}"
     print(f"\n[Mezzold TermArt Studio] Serving UI at {url}")
     print("Press Ctrl+C to stop the studio.\n")
-    webbrowser.open(url)
+    if not os.environ.get("PORT") and not os.environ.get("HEADLESS") and not os.environ.get("RENDER"):
+        try:
+            webbrowser.open(url)
+        except Exception:
+            pass
     uvicorn.run(app, host="0.0.0.0", port=port, log_level="warning")
 
 

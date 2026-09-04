@@ -14,5 +14,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src
 from termart.ui.web.app import launch_studio
 
 if __name__ == "__main__":
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 7860
+    env_port = os.environ.get("PORT")
+    if env_port:
+        port = int(env_port)
+    elif len(sys.argv) > 1:
+        port = int(sys.argv[1])
+    else:
+        port = 7860
     launch_studio(port=port)

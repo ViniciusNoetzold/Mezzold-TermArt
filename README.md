@@ -263,7 +263,56 @@ python termstudio.py
 ```
 O servidor iniciará em:
 - **Local:** `http://localhost:7860`
-- **Rede Local (LAN):** `http://<SEU_IP_LOCAL>:7860`
+---
+
+## 🌐 Como Subir para a Web (Acesso Público & Hospedagem 24/7)
+
+Existem 4 formas práticas de colocar o **Mezzold TermArt Studio** no ar para outras pessoas usarem:
+
+### ⚡ Opção 1: Instantâneo do seu PC (Cloudflare Tunnel - 1 Clique)
+Se você quer mostrar a aplicação para um amigo, colega ou testar no celular agora mesmo sem precisar cadastrar em nenhum site de nuvem:
+1. Inicie o estúdio dando dois cliques em **`iniciar_studio.bat`** (ou `python termstudio.py`).
+2. Dê dois cliques em **`iniciar_tunel_publico.bat`**.
+3. O Cloudflare gerará na hora um link público seguro com SSL (ex: `https://seu-link-aleatorio.trycloudflare.com`).
+4. Envie esse link para qualquer pessoa no mundo acessar diretamente do navegador dela!
+*(O estúdio fica online enquanto seu computador estiver ligado com o terminal aberto).*
+
+---
+
+### ☁️ Opção 2: Hospedagem Gratuita 24/7 no Render.com (Recomendado)
+O Render permite que sua aplicação fique ligada 24 horas por dia na nuvem gratuitamente direto do seu repositório do GitHub:
+1. Crie uma conta gratuita em [render.com](https://render.com) e conecte com seu GitHub.
+2. Clique em **"New +"** ➔ **"Web Service"**.
+3. Selecione seu repositório `Mezzold-TermArt`.
+4. O Render detectará automaticamente as configurações através do arquivo `render.yaml` já incluído no projeto:
+   - **Runtime:** `Python 3`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `python termstudio.py`
+   - **Instance Type:** `Free`
+5. Clique em **"Create Web Service"**.
+6. Em 2 minutos você terá uma URL oficial permanente (ex: `https://mezzold-termart.onrender.com`).
+*(Toda vez que você der `git push` no GitHub, o site é atualizado sozinho na web!)*
+
+---
+
+### 🤗 Opção 3: Hugging Face Spaces (100% Gratuito & 16GB RAM)
+1. Acesse [huggingface.co/spaces](https://huggingface.co/spaces) e clique em **"Create new Space"**.
+2. Escolha um nome (ex: `termart-studio`), selecione a licença **MIT** e escolha **Docker** (Blank).
+3. Conecte ao seu repositório do GitHub ou dê `git push` para o repositório do Space.
+4. O Hugging Face usará o `Dockerfile` incluído no projeto e colocará o estúdio no ar permanentemente com link público `https://huggingface.co/spaces/seu-usuario/termart-studio`.
+
+---
+
+### 🐳 Opção 4: Container Docker (Qualquer VPS ou Servidor Linux)
+Para rodar em sua própria VPS (DigitalOcean, AWS, Hetzner, Oracle Cloud):
+```bash
+# Construir a imagem Docker
+docker build -t mezzold-termart .
+
+# Executar o container na porta 7860
+docker run -d -p 7860:7860 --name termart-studio mezzold-termart
+```
+Acesse em `http://IP_DO_SERVIDOR:7860`.
 
 ---
 
