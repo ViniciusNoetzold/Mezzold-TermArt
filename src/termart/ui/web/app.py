@@ -2408,6 +2408,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <!-- ================= MODAL DETECTOR DE ADBLOCK ================= -->
   <div id="modal-adblock-detected" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-2xl hidden transition-all p-4">
     <div class="bg-[#0e1424] border border-amber-500/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl flex flex-col gap-5 relative animate-fade-in ring-1 ring-white/10 text-center">
+      <!-- Close button (never trap the user) -->
+      <button onclick="dismissAdBlockModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg p-2 rounded-xl hover:bg-white/5 transition" title="Fechar e continuar">✕</button>
+
       <!-- Icon Glow -->
       <div class="mx-auto w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/10">
         🛡️
@@ -2418,30 +2421,32 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <span class="text-[10px] uppercase tracking-widest text-amber-400 font-bold font-mono">Bloqueador de Anúncios Detectado</span>
         <h3 class="text-lg sm:text-xl font-black text-white tracking-wide">Contribua com nosso trabalho</h3>
         <p class="text-xs text-slate-300 leading-relaxed mt-1">
-          O <strong>Mezzold TermArt Studio</strong> é uma ferramenta 100% gratuita, sem anúncios pop-up invasivos ou redirecionamentos forçados. 
-          Nossos servidores e recursos computacionais são mantidos unicamente pelo anúncio discreto no rodapé.
+          O <strong>Mezzold TermArt Studio</strong> é 100% gratuito, sem anúncios pop-up invasivos. Nossos servidores são mantidos unicamente pelo anúncio discreto no rodapé.
         </p>
         <p class="text-xs text-slate-400">
-          Por favor, <strong>desative o AdBlock</strong> ou adicione nosso site à lista de permissões para continuar usando e criando suas artes.
+          Por favor, <strong>desative o AdBlock</strong> para este site para apoiar nosso projeto e manter o estúdio no ar.
         </p>
       </div>
 
       <!-- Simple 2-Step Guide -->
       <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/5 text-left text-xs text-slate-300 flex flex-col gap-2">
         <span class="font-bold text-white text-[11px] flex items-center gap-1.5">
-          <span>⚡</span> Como desativar em 5 segundos:
+          <span>⚡</span> Como pausar em 5 segundos:
         </span>
         <ol class="list-decimal list-inside space-y-1 text-[11px] text-slate-400">
-          <li>Clique no ícone da extensão do seu AdBlock (ou escudo do navegador) no topo;</li>
-          <li>Selecione <strong>"Pausar neste site"</strong> ou <strong>"Desativar"</strong>;</li>
-          <li>Clique no botão abaixo para recarregar a página!</li>
+          <li>Clique no ícone da extensão do seu AdBlock no topo do navegador;</li>
+          <li>Desative a opção <strong>"Block ads on this site"</strong> ou pause a proteção;</li>
+          <li>Clique em <strong>"Já desativei, recarregar"</strong> abaixo!</li>
         </ol>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-2.5 pt-1">
         <button onclick="checkAdblockAgain()" class="flex-1 py-3 bg-gradient-to-r from-amber-500 via-sky-600 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white font-bold rounded-xl transition shadow-lg shadow-sky-600/30 text-xs active:scale-95 flex items-center justify-center gap-2">
-          <span>🔄</span> <span>Já desativei, recarregar página</span>
+          <span>🔄</span> <span>Já desativei, recarregar</span>
+        </button>
+        <button onclick="dismissAdBlockModal()" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition active:scale-95">
+          Continuar mesmo assim
         </button>
       </div>
 
@@ -6260,27 +6265,24 @@ Sleep 3s
     
     // ================= ADBLOCK DETECTION ENGINE =================
     async function checkAdBlocker() {
+      // Check if user dismissed the notification in this session
+      if (sessionStorage.getItem('termart_adblock_dismissed') === '1') {
+        return;
+      }
+
       let isBlocked = false;
 
-      // Check 1: Bait DOM element with standard ad classes
+      // Check 1: Bait DOM element with standard ad classes (fixed position, 100px test box)
       try {
         const bait = document.createElement('div');
-        bait.className = 'adsbox ad-placement pub_300x250 pub_728x90 text-ad textAd text_ad text_ads text-ads ad-server';
-        bait.style.position = 'absolute';
-        bait.style.left = '-9999px';
-        bait.style.top = '-9999px';
-        bait.style.width = '1px';
-        bait.style.height = '1px';
+        bait.className = 'adsbox ad-placement pub_300x250 text-ad textAd';
+        bait.style.cssText = 'width: 100px !important; height: 100px !important; position: fixed !important; top: -1000px !important; left: -1000px !important; display: block !important; opacity: 0.01 !important; pointer-events: none !important;';
         bait.innerHTML = '&nbsp;';
         document.body.appendChild(bait);
 
         const style = window.getComputedStyle(bait);
-        if (
-          bait.offsetHeight === 0 ||
-          bait.offsetParent === null ||
-          style.display === 'none' ||
-          style.visibility === 'hidden'
-        ) {
+        // Only trigger if adblock forced display:none or height:0px via injected stylesheet
+        if (style.display === 'none' || style.visibility === 'hidden' || bait.clientHeight === 0) {
           isBlocked = true;
         }
         document.body.removeChild(bait);
@@ -6291,13 +6293,13 @@ Sleep 3s
       // Check 2: Network probe to Google AdSense script
       if (!isBlocked) {
         try {
-          const req = new Request('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
-            method: 'HEAD',
-            mode: 'no-cors'
+          await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store'
           });
-          await fetch(req);
         } catch (err) {
-          // If network request to Google ad server fails, AdBlock / DNS sinkhole blocked it
+          // Network fetch blocked by extension or browser shields
           isBlocked = true;
         }
       }
@@ -6309,13 +6311,24 @@ Sleep 3s
 
     function showAdBlockModal() {
       const modal = document.getElementById('modal-adblock-detected');
-      if (modal) {
+      if (modal && sessionStorage.getItem('termart_adblock_dismissed') !== '1') {
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
       }
     }
 
+    function dismissAdBlockModal() {
+      const modal = document.getElementById('modal-adblock-detected');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      sessionStorage.setItem('termart_adblock_dismissed', '1');
+      showToast('✓ Entendido! Obrigado por considerar apoiar o projeto.');
+    }
+
     function checkAdblockAgain() {
+      sessionStorage.removeItem('termart_adblock_dismissed');
       window.location.reload();
     }
 
