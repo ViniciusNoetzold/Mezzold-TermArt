@@ -30,6 +30,7 @@ ENGINES_TO_TEST = [
     ("palette_swap", {"image_path": SAMPLE_IMG, "cols": 40, "theme": "dracula"}),
 
     # Category B: Screensavers, Ambient FX & Badges
+    ("dvd", {"text": "DVD", "speed": 1.0}),
     ("cmatrix", {"cols": 35, "rows": 15, "color_scheme": "matrix_green"}),
     ("cbonsai", {"foliage_type": "sakura"}),
     ("asciiquarium", {"fish_count": 5}),

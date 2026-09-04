@@ -59,27 +59,35 @@ Uma área exclusiva no aplicativo para você planejar, montar e exportar a vitri
 
 ---
 
-### 2. 🌈 Esquemas de Cores Avançados (TrueColor Vivid & RGB)
+### 2. 📀 Efeito DVD Bouncing (Bate nos Cantos & Bordas)
+- **Física de Ricochete:** Movimento constante com reflexão linear independente nos eixos horizontal e vertical.
+- **Acerto Perfeito nos Cantos:** Harmônica 4:3 milimetricamente sincronizada para atingir o canto exato periodicamente.
+- **Troca Dinâmica de Cores:** Ciclo de cores vibrantes (*Ciano, Magenta, Limão Neon, Ouro Cyber, Laranja e Roxo*) a cada impacto através de `feColorMatrix` acelerada por GPU.
+- **Aplicável em Qualquer Arte:** Selecionável no menu **"Estilo de Animação da Arte"** para fotos convertidas em ASCII, retratos, tipografias FIGlet, ou como screensaver dedicado com logo personalizado!
+
+---
+
+### 3. 🌈 Esquemas de Cores Avançados (TrueColor Vivid & RGB)
 - **✨ TrueColor Vivid (Cores Reais Hi-Fi Vibrantes & Saturadas):** Algoritmo baseado no padrão de luminância Rec. 601 que aplica **+70% de ganho de saturação** e contraste dinâmico sobre as cores reais da sua foto, garantindo que nada fique acinzentado e que detalhes escuros se destaquem perfeitamente sobre o fundo `#0d1117` do terminal.
 - **🎨 TrueColor RGB Natural:** Amostragem pura de 24 bits das cores originais da imagem.
 - **🌆 Gradientes Estilizados:** *Cyberpunk* (Ciano → Roxo → Rosa), *Sunset* (Dourado → Âmbar → Carmesim), *TokyoNight* (Índigo → Neon), *Matrix Hacker* (Verde Fosfórico) e *Monocromático GitHub*.
 
 ---
 
-### 3. 🖼️ Exportação em PNG de Alta Resolução (2x Retina)
+### 4. 🖼️ Exportação em PNG de Alta Resolução (2x Retina)
 - Exporte qualquer arte em formato de imagem **PNG (2x DPI)** com fundo escuro de terminal estilizado.
 - Desmascaramento automático de animações para garantir que 100% da arte saia nítida, completa e sem cortes estáticos.
 - Disponível para todos os motores no Canvas e na grade comparativa de 12 motores com 1 clique.
 
 ---
 
-### 4. 👤 Onboarding & Configuração Inicial Sem Misturar Dados
+### 5. 👤 Onboarding & Configuração Inicial Sem Misturar Dados
 - Cada computador ou usuário que abre o estúdio pela primeira vez é recebido por uma tela de boas-vindas para colocar seu nome e usuário do GitHub.
 - Todas as preferências, blocos do perfil e configurações ficam salvos no cache do próprio navegador (`localStorage`), permitindo que várias pessoas acessem o mesmo servidor na rede sem que uma sobrescreva os dados da outra!
 
 ---
 
-## 🏛️ Os 6 Pilares & 32 Motores Disponíveis
+## 🏛️ Os 6 Pilares & 33 Motores Disponíveis
 
 ```text
                                  ┌────────────────────────────────────────────────────────┐
@@ -90,9 +98,10 @@ Uma área exclusiva no aplicativo para você planejar, montar e exportar a vitri
          ┌──────────────────┬─────────────────┼──────────────────┬──────────────────┬─────────────────┐
          ▼                  ▼                 ▼                  ▼                  ▼                 ▼
  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐
- │ 1. Imagem (12) │ │ 2. Perfil (10) │ │ 3. 3D & Math(4)│ │ 4. FX & CRT(12)│ │ 5. Gravador(2) │ │ 6. Animador(1) │
+ │ 1. Imagem (12) │ │ 2. Perfil (10) │ │ 3. 3D & Math(4)│ │ 4. FX & CRT(13)│ │ 5. Gravador(2) │ │ 6. Animador(1) │
  ├────────────────┤ ├────────────────┤ ├────────────────┤ ├────────────────┤ ├────────────────┤ ├────────────────┤
- │ • Chafa (C)    │ │ • Heatmap 3D   │ │ • 3D City Voxel│ │ • The Matrix   │ │ • VHS (Go)     │ │ • SVG Animator │
+ │ • Chafa (C)    │ │ • Heatmap 3D   │ │ • 3D City Voxel│ │ • DVD Bouncing │
+ │ • The Matrix   │ │ • VHS (Go)     │ │ • SVG Animator │
  │ • Braille 2x4  │ │ • Neofetch Card│ │ • 3D Wordmark  │ │ • cbonsai Tree │ │   .tape to GIF │ │   Oscillation, │
  │ • TrueColor RGB│ │ • Dark Stats   │ │ • FIGlet Text  │ │ • Asciiquarium │ │ • AGG (Rust)   │ │   Scanline CRT,│
  │ • Drawille HD  │ │ • Pokemon Card │ │ • 3D Donut.c   │ │ • Cowsay Studio│ │   .cast to GIF │ │   Waves & Drop │
@@ -129,9 +138,10 @@ Uma área exclusiva no aplicativo para você planejar, montar e exportar a vitri
 
 ---
 
-### 🕹️ 2. Screensavers Retrô & Efeitos Ambientais (12 Motores)
+### 🕹️ 2. Screensavers Retrô & Efeitos Ambientais (13 Motores)
 | Motor | Descrição |
 | :--- | :--- |
+| **`dvd`** | O lendário screensaver retrô do DVD quicando nas bordas, trocando de cor neon a cada impacto e acertando o canto exato! |
 | **`doom_fire`** | O algoritmo original de fogo do Doom (1993) gerando chamas vivas em SVG a 60fps. |
 | **`cmatrix`** | Chuva de código de *The Matrix* com caracteres Katakana e líderes brilhantes. |
 | **`cbonsai`** | Bonsais procedurais fractais com folhas de cerejeira (*Sakura*) ou pinheiro ao vento. |

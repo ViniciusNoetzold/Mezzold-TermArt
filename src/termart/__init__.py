@@ -21,7 +21,7 @@ from .modules.recorder import vhs_recorder, agg_generator
 from .modules.fx import (
     pipes_svg, cmatrix_svg, cbonsai_svg, asciiquarium_svg,
     cowsay_svg, tetris_reveal, ansi_cp437, qr_badge, cava_bars,
-    doom_fire, synthwave_grid, game_of_life
+    doom_fire, synthwave_grid, game_of_life, dvd_screensaver
 )
 from .modules.animator import svg_importer
 from .modules.badges import tech_stack

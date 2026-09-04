@@ -45,6 +45,17 @@ def get_animation_defs(
             f'<rect x="0" y="{titlebar_h}" width="{canvas_w}" height="{canvas_h - titlebar_h}"/>'
             f'</clipPath>'
         )
+    if anim_mode == "dvd":
+        defs.append(
+            f'<clipPath id="dvd_clip_{clip_pfx}">'
+            f'<rect x="0" y="{titlebar_h}" width="{canvas_w}" height="{canvas_h - titlebar_h}"/>'
+            f'</clipPath>'
+            f'<filter id="dvd_hue_{clip_pfx}">'
+            f'<feColorMatrix type="hueRotate" values="0">'
+            f'<animate attributeName="values" from="0" to="360" dur="12s" repeatCount="indefinite"/>'
+            f'</feColorMatrix>'
+            f'</filter>'
+        )
     return "".join(defs)
 
 
@@ -112,6 +123,24 @@ def get_animation_open(
             f'<g transform-origin="{cx:.1f} {cy:.1f}">'
             f'<animateTransform attributeName="transform" type="scale" values="0.96 0.96; 1.04 1.04; 0.96 0.96" dur="3s" repeatCount="indefinite" additive="sum"/>'
         )
+    elif anim_mode == "dvd":
+        # Classic Bouncing DVD effect: Linear reflection on borders, perfect corner hit every 12s!
+        cw = cx * 2
+        ch = cy * 2
+        tx = max(35.0, (cw - 60) * 0.16)
+        ty = max(24.0, (ch - 70) * 0.20)
+        dur_x = 4.0
+        dur_y = 3.0
+        return (
+            f'<g clip-path="url(#dvd_clip_{clip_pfx})">'
+            f'<g filter="url(#dvd_hue_{clip_pfx})">'
+            f'<g>'
+            f'<animateTransform attributeName="transform" type="translate" '
+            f'values="-{tx:.1f} 0; {tx:.1f} 0; -{tx:.1f} 0" dur="{dur_x:.2f}s" repeatCount="indefinite"/>'
+            f'<g>'
+            f'<animateTransform attributeName="transform" type="translate" '
+            f'values="0 -{ty:.1f}; 0 {ty:.1f}; 0 -{ty:.1f}" dur="{dur_y:.2f}s" repeatCount="indefinite"/>'
+        )
     return '<g>'
 
 
@@ -135,6 +164,8 @@ def get_animation_close(clip_pfx: str = "", anim_mode: str = "none", art_w: floa
                 f'</g>'
                 f'</g>'
             )
+    if anim_mode == "dvd":
+        return '</g></g></g></g>'
     return '</g>'
 
 

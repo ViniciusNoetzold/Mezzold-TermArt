@@ -122,6 +122,12 @@ def cmd_fortune(args):
     res = p.run(out_svg=args.out, username=args.username)
     print(f"[TermArt] ✓ Fortune banner generated: {res.get('output_path')}")
 
+def cmd_dvd(args):
+    p = registry.get("dvd")
+    out = args.out or "dvd_screensaver.svg"
+    res = p.run(text=args.text, speed=args.speed, username=args.username, out_svg=out)
+    print(f"\033[92m✓\033[0m DVD Bouncing Screensaver generated: \033[1m{res.get('output_path')}\033[0m")
+
 def cmd_fire(args):
     p = registry.get("doom_fire")
     res = p.run(cols=args.cols, rows=args.rows, out_svg=args.out, username=args.username)
@@ -245,7 +251,7 @@ def main():
     im_p.add_argument("image", help="Path to image")
     im_p.add_argument("--engine", default="rgb_ascii", choices=["rgb_ascii", "ascii_braille", "chafa", "drawille", "dither", "jp2a", "halftone", "edge_art", "glitch", "pixel_mosaic", "palette_swap"], help="Engine to use")
     im_p.add_argument("--color", default="rgb", choices=["rgb", "cyberpunk", "matrix", "mono"], help="Color mode for rgb_ascii")
-    im_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    im_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "dvd", "none"], help="Animation mode")
     im_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     im_p.add_argument("--cols", type=int, default=74)
     im_p.add_argument("--rows", type=int, default=30)
@@ -272,7 +278,7 @@ def main():
     si_p.add_argument("--username", default="ViniciusNoetzold")
     si_p.add_argument("--cols", type=int, default=58)
     si_p.add_argument("--color", default="rgb", choices=["rgb", "cyberpunk", "matrix", "sunset", "tokyo", "mono"], help="Color scheme")
-    si_p.add_argument("--anim", default="cascade", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    si_p.add_argument("--anim", default="cascade", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "dvd", "none"], help="Animation mode")
     si_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     si_p.add_argument("--braille", action="store_true", help="Use braille dots instead of pure ASCII characters")
     si_p.set_defaults(func=cmd_signature)
@@ -291,7 +297,7 @@ def main():
     tx_p.add_argument("--out", default="typography.svg")
     tx_p.add_argument("--font", default="slant", help="FIGlet font (slant, isometric1, larry3d, doom, graffiti, etc.)")
     tx_p.add_argument("--theme", default="cyberpunk", choices=["cyberpunk", "matrix", "sunset", "dracula", "nord", "gold", "blood", "ocean", "monochrome", "two_tone", "rainbow"], help="Color gradient theme")
-    tx_p.add_argument("--anim", default="oscillate", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    tx_p.add_argument("--anim", default="oscillate", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "dvd", "none"], help="Animation mode")
     tx_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     tx_p.add_argument("--username", default="developer")
     tx_p.set_defaults(func=cmd_text)
@@ -425,6 +431,14 @@ def main():
     fo_p.add_argument("--username", default="philosopher")
     fo_p.set_defaults(func=cmd_fortune)
 
+    # dvd
+    dvd_p = sub.add_parser("dvd", help="Generate classic bouncing DVD screensaver SVG with exact corner hits")
+    dvd_p.add_argument("--text", default="DVD", help="Text inside bouncing DVD logo")
+    dvd_p.add_argument("--speed", type=float, default=1.0, help="Animation speed multiplier")
+    dvd_p.add_argument("--out", default="dvd_screensaver.svg")
+    dvd_p.add_argument("--username", default="developer")
+    dvd_p.set_defaults(func=cmd_dvd)
+
     # fire
     fi_p = sub.add_parser("fire", help="Generate 1992 Doom / PSX fire routine animated SVG")
     fi_p.add_argument("--cols", type=int, default=56)
@@ -465,7 +479,7 @@ def main():
     # animate
     an_p = sub.add_parser("animate", help="Import an existing SVG and inject dynamic animations")
     an_p.add_argument("svg", help="Path to input SVG file")
-    an_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "none"], help="Animation mode")
+    an_p.add_argument("--anim", default="waves_left", choices=["waves_left", "waves_right", "waves", "oscillate", "cascade", "drop", "pulse", "dvd", "none"], help="Animation mode")
     an_p.add_argument("--scanline", action="store_true", help="Add CRT laser scanline")
     an_p.add_argument("--wrap-term", action="store_true", help="Wrap inside macOS terminal frame")
     an_p.add_argument("--username", default="developer")

@@ -23,6 +23,7 @@ DEFAULT_SECTIONS = [
     {"id": "music", "type": "music", "title": "Cassete Spotify Hi-Fi", "enabled": False, "file": "music-card.svg", "params": {"preset": "synthwave", "animated": True}},
     {"id": "weather", "type": "weather", "title": "Previsão do Tempo em ASCII", "enabled": False, "file": "weather-card.svg", "params": {"city": "Curitiba, Brazil"}},
     {"id": "diagram", "type": "diagram", "title": "Topologia de Arquitetura", "enabled": False, "file": "architecture.svg", "params": {"preset": "microservices"}},
+    {"id": "dvd", "type": "dvd", "title": "Screensaver DVD Bouncing Retro", "enabled": False, "file": "dvd-screensaver.svg", "params": {"text": "DVD", "speed": 1.0}},
     {"id": "fortune", "type": "fortune", "title": "Biscoito da Sorte Hacker / Filosofia", "enabled": False, "file": "fortune.svg", "params": {}},
 ]
 
@@ -227,6 +228,13 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                     p = registry.get("ascii_diagram")
                     res = p.run(preset=preset, title=diag_title, username=username, out_svg="ascii_diagram.svg")
                     with open(res.get("output_path", "ascii_diagram.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "dvd":
+                    dvd_text = params.get("text", "DVD")
+                    dvd_speed = float(params.get("speed", 1.0))
+                    p = registry.get("dvd")
+                    res = p.run(text=dvd_text, speed=dvd_speed, username=username, out_svg="dvd-screensaver.svg")
+                    with open(res.get("output_path", "dvd-screensaver.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "fortune":
                     p = registry.get("fortune_banner")

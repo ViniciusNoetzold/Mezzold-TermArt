@@ -403,6 +403,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <div>
               <label class="text-[11px] text-slate-400 block mb-1">Estilo de Animação da Arte</label>
               <select id="img-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
+                <option value="dvd">📀 Efeito DVD Bouncing (Quicando nas Bordas &amp; Cantos com Troca de Cor)</option>
                 <option value="waves_left">🌊 Ondas / Esteira Fluida Contínua (Correndo para Esquerda)</option>
                 <option value="waves_right">🌊 Ondas / Esteira Fluida Contínua (Correndo para Direita)</option>
                 <option value="oscillate">⚖️ Oscilante 3D (Levitação, Balanço e Profundidade)</option>
@@ -712,6 +713,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <div>
                 <label class="text-[11px] text-slate-400 block mb-1">Estilo de Animação</label>
                 <select id="typo-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
+                  <option value="dvd">📀 Efeito DVD Bouncing (Quicando nas Bordas &amp; Cantos com Troca de Cor)</option>
                   <option value="waves_left">🌊 Ondas / Esteira Fluida Contínua (Correndo para Esquerda)</option>
                   <option value="waves_right">🌊 Ondas / Esteira Fluida Contínua (Correndo para Direita)</option>
                   <option value="oscillate">⚖️ Oscilante 3D (Levitação, Balanço e Profundidade)</option>
@@ -962,6 +964,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <div>
               <label class="text-[11px] text-slate-400 block mb-1">Estilo de Movimento / Efeito</label>
               <select id="import-anim-mode" class="w-full bg-brand-dark border border-brand-border rounded p-1.5 text-slate-200">
+                <option value="dvd">📀 Efeito DVD Bouncing (Quicando nas Bordas &amp; Cantos com Troca de Cor)</option>
                 <option value="waves_left">🌊 Ondas / Esteira Fluida Contínua (Correndo para Esquerda)</option>
                 <option value="waves_right">🌊 Ondas / Esteira Fluida Contínua (Correndo para Direita)</option>
                 <option value="oscillate">⚖️ Oscilante 3D (Levitação, Balanço e Profundidade)</option>
@@ -996,6 +999,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Efeito / Screensaver</label>
             <select id="fx-engine" onchange="toggleFxEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="dvd">📀 DVD Bouncing Screensaver (Quicando nas Bordas &amp; Cantos)</option>
               <option value="pipes">🌀 Pipes.sh (Canos Procedurais em Loop Infinito)</option>
               <option value="cmatrix">🟢 The Matrix (Chuva Digital Katakana 60fps)</option>
               <option value="cbonsai">🌸 cbonsai (Árvore Bonsai Japonesa Orgânica)</option>
@@ -1009,6 +1013,23 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="synthwave_grid">🌆 Synthwave 80s (Horizonte Outrun com Sol Neon)</option>
               <option value="game_of_life">🧬 Game of Life (Autômato Celular de Conway)</option>
             </select>
+          </div>
+
+                    <!-- FX DVD options -->
+          <div id="fx-opt-dvd" class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Texto do Logo</label>
+              <input id="dvd-text" type="text" value="DVD" placeholder="ex: DVD, SEU_NOME" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Velocidade</label>
+              <select id="dvd-speed" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                <option value="0.75">0.75x (Mais Lento)</option>
+                <option value="1.0" selected>1.0x (Padrão Retrô)</option>
+                <option value="1.5">1.5x (Rápido)</option>
+                <option value="2.0">2.0x (Veloz)</option>
+              </select>
+            </div>
           </div>
 
           <!-- FX 1: Pipes options -->
@@ -1977,6 +1998,7 @@ Sleep 3s
 
     function toggleFxEngine() {
       const fx = document.getElementById('fx-engine').value;
+      const dvdEl = document.getElementById('fx-opt-dvd'); if (dvdEl) dvdEl.classList.toggle('hidden', fx !== 'dvd');
       document.getElementById('fx-opt-pipes').classList.toggle('hidden', fx !== 'pipes');
       document.getElementById('fx-opt-cmatrix').classList.toggle('hidden', fx !== 'cmatrix');
       document.getElementById('fx-opt-cbonsai').classList.toggle('hidden', fx !== 'cbonsai');
@@ -2625,7 +2647,10 @@ Sleep 3s
       formData.append('engine', fx);
       formData.append('username', user);
 
-      if (fx === 'pipes') {
+      if (fx === 'dvd') {
+        formData.append('dvd_text', document.getElementById('dvd-text').value);
+        formData.append('dvd_speed', document.getElementById('dvd-speed').value);
+      } else if (fx === 'pipes') {
         formData.append('num_pipes', document.getElementById('pipes-count').value);
         formData.append('steps', document.getElementById('pipes-steps').value);
       } else if (fx === 'cmatrix') {
@@ -4102,7 +4127,9 @@ async def render_image_batch(
 
 @app.post("/api/render/fx")
 async def render_fx_endpoint(
-    engine: str = Form("pipes"),
+    engine: str = Form("dvd"),
+    dvd_text: str = Form("DVD"),
+    dvd_speed: float = Form(1.0),
     username: str = Form("developer"),
     num_pipes: int = Form(6),
     steps: int = Form(65),
@@ -4120,7 +4147,10 @@ async def render_fx_endpoint(
     out_svg = os.path.join(os.path.dirname(__file__), f"_temp_fx_{engine}.svg")
     kwargs = {"out_svg": out_svg, "username": username}
     
-    if engine == "pipes":
+    if engine == "dvd":
+        kwargs["text"] = dvd_text
+        kwargs["speed"] = dvd_speed
+    elif engine == "pipes":
         kwargs["num_pipes"] = num_pipes
         kwargs["steps"] = steps
     elif engine == "cmatrix":
