@@ -277,7 +277,13 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <span class="text-sky-400">⚙️</span>
           <span id="header-user-badge" class="hidden sm:inline">Perfil: <strong class="text-white">Convidado</strong></span>
         </button>
-        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold transition shadow-md shadow-sky-600/20 flex items-center gap-1 active:scale-95">
+        <a href="https://mezzoldstudio.com.br/" target="_blank" class="hidden lg:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-sky-400 hover:text-sky-300 transition shadow-sm active:scale-95" title="Visite o site oficial da Mezzold Studios">
+          <span>🌐</span> <span>Mezzold Studios</span> <span>↗</span>
+        </a>
+        <a href="https://github.com/ViniciusNoetzold" target="_blank" class="hidden xl:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-300 hover:text-white transition shadow-sm active:scale-95" title="Ver perfil do criador no GitHub">
+          <span>👤</span> <span>Perfil GitHub</span> <span>↗</span>
+        </a>
+        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold transition shadow-md shadow-sky-600/20 flex items-center gap-1 active:scale-95" title="Ver código-fonte no GitHub">
           <span class="hidden sm:inline">GitHub</span><span>↗</span>
         </a>
       </div>
@@ -2319,34 +2325,65 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
   <!-- Footer & Legal Center -->
   <footer class="mt-auto border-t border-white/5 bg-[#0a0f1d]/90 backdrop-blur-xl py-6 px-4 sm:px-6">
-    <div class="max-w-[1600px] w-full mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-      <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-        <span class="font-bold text-white flex items-center gap-1.5">
-          <span class="text-sky-400 font-mono">⚡</span> Mezzold TermArt Studio
-          <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold font-mono">v2.5</span>
-        </span>
-        <span class="hidden sm:inline text-slate-600">•</span>
-        <span class="text-slate-400">Criado com 💜 por <strong class="text-slate-200">Vinícius Noetzold</strong></span>
-        <span class="hidden sm:inline text-slate-600">•</span>
-        <span class="text-[11px] text-slate-500">Licença MIT (Open-Source)</span>
+    <div class="max-w-[1600px] w-full mx-auto flex flex-col gap-4">
+      <!-- Top Row: Brand, Creator, Mezzold Studios & Legal Links -->
+      <div class="flex flex-col lg:flex-row items-center justify-between gap-4 text-xs text-slate-400 text-center lg:text-left">
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
+          <span class="font-bold text-white flex items-center gap-1.5">
+            <span class="text-sky-400 font-mono">⚡</span> Mezzold TermArt Studio
+            <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold font-mono">v2.5</span>
+          </span>
+          <span class="text-slate-600">•</span>
+          <span class="text-slate-400">Criado por <a href="https://github.com/ViniciusNoetzold" target="_blank" class="text-white hover:text-sky-400 font-semibold underline decoration-sky-500/50 hover:decoration-sky-400 transition" title="Ver perfil oficial no GitHub">Vinícius Noetzold</a></span>
+          <span class="text-slate-600">•</span>
+          <a href="https://mezzoldstudio.com.br/" target="_blank" class="text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1 transition" title="Visite a Mezzold Studios">
+            <span>🌐 Mezzold Studios</span> <span>↗</span>
+          </a>
+          <span class="hidden sm:inline text-slate-600">•</span>
+          <span class="text-[11px] text-slate-500">Licença MIT</span>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs">
+          <a href="https://github.com/ViniciusNoetzold" target="_blank" class="text-slate-300 hover:text-white transition flex items-center gap-1" title="Ver perfil do criador no GitHub">
+            <span>👤 Perfil GitHub</span><span>↗</span>
+          </a>
+          <span class="text-slate-600">•</span>
+          <a href="https://mezzoldstudio.com.br/" target="_blank" class="text-slate-300 hover:text-white transition flex items-center gap-1" title="Visite o site da Mezzold Studios">
+            <span>🌐 Mezzold Studios</span><span>↗</span>
+          </a>
+          <span class="text-slate-600">•</span>
+          <button onclick="openPrivacyModal('privacy')" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline">
+            Privacidade
+          </button>
+          <span class="text-slate-600">•</span>
+          <button onclick="openPrivacyModal('terms')" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline">
+            Termos
+          </button>
+          <span class="text-slate-600">•</span>
+          <button onclick="openCookiePreferencesModal()" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline flex items-center gap-1">
+            <span>🍪</span> Cookies
+          </button>
+        </div>
       </div>
 
-      <div class="flex flex-wrap items-center justify-center gap-4 text-xs">
-        <button onclick="openPrivacyModal('privacy')" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline">
-          Política de Privacidade
-        </button>
-        <span class="text-slate-600">•</span>
-        <button onclick="openPrivacyModal('terms')" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline">
-          Termos de Uso
-        </button>
-        <span class="text-slate-600">•</span>
-        <button onclick="openCookiePreferencesModal()" class="hover:text-white transition cursor-pointer text-slate-300 hover:underline flex items-center gap-1">
-          <span>🍪</span> Gerenciar Cookies
-        </button>
-        <span class="text-slate-600">•</span>
-        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="hover:text-white transition flex items-center gap-1 text-slate-300">
-          <span>GitHub</span><span>↗</span>
-        </a>
+      <!-- Bottom Row: Bug Report Callout & Quick Links -->
+      <div class="pt-3 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[11.5px] text-slate-400 text-center sm:text-left">
+        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-1.5">
+          <span class="text-amber-400 font-medium">🐛 Encontrou um erro?</span>
+          <span>Mande aqui que corrigimos:</span>
+          <a href="mailto:mezzoldstudio@gmail.com?subject=Reportar%20Erro%20-%20Mezzold%20TermArt&body=Ol%C3%A1%20equipe%20Mezzold%20Studios%2C%0A%0AEncontrei%20o%20seguinte%20erro%20no%20TermArt%3A%0A%0A" class="text-sky-400 hover:text-sky-300 font-semibold underline decoration-sky-400/40 hover:decoration-sky-300 transition flex items-center gap-1">
+            <span>mezzoldstudio@gmail.com</span> ✉️
+          </a>
+        </div>
+        <div class="flex items-center gap-3 text-slate-400">
+          <a href="https://github.com/ViniciusNoetzold" target="_blank" class="text-slate-300 hover:text-sky-400 transition flex items-center gap-1">
+            <span>Perfil: @ViniciusNoetzold</span> ↗
+          </a>
+          <span class="text-slate-700">•</span>
+          <a href="https://mezzoldstudio.com.br/" target="_blank" class="text-slate-300 hover:text-sky-400 transition flex items-center gap-1">
+            <span>mezzoldstudio.com.br</span> ↗
+          </a>
+        </div>
       </div>
     </div>
   </footer>
@@ -2706,8 +2743,28 @@ cd USER && git add -A && git commit -m "feat: profile art" && git push</pre>
         </div>
       </div>
 
+      <!-- Exemplo Real no Perfil do Criador -->
+      <div class="flex gap-3.5 items-start bg-sky-950/40 p-4 rounded-2xl border border-sky-500/30 shadow-sm">
+        <span class="text-2xl shrink-0">👀</span>
+        <div class="flex flex-col gap-1">
+          <strong class="text-white text-sm">Quer ver como fica na prática?</strong>
+          <p class="text-slate-300 text-[11px]">Confira o perfil oficial no GitHub com os SVGs, widgets e cards já funcionando:</p>
+          <div class="mt-1.5 flex flex-wrap items-center gap-2">
+            <a href="https://github.com/ViniciusNoetzold" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold text-xs transition shadow-md shadow-sky-600/30">
+              <span>Ver Perfil Exemplo no GitHub</span> <span class="text-sky-200">↗</span>
+            </a>
+            <a href="https://mezzoldstudio.com.br/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-white/10 transition">
+              <span>🌐 Mezzold Studios</span> <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div class="flex justify-between items-center pt-2 border-t border-white/10">
-        <span class="text-[11px] text-slate-500">Pronto para transformar seu perfil no GitHub?</span>
+        <div class="flex items-center gap-1.5 text-[11px] text-slate-400">
+          <span>Dúvidas ou erros?</span>
+          <a href="mailto:mezzoldstudio@gmail.com?subject=Duvida%20Deploy%20GitHub%20-%20TermArt" class="text-sky-400 hover:underline font-semibold">mezzoldstudio@gmail.com</a>
+        </div>
         <button onclick="closeDeployInstructionsModal()" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-sky-600/20 active:scale-95">
           Entendi, vamos criar!
         </button>
