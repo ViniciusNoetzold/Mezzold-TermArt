@@ -171,7 +171,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
         <span>🧊</span> <span>3D & Tipografia</span>
       </button>
       <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>📊</span> <span>Stats & Heatmap</span>
+        <span>🛡️</span> <span>Widgets de Perfil & Gamificação</span>
       </button>
       <button onclick="switchTab('animator')" id="btn-animator" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
         <span>✨</span> <span>Animador SVG</span>
@@ -744,23 +744,26 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </button>
         </div>
 
-        <!-- ================= TAB 3: STATS & HEATMAP ================= -->
+        <!-- ================= TAB 3: WIDGETS DE PERFIL & GAMIFICAÇÃO ================= -->
         <div id="tab-profile" class="tab-content hidden flex flex-col gap-4">
           <div class="border-b border-brand-border pb-2">
-            <h2 class="font-bold text-white text-base flex items-center gap-2">📊 Widgets de Perfil & Stats</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Contribuições em tempo real e cartões de métricas</p>
+            <h2 class="font-bold text-white text-base flex items-center gap-2">🛡️ Widgets de Perfil & Gamificação</h2>
+            <p class="text-xs text-slate-400 mt-0.5">Passaporte RPG, Git Subway, Dev Pet, Xadrez PGN, Pokémon Holo e Métricas</p>
           </div>
 
           <div>
             <label class="text-xs text-slate-400 block mb-1">Tipo de Widget</label>
             <select id="profile-widget" onchange="onProfileWidgetChange()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="rpg_sheet">⚔️ Passaporte RPG do Desenvolvedor (Classes D&D, HP/Mana & Inventário)</option>
+              <option value="git_subway">🗺️ Mapa de Metrô dos Commits (Git Branch Subway Line & Trens)</option>
+              <option value="dev_pet">👾 Tamagotchi Virtual Dev Pet 1996 (Display LCD, Café & Bateria)</option>
+              <option value="chess">♟️ Partida de Xadrez (Animação de Lances & Importador PGN!)</option>
               <option value="pokemon">🎮 Card RPG Pokémon (16 Espécies, Shiny & Níveis)</option>
               <option value="weather">⛅ Previsão do Tempo (wttr.in ASCII Radar & Cidades)</option>
               <option value="clock">⏰ TTY Digital Clock (LED Neon & Formato 12h/24h)</option>
-              <option value="chess">♟️ Partida de Xadrez (Animação até o Xeque-Mate!)</option>
-              <option value="heatmap">Heatmap em Cascata (GraphQL Real-Time Commits)</option>
-              <option value="neofetch">Card Neofetch macOS (Specs Técnicas & Foco)</option>
-              <option value="stats">GitHub Stats Card Dark (github-readme-stats)</option>
+              <option value="heatmap">📊 Heatmap em Cascata (GraphQL Real-Time Commits)</option>
+              <option value="neofetch">💻 Card Neofetch macOS (Specs Técnicas & Foco)</option>
+              <option value="stats">📈 GitHub Stats Card Dark (github-readme-stats)</option>
               <option value="tree">📁 Architecture File Tree (Estrutura de Pastas)</option>
               <option value="fortune">🥠 Fortune Cookie (Filosofia Hacker & Zen)</option>
             </select>
@@ -887,13 +890,97 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </div>
           </div>
 
+          <!-- RPG SHEET OPTIONS -->
+          <div id="profile-opt-rpg" class="flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+              <span>⚔️</span> <span>Ficha & Atributos RPG do Desenvolvedor</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Classe RPG</label>
+                <select id="rpg-class" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="alchemist">⚗️ Alchemist (Dev Full-Stack / Poções)</option>
+                  <option value="sorcerer">🧙‍♂️ Sorcerer (Arquiteto Cloud / Feitiços)</option>
+                  <option value="ninja">🥷 Ninja (Hacker / Low-Latency)</option>
+                  <option value="paladin">🛡️ Paladin (DevSecOps / Segurança)</option>
+                  <option value="shaman">🌿 Shaman (Data Science / Machine Learning)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Nível (Level)</label>
+                <input id="rpg-level" type="number" min="1" max="100" value="85" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Nome do Personagem / Herói</label>
+              <input id="rpg-name" type="text" placeholder="Ex: VINICIUS" value="VINICIUS" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="text-[10px] text-red-400 block mb-1">HP (%)</label>
+                <input id="rpg-hp" type="number" min="10" max="100" value="96" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-[10px] text-cyan-400 block mb-1">Mana (%)</label>
+                <input id="rpg-mana" type="number" min="10" max="100" value="91" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-[10px] text-amber-400 block mb-1">Stamina (%)</label>
+                <input id="rpg-stamina" type="number" min="10" max="100" value="98" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+              </div>
+            </div>
+          </div>
+
+          <!-- GIT SUBWAY OPTIONS -->
+          <div id="profile-opt-subway" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <span>🗺️</span> <span>Mapa de Linhas Git Subway</span>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Nome do Repositório / Linha Principal</label>
+              <input id="subway-repo" type="text" value="core-platform" placeholder="Ex: mezzold-termart" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <!-- DEV PET TAMAGOTCHI OPTIONS -->
+          <div id="profile-opt-pet" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+              <span>👾</span> <span>Tamagotchi Dev Pet 1996</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Mascote Pixel-Art</label>
+                <select id="pet-type" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="cat">🐱 Gatinho Unix (Cat)</option>
+                  <option value="robot">🤖 Cyber Droid (Robot)</option>
+                  <option value="dragon">🐲 Mini Dragão (Dragon)</option>
+                  <option value="penguin">🐧 Linux Tux (Penguin)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Nome do Pet</label>
+                <input id="pet-name" type="text" value="KERNEL" placeholder="Ex: KERNEL" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Felicidade (%)</label>
+                <input id="pet-happiness" type="number" min="10" max="100" value="98" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Nível de Café / Bateria (%)</label>
+                <input id="pet-coffee" type="number" min="10" max="100" value="100" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+              </div>
+            </div>
+          </div>
+
           <!-- CHESS OPTIONS -->
           <div id="profile-opt-chess" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
             <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <span>♟️</span> <span>Partida & Xeque-Mate</span>
             </div>
             <div>
-              <label class="text-xs text-slate-400 block mb-1">Partida Histórica</label>
+              <label class="text-xs text-slate-400 block mb-1">Partida Histórica Pré-Configurada</label>
               <select id="chess-match" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
                 <option value="opera">🎭 Paul Morphy (Opera Game 1858) - 17 lances, Sacrifício de Dama & Mate!</option>
                 <option value="immortal">👑 The Immortal Game 1851 (Anderssen) - 23 lances, Triplo Sacrifício & Mate de Bispo!</option>
@@ -901,6 +988,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <option value="scholar">⚡ Mate do Pastor (4 Lances) - Ataque veloz em f7</option>
                 <option value="fools">⚡ Mate do Louco (2 Lances) - O mate mais rápido da história</option>
               </select>
+            </div>
+            <div class="border-t border-brand-border/60 pt-2">
+              <label class="text-xs text-brand-400 font-bold block mb-1">♟️ Ou Cole o Código PGN da sua Partida (Chess.com / Lichess)</label>
+              <textarea id="chess-pgn" rows="3" placeholder="Cole sua partida em PGN aqui... Ex: 1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4 Bxb4 5. c3 Ba5 6. d4 ..." class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono"></textarea>
+              <span class="text-[10px] text-slate-400 block mt-0.5">O estúdio reproduzirá automaticamente todos os lances do seu PGN no tabuleiro animado!</span>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
@@ -1500,25 +1592,25 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <p class="text-xs text-slate-400 mt-1">Monte e organize a vitrine do seu repositório de perfil. Arraste, mude de ordem e exporte tudo em 1 clique!</p>
           </div>
 
-          <!-- Presets Rápidos -->
+          <!-- Presets Rápidos de 1 Clique -->
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-semibold text-slate-300">Templates / Presets Rápidos</label>
+            <label class="text-xs font-semibold text-slate-300">Templates / Presets Rápidos de 1 Clique</label>
             <div class="grid grid-cols-2 gap-2 text-[11px]">
-              <button type="button" onclick="applyReadmePreset('cyberpunk')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
-                <span class="font-bold text-brand-400 block">⚡ Cyberpunk Master</span>
-                <span class="text-slate-400 text-[10px]">Header, Badges, Heatmap, Pokémon & Neofetch</span>
+              <button type="button" onclick="applyReadmePreset('cyberpunk')" class="p-2.5 rounded-xl bg-brand-dark/80 hover:bg-brand-dark border border-cyan-500/40 text-left hover:border-cyan-400 transition shadow-sm group">
+                <span class="font-bold text-cyan-400 block group-hover:underline">🌆 Cyberpunk 2077</span>
+                <span class="text-slate-400 text-[10px] block mt-0.5">Banner 3D, Passaporte RPG, Cassete Synthwave, Badges &amp; Specs</span>
               </button>
-              <button type="button" onclick="applyReadmePreset('minimal')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
-                <span class="font-bold text-emerald-400 block">📊 Stats Minimal</span>
-                <span class="text-slate-400 text-[10px]">Header, Badges, Stats & Streaks</span>
+              <button type="button" onclick="applyReadmePreset('matrix')" class="p-2.5 rounded-xl bg-brand-dark/80 hover:bg-brand-dark border border-emerald-500/40 text-left hover:border-emerald-400 transition shadow-sm group">
+                <span class="font-bold text-emerald-400 block group-hover:underline">🟢 Matrix Hacker</span>
+                <span class="text-slate-400 text-[10px] block mt-0.5">Chuva Katakana CMatrix, Neofetch MacOS, Stats &amp; Arquitetura</span>
               </button>
-              <button type="button" onclick="applyReadmePreset('gamer')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
-                <span class="font-bold text-purple-400 block">🎮 Gamer & Chess</span>
-                <span class="text-slate-400 text-[10px]">Header, Pokémon Holo, Chess & Cassette</span>
+              <button type="button" onclick="applyReadmePreset('gamer')" class="p-2.5 rounded-xl bg-brand-dark/80 hover:bg-brand-dark border border-purple-500/40 text-left hover:border-purple-400 transition shadow-sm group">
+                <span class="font-bold text-purple-400 block group-hover:underline">🕹️ Retrô Gamer 8-Bit</span>
+                <span class="text-slate-400 text-[10px] block mt-0.5">Mario Runner, Dev Pet Tamagotchi, Space Invaders, Pokémon &amp; Pac-Man</span>
               </button>
-              <button type="button" onclick="applyReadmePreset('devops')" class="p-2 rounded-lg bg-brand-dark/80 hover:bg-brand-dark border border-brand-border text-left hover:border-brand-500 transition">
-                <span class="font-bold text-cyan-400 block">☁️ Engenharia & Cloud</span>
-                <span class="text-slate-400 text-[10px]">Header, Badges, Diagram & Neofetch</span>
+              <button type="button" onclick="applyReadmePreset('minimal')" class="p-2.5 rounded-xl bg-brand-dark/80 hover:bg-brand-dark border border-amber-500/40 text-left hover:border-amber-400 transition shadow-sm group">
+                <span class="font-bold text-amber-400 block group-hover:underline">⚡ Minimalista Dev</span>
+                <span class="text-slate-400 text-[10px] block mt-0.5">Relógio TTY, Mapa de Metrô Git Subway, Tech Badges, Xadrez &amp; Stats</span>
               </button>
             </div>
           </div>
@@ -2032,33 +2124,43 @@ Sleep 3s
     let audioCtx = null;
 
     function getAudioContext() {
-      if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) audioCtx = new AudioContext();
-      }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      try {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {}
       return audioCtx;
     }
+
+    // Auto-unlock Web Audio on any user gesture
+    document.addEventListener('click', () => {
+      try {
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === 'suspended') ctx.resume();
+      } catch (e) {}
+    }, { passive: true });
 
     function playSwitchSound() {
       if (!audioFxEnabled) return;
       try {
         const ctx = getAudioContext();
         if (!ctx) return;
+        const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'triangle';
-        const now = ctx.currentTime;
-        osc.frequency.setValueAtTime(320, now);
-        osc.frequency.exponentialRampToValueAtTime(80, now + 0.04);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(640, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.05);
+        gain.gain.setValueAtTime(0.20, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.05);
+        osc.stop(now + 0.06);
       } catch (e) {}
     }
 
@@ -2073,24 +2175,24 @@ Sleep 3s
         const gain1 = ctx.createGain();
         osc1.type = 'square';
         osc1.frequency.setValueAtTime(987.77, now);
-        gain1.gain.setValueAtTime(0.12, now);
-        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        gain1.gain.setValueAtTime(0.30, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
         osc1.connect(gain1);
         gain1.connect(ctx.destination);
         osc1.start(now);
-        osc1.stop(now + 0.09);
+        osc1.stop(now + 0.10);
 
-        // Note 2: E6 (1318.51 Hz) starting after 0.08s
+        // Note 2: E6 (1318.51 Hz)
         const osc2 = ctx.createOscillator();
         const gain2 = ctx.createGain();
         osc2.type = 'square';
         osc2.frequency.setValueAtTime(1318.51, now + 0.08);
-        gain2.gain.setValueAtTime(0.15, now + 0.08);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+        gain2.gain.setValueAtTime(0.35, now + 0.08);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
         osc2.connect(gain2);
         gain2.connect(ctx.destination);
         osc2.start(now + 0.08);
-        osc2.stop(now + 0.40);
+        osc2.stop(now + 0.45);
       } catch (e) {}
     }
 
@@ -2102,15 +2204,15 @@ Sleep 3s
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1046.5, now);
-        osc.frequency.setValueAtTime(2093.0, now + 0.07);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(1046.50, now + 0.06); // C6
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.28);
+        osc.stop(now + 0.30);
       } catch (e) {}
     }
 
@@ -2118,7 +2220,9 @@ Sleep 3s
       audioFxEnabled = !audioFxEnabled;
       localStorage.setItem('termart_sound_enabled', audioFxEnabled ? 'true' : 'false');
       updateSoundButtonUI();
-      if (audioFxEnabled) playMarioCoinSound();
+      if (audioFxEnabled) {
+        playMarioCoinSound();
+      }
     }
 
     function updateSoundButtonUI() {
@@ -2417,6 +2521,7 @@ Sleep 3s
     }
 
     async function generateImage() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const engine = document.getElementById('img-engine').value;
       const user = document.getElementById('img-user').value;
       const cols = (document.getElementById('img-cols-input') ? document.getElementById('img-cols-input').value : document.getElementById('img-cols').value) || "110";
@@ -2456,6 +2561,7 @@ Sleep 3s
     }
 
     async function generateImageBatch() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const selected = Array.from(document.querySelectorAll('input[name="img_batch_eng"]:checked')).map(cb => cb.value);
       if (selected.length === 0) {
         showToast('⚠️ Selecione ao menos 1 motor de imagem!');
@@ -2559,6 +2665,7 @@ Sleep 3s
     }
 
     async function generate3d() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const mode = document.getElementById('mode-3d').value;
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Processando geometria 3D...</div>';
       if (mode === 'city') {
@@ -2586,6 +2693,7 @@ Sleep 3s
     }
 
     async function generateTypoBatch() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const selected = Array.from(document.querySelectorAll('input[name="typo_batch_font"]:checked')).map(cb => cb.value);
       if (selected.length === 0) {
         showToast('⚠️ Selecione ao menos 1 fonte FIGlet!');
@@ -2620,16 +2728,16 @@ Sleep 3s
     }
 
     function onProfileWidgetChange() {
+      if (typeof playSwitchSound === 'function') playSwitchSound();
       const w = document.getElementById('profile-widget').value;
-      const optPk = document.getElementById('profile-opt-pokemon');
-      const optWe = document.getElementById('profile-opt-weather');
-      const optCl = document.getElementById('profile-opt-clock');
-      const optCh = document.getElementById('profile-opt-chess');
-
-      if (optPk) optPk.classList.toggle('hidden', w !== 'pokemon');
-      if (optWe) optWe.classList.toggle('hidden', w !== 'weather');
-      if (optCl) optCl.classList.toggle('hidden', w !== 'clock');
-      if (optCh) optCh.classList.toggle('hidden', w !== 'chess');
+      const setH = (id, show) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', !show); };
+      setH('profile-opt-rpg', w === 'rpg_sheet');
+      setH('profile-opt-subway', w === 'git_subway');
+      setH('profile-opt-pet', w === 'dev_pet');
+      setH('profile-opt-pokemon', w === 'pokemon');
+      setH('profile-opt-weather', w === 'weather');
+      setH('profile-opt-clock', w === 'clock');
+      setH('profile-opt-chess', w === 'chess');
     }
 
     function setWeatherCity(c) {
@@ -2638,13 +2746,31 @@ Sleep 3s
     }
 
     async function generateProfile() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const widget = document.getElementById('profile-widget').value;
-      const user = document.getElementById('profile-user').value;
+      const user = document.getElementById('profile-user').value || 'developer';
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Consultando dados em tempo real...</div>';
 
       let url = `/api/render/${widget}?username=${encodeURIComponent(user)}`;
 
-      if (widget === 'pokemon') {
+      if (widget === 'rpg_sheet') {
+        const cls = document.getElementById('rpg-class') ? document.getElementById('rpg-class').value : 'alchemist';
+        const lvl = document.getElementById('rpg-level') ? document.getElementById('rpg-level').value : 85;
+        const name = document.getElementById('rpg-name') ? document.getElementById('rpg-name').value : user;
+        const hp = document.getElementById('rpg-hp') ? document.getElementById('rpg-hp').value : 96;
+        const mana = document.getElementById('rpg-mana') ? document.getElementById('rpg-mana').value : 91;
+        const stam = document.getElementById('rpg-stamina') ? document.getElementById('rpg-stamina').value : 98;
+        url += `&cls=${encodeURIComponent(cls)}&level=${encodeURIComponent(lvl)}&name=${encodeURIComponent(name)}&hp=${encodeURIComponent(hp)}&mana=${encodeURIComponent(mana)}&stamina=${encodeURIComponent(stam)}`;
+      } else if (widget === 'git_subway') {
+        const repo = document.getElementById('subway-repo') ? document.getElementById('subway-repo').value : 'core-platform';
+        url += `&repo=${encodeURIComponent(repo)}`;
+      } else if (widget === 'dev_pet') {
+        const type = document.getElementById('pet-type') ? document.getElementById('pet-type').value : 'cat';
+        const name = document.getElementById('pet-name') ? document.getElementById('pet-name').value : 'KERNEL';
+        const hap = document.getElementById('pet-happiness') ? document.getElementById('pet-happiness').value : 98;
+        const cof = document.getElementById('pet-coffee') ? document.getElementById('pet-coffee').value : 100;
+        url += `&type=${encodeURIComponent(type)}&name=${encodeURIComponent(name)}&happiness=${encodeURIComponent(hap)}&coffee_level=${encodeURIComponent(cof)}`;
+      } else if (widget === 'pokemon') {
         const pk = document.getElementById('pk-select') ? document.getElementById('pk-select').value : 'gengar';
         const shiny = document.getElementById('pk-shiny') ? document.getElementById('pk-shiny').checked : false;
         const level = document.getElementById('pk-level') ? document.getElementById('pk-level').value : 100;
@@ -2662,7 +2788,11 @@ Sleep 3s
         const match = document.getElementById('chess-match') ? document.getElementById('chess-match').value : 'opera';
         const anim = globalAnimationsDisabled ? false : (document.getElementById('chess-animated') ? document.getElementById('chess-animated').checked : true);
         const speed = document.getElementById('chess-speed') ? document.getElementById('chess-speed').value : 1.0;
+        const pgnVal = document.getElementById('chess-pgn') ? document.getElementById('chess-pgn').value.trim() : '';
         url += `&match=${encodeURIComponent(match)}&animated=${anim}&speed=${encodeURIComponent(speed)}`;
+        if (pgnVal) {
+          url += `&pgn=${encodeURIComponent(pgnVal)}`;
+        }
       }
 
       const res = await fetch(url);
@@ -2685,6 +2815,7 @@ Sleep 3s
     }
 
     async function generateTechBadges() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const techs = document.getElementById('badge-techs').value;
       const style = document.getElementById('badge-style').value;
       const title = document.getElementById('badge-title').value;
@@ -2739,6 +2870,7 @@ Sleep 3s
     }
 
     async function generateActivityCard() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const w = document.getElementById('act-widget').value;
       const user = document.getElementById('act-user').value;
       document.getElementById('svg-display').innerHTML = '<div class="text-slate-400 text-sm animate-pulse">Renderizando card de atividade...</div>';
@@ -2766,6 +2898,7 @@ Sleep 3s
     }
 
     async function animateImportedSvg() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const fileInput = document.getElementById('import-svg-file');
       const textCode = document.getElementById('import-svg-code').value.trim();
       const animMode = document.getElementById('import-anim-mode').value;
@@ -2799,6 +2932,7 @@ Sleep 3s
     }
 
     async function generatePipes() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const pipes = document.getElementById('pipes-count').value;
       const steps = document.getElementById('pipes-steps').value;
       const user = document.getElementById('pipes-user').value;
@@ -2809,6 +2943,7 @@ Sleep 3s
     }
 
     async function generateScreensaverFx() {
+      if (typeof playGameBoyBeep === 'function') playGameBoyBeep();
       const fx = document.getElementById('fx-engine').value;
       const user = document.getElementById('fx-user').value;
       document.getElementById('svg-display').innerHTML = `<div class="text-slate-400 text-sm animate-pulse">Renderizando ${fx}...</div>`;
@@ -2994,6 +3129,7 @@ Sleep 3s
     }
 
     function downloadSvg() {
+      if (typeof playMarioCoinSound === 'function') playMarioCoinSound();
       if (!currentSvg) return;
       const blob = new Blob([currentSvg], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);
@@ -3113,6 +3249,7 @@ Sleep 3s
     }
 
     function downloadPng() {
+      if (typeof playMarioCoinSound === 'function') playMarioCoinSound();
       if (!currentSvg) {
         showToast("Gere uma arte primeiro para exportar em PNG!");
         return;
@@ -3830,13 +3967,16 @@ Sleep 3s
     }
 
     function applyReadmePreset(preset) {
+      if (typeof playMarioCoinSound === 'function') playMarioCoinSound();
       let ids = [];
       if (preset === 'cyberpunk') {
         ids = ['header', 'rpg', 'music', 'badges', 'coding_stats', 'neofetch'];
-      } else if (preset === 'minimal') {
-        ids = ['header', 'subway', 'neofetch', 'heatmap', 'badges'];
+      } else if (preset === 'matrix') {
+        ids = ['neofetch', 'coding_stats', 'badges', 'heatmap', 'diagram'];
       } else if (preset === 'gamer') {
-        ids = ['mario', 'pokemon', 'pacman', 'dvd', 'pet', 'chess'];
+        ids = ['mario', 'pet', 'invaders', 'pokemon', 'pacman', 'dvd', 'chess'];
+      } else if (preset === 'minimal') {
+        ids = ['header', 'subway', 'badges', 'chess', 'stats'];
       } else if (preset === 'devops') {
         ids = ['header', 'subway', 'badges', 'diagram', 'neofetch', 'heatmap'];
       }
@@ -4005,6 +4145,7 @@ Sleep 3s
     }
 
     async function downloadProfileZip() {
+      if (typeof playMarioCoinSound === 'function') playMarioCoinSound();
       const p = getDevProfile() || {};
       const user = p.github || p.name || 'developer';
       const name = p.name || user;
@@ -4040,6 +4181,7 @@ Sleep 3s
     }
 
     function copyReadmeMarkdown() {
+      if (typeof playSwitchSound === 'function') playSwitchSound();
       if (!builderCurrentMarkdown) {
         showToast("Gere a pré-visualização primeiro!");
         return;
