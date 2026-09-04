@@ -1061,6 +1061,32 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
+                <label class="text-xs text-slate-400 block mb-1">📟 Estilo da Carcaça / Aparelho</label>
+                <select id="pet-casing-style" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="egg" selected>🥚 Tamagotchi Egg 1996 (Clássico Oval)</option>
+                  <option value="gameboy">🎮 Game Boy Pocket (Console Portátil)</option>
+                  <option value="pager">📟 Telecom Beeper Pager 90s</option>
+                  <option value="star">⭐ Tamagotchi Starlight (Antena Estelar)</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">🎨 Cor do Aparelho (Shell)</label>
+                <select id="pet-casing-color" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="cyber_blue" selected>🔵 Cyber Blue 90s (Translúcido)</option>
+                  <option value="retro_pink">🌸 Retro Pink 1996 (Original Bandai)</option>
+                  <option value="atomic_purple">🟣 Atomic Purple (Game Boy Color)</option>
+                  <option value="banana_yellow">⚡ Pikachu Yellow (Amarelo 90s)</option>
+                  <option value="matrix_black">🟢 Matrix Stealth Black (Terminal)</option>
+                  <option value="emerald_green">🟩 Emerald Pocket Green</option>
+                  <option value="vaporwave_sunset">🌇 Vaporwave Sunset (Gradiente)</option>
+                  <option value="milky_white">⚪ Milky White Pearl (Pérola Japonesa)</option>
+                  <option value="lava_red">🔴 Arcade Lava Red (Cereja Vivo)</option>
+                  <option value="kawaii_lavender">💜 Kawaii Pastel Lavender</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
                 <label class="text-xs text-slate-400 block mb-1">Felicidade (%)</label>
                 <input id="pet-happiness" type="number" min="10" max="100" value="98" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
               </div>
@@ -3040,11 +3066,13 @@ Sleep 3s
         const repo = document.getElementById('subway-repo') ? document.getElementById('subway-repo').value : 'core-platform';
         url += `&repo=${encodeURIComponent(repo)}`;
       } else if (widget === 'dev_pet') {
-        const type = document.getElementById('pet-type') ? document.getElementById('pet-type').value : 'cat';
+        const type = document.getElementById('pet-type') ? document.getElementById('pet-type').value : 'mametchi';
         const name = document.getElementById('pet-name') ? document.getElementById('pet-name').value : 'KERNEL';
         const hap = document.getElementById('pet-happiness') ? document.getElementById('pet-happiness').value : 98;
         const cof = document.getElementById('pet-coffee') ? document.getElementById('pet-coffee').value : 100;
-        url += `&type=${encodeURIComponent(type)}&name=${encodeURIComponent(name)}&happiness=${encodeURIComponent(hap)}&coffee_level=${encodeURIComponent(cof)}`;
+        const style = document.getElementById('pet-casing-style') ? document.getElementById('pet-casing-style').value : 'egg';
+        const color = document.getElementById('pet-casing-color') ? document.getElementById('pet-casing-color').value : 'cyber_blue';
+        url += `&type=${encodeURIComponent(type)}&name=${encodeURIComponent(name)}&happiness=${encodeURIComponent(hap)}&coffee_level=${encodeURIComponent(cof)}&casing_style=${encodeURIComponent(style)}&casing_color=${encodeURIComponent(color)}`;
       } else if (widget === 'pokemon') {
         const pk = document.getElementById('pk-select') ? document.getElementById('pk-select').value : 'gengar';
         const shiny = document.getElementById('pk-shiny') ? document.getElementById('pk-shiny').checked : false;
@@ -3923,28 +3951,56 @@ Sleep 3s
         `;
       } else if (sec.type === 'pet' || sec.type === 'dev_pet') {
         html = `
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Espécie do Pet Virtual</label>
-            <select id="cfg-pet-type" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-              <option value="mametchi" ${(params.type || 'mametchi') === 'mametchi' ? 'selected' : ''}>⭐ Mametchi 1996 (Mascote Gênio #1 Bandai)</option>
-              <option value="kuchipatchi" ${params.type === 'kuchipatchi' ? 'selected' : ''}>🦆 Kuchipatchi (Comilão Bico-de-Pato)</option>
-              <option value="ginjirotchi" ${params.type === 'ginjirotchi' ? 'selected' : ''}>🐧 Ginjirotchi (Pinguim Atleta Nadador)</option>
-              <option value="maskutchi" ${params.type === 'maskutchi' ? 'selected' : ''}>🥷 Maskutchi (Ninja Mascarado Secreto)</option>
-              <option value="marutchi" ${params.type === 'marutchi' ? 'selected' : ''}>🟢 Marutchi (Bouncing Toddler)</option>
-              <option value="babytchi" ${params.type === 'babytchi' ? 'selected' : ''}>👶 Babytchi (Recém-Nascido com Topete)</option>
-              <option value="oyajitchi" ${params.type === 'oyajitchi' ? 'selected' : ''}>👴 Oyajitchi (Bigode Clássico de Terno)</option>
-              <option value="tamatchi" ${params.type === 'tamatchi' ? 'selected' : ''}>🌱 Tamatchi (Jovem com Orelhinhas)</option>
-              <option value="nyorotchi" ${params.type === 'nyorotchi' ? 'selected' : ''}>🐍 Nyorotchi (Cobra Ondulante)</option>
-              <option value="tarakotchi" ${params.type === 'tarakotchi' ? 'selected' : ''}>👄 Tarakotchi (Bocão Alienígena)</option>
-              <option value="cat" ${params.type === 'cat' ? 'selected' : ''}>🐱 Pixel Cat (Mametchi)</option>
-              <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Cyber Droid (Maskutchi)</option>
-              <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐲 Mini Dragão (Kuchipatchi)</option>
-              <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Linux Tux (Ginjirotchi)</option>
-            </select>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Espécie do Pet Virtual</label>
+              <select id="cfg-pet-type" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="mametchi" ${(params.type || 'mametchi') === 'mametchi' ? 'selected' : ''}>⭐ Mametchi 1996 (Mascote Gênio #1 Bandai)</option>
+                <option value="kuchipatchi" ${params.type === 'kuchipatchi' ? 'selected' : ''}>🦆 Kuchipatchi (Comilão Bico-de-Pato)</option>
+                <option value="ginjirotchi" ${params.type === 'ginjirotchi' ? 'selected' : ''}>🐧 Ginjirotchi (Pinguim Atleta Nadador)</option>
+                <option value="maskutchi" ${params.type === 'maskutchi' ? 'selected' : ''}>🥷 Maskutchi (Ninja Mascarado Secreto)</option>
+                <option value="marutchi" ${params.type === 'marutchi' ? 'selected' : ''}>🟢 Marutchi (Bouncing Toddler)</option>
+                <option value="babytchi" ${params.type === 'babytchi' ? 'selected' : ''}>👶 Babytchi (Recém-Nascido com Topete)</option>
+                <option value="oyajitchi" ${params.type === 'oyajitchi' ? 'selected' : ''}>👴 Oyajitchi (Bigode Clássico de Terno)</option>
+                <option value="tamatchi" ${params.type === 'tamatchi' ? 'selected' : ''}>🌱 Tamatchi (Jovem com Orelhinhas)</option>
+                <option value="nyorotchi" ${params.type === 'nyorotchi' ? 'selected' : ''}>🐍 Nyorotchi (Cobra Ondulante)</option>
+                <option value="tarakotchi" ${params.type === 'tarakotchi' ? 'selected' : ''}>👄 Tarakotchi (Bocão Alienígena)</option>
+                <option value="cat" ${params.type === 'cat' ? 'selected' : ''}>🐱 Pixel Cat (Mametchi)</option>
+                <option value="robot" ${params.type === 'robot' ? 'selected' : ''}>🤖 Cyber Droid (Maskutchi)</option>
+                <option value="dragon" ${params.type === 'dragon' ? 'selected' : ''}>🐲 Mini Dragão (Kuchipatchi)</option>
+                <option value="penguin" ${params.type === 'penguin' ? 'selected' : ''}>🐧 Linux Tux (Ginjirotchi)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Nome do Pet</label>
+              <input type="text" id="cfg-pet-name" value="${escapeHtml(params.name || 'KERNEL')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
           </div>
-          <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Nome do Pet</label>
-            <input type="text" id="cfg-pet-name" value="${escapeHtml(params.name || 'KERNEL')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">📟 Estilo da Carcaça / Aparelho</label>
+              <select id="cfg-pet-style" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="egg" ${(params.casing_style || 'egg') === 'egg' ? 'selected' : ''}>🥚 Tamagotchi Egg 1996 (Clássico Oval)</option>
+                <option value="gameboy" ${params.casing_style === 'gameboy' ? 'selected' : ''}>🎮 Game Boy Pocket (Console Portátil)</option>
+                <option value="pager" ${params.casing_style === 'pager' ? 'selected' : ''}>📟 Telecom Beeper Pager 90s</option>
+                <option value="star" ${params.casing_style === 'star' ? 'selected' : ''}>⭐ Tamagotchi Starlight (Antena Estelar)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">🎨 Cor do Aparelho (Shell)</label>
+              <select id="cfg-pet-color" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="cyber_blue" ${(params.casing_color || 'cyber_blue') === 'cyber_blue' ? 'selected' : ''}>🔵 Cyber Blue 90s</option>
+                <option value="retro_pink" ${params.casing_color === 'retro_pink' ? 'selected' : ''}>🌸 Retro Pink 1996 (Original)</option>
+                <option value="atomic_purple" ${params.casing_color === 'atomic_purple' ? 'selected' : ''}>🟣 Atomic Purple</option>
+                <option value="banana_yellow" ${params.casing_color === 'banana_yellow' ? 'selected' : ''}>⚡ Pikachu Yellow</option>
+                <option value="matrix_black" ${params.casing_color === 'matrix_black' ? 'selected' : ''}>🟢 Matrix Stealth Black</option>
+                <option value="emerald_green" ${params.casing_color === 'emerald_green' ? 'selected' : ''}>🟩 Emerald Pocket Green</option>
+                <option value="vaporwave_sunset" ${params.casing_color === 'vaporwave_sunset' ? 'selected' : ''}>🌇 Vaporwave Sunset</option>
+                <option value="milky_white" ${params.casing_color === 'milky_white' ? 'selected' : ''}>⚪ Milky White Pearl</option>
+                <option value="lava_red" ${params.casing_color === 'lava_red' ? 'selected' : ''}>🔴 Arcade Lava Red</option>
+                <option value="kawaii_lavender" ${params.casing_color === 'kawaii_lavender' ? 'selected' : ''}>💜 Kawaii Pastel Lavender</option>
+              </select>
+            </div>
           </div>
         `;
       } else if (sec.type === 'mario') {
@@ -4185,6 +4241,8 @@ Sleep 3s
       } else if (sec.type === 'pet' || sec.type === 'dev_pet') {
         sec.params.type = document.getElementById('cfg-pet-type') ? document.getElementById('cfg-pet-type').value : 'mametchi';
         sec.params.name = document.getElementById('cfg-pet-name') ? document.getElementById('cfg-pet-name').value.trim() : 'KERNEL';
+        sec.params.casing_style = document.getElementById('cfg-pet-style') ? document.getElementById('cfg-pet-style').value : 'egg';
+        sec.params.casing_color = document.getElementById('cfg-pet-color') ? document.getElementById('cfg-pet-color').value : 'cyber_blue';
       } else if (sec.type === 'mario') {
         sec.params.world = document.getElementById('cfg-mario-world') ? document.getElementById('cfg-mario-world').value.trim() : '1-1';
         sec.params.score = document.getElementById('cfg-mario-score') ? (parseInt(document.getElementById('cfg-mario-score').value, 10) || 2450) : 2450;
@@ -5043,16 +5101,30 @@ def render_git_subway(repo: str = "core-platform", username: str = "commuter"):
 @app.get("/api/render/dev_pet")
 @app.get("/api/render/pet")
 def render_dev_pet(
-    type: str = "cat",
+    type: str = "mametchi",
     name: str = "KERNEL",
     level: int = 42,
     happiness: int = 98,
     coffee_level: int = 100,
+    casing_color: str = "cyber_blue",
+    casing_style: str = "egg",
+    custom_color: str = None,
     username: str = "tamer"
 ):
     p = registry.get("dev_pet")
     tmp = os.path.join(os.path.dirname(__file__), "_temp_pet.svg")
-    p.run(pet_name=name, pet_type=type, level=int(level), happiness=int(happiness), coffee_level=int(coffee_level), username=username, out_svg=tmp)
+    p.run(
+        pet_name=name,
+        pet_type=type,
+        level=int(level),
+        happiness=int(happiness),
+        coffee_level=int(coffee_level),
+        casing_color=casing_color,
+        casing_style=casing_style,
+        custom_color=custom_color,
+        username=username,
+        out_svg=tmp
+    )
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
@@ -5490,9 +5562,11 @@ def builder_preview(payload: dict = Body(...)):
             r_repo = urllib.parse.quote(params.get("repo", "core-platform"))
             sec["preview_url"] = f"/api/render/git_subway?repo={r_repo}&username={safe_user}"
         elif stype in ("pet", "dev_pet"):
-            p_type = params.get("type", "cat")
+            p_type = params.get("type", "mametchi")
             p_name = urllib.parse.quote(params.get("name", "KERNEL"))
-            sec["preview_url"] = f"/api/render/dev_pet?type={p_type}&name={p_name}&username={safe_user}"
+            p_color = params.get("casing_color", "cyber_blue")
+            p_style = params.get("casing_style", "egg")
+            sec["preview_url"] = f"/api/render/dev_pet?type={p_type}&name={p_name}&casing_color={p_color}&casing_style={p_style}&username={safe_user}"
         elif stype == "mario":
             m_world = urllib.parse.quote(params.get("world", "1-1"))
             m_score = params.get("score", 2450)

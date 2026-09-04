@@ -356,11 +356,24 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                     res = p.run(username=username, repo_name=r_repo, out_svg="git-subway.svg")
                     with open(res.get("output_path", "git-subway.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
-                elif stype == "dev_pet":
+                elif stype in ("dev_pet", "pet"):
                     p = registry.get("dev_pet")
                     p_type = params.get("type", "mametchi")
                     p_name = params.get("name", "KERNEL")
-                    res = p.run(username=username, pet_name=p_name, pet_type=p_type, out_svg="dev-pet.svg")
+                    p_color = params.get("casing_color", "cyber_blue")
+                    p_style = params.get("casing_style", "egg")
+                    p_hap = int(params.get("happiness", 98))
+                    p_cof = int(params.get("coffee_level", 100))
+                    res = p.run(
+                        username=username,
+                        pet_name=p_name,
+                        pet_type=p_type,
+                        casing_color=p_color,
+                        casing_style=p_style,
+                        happiness=p_hap,
+                        coffee_level=p_cof,
+                        out_svg="dev-pet.svg"
+                    )
                     with open(res.get("output_path", "dev-pet.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "mario":
