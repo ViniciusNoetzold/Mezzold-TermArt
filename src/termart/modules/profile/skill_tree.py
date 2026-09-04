@@ -11,6 +11,51 @@ from ...core.plugin import BasePlugin
 from ...core.registry import registry
 
 SKILL_TREE_THEMES = {
+    "cyber_constellation": {
+        "name": "Cyber Constellation (Neon Cyan & Magenta)",
+        "bg": "#050814",
+        "border": "#00f0ff",
+        "text": "#f0f6fc",
+        "text_dim": "#64748b",
+        "core_node": "#00f0ff",
+        "core_glow": "rgba(0, 240, 255, 0.7)",
+        "front_color": "#00f0ff",
+        "back_color": "#00ff66",
+        "cloud_color": "#ffe600",
+        "ai_color": "#ff007f",
+        "conduit_active": "#00f0ff",
+        "conduit_inactive": "#1e293b",
+    },
+    "diablo_arcane": {
+        "name": "Diablo IV Arcane (Carmesim & Runas Ígneas)",
+        "bg": "#0f0507",
+        "border": "#991b1b",
+        "text": "#fef2f2",
+        "text_dim": "#fca5a5",
+        "core_node": "#ef4444",
+        "core_glow": "rgba(239, 68, 68, 0.8)",
+        "front_color": "#f97316",
+        "back_color": "#eab308",
+        "cloud_color": "#b91c1c",
+        "ai_color": "#a855f7",
+        "conduit_active": "#ef4444",
+        "conduit_inactive": "#450a0a",
+    },
+    "matrix_nodes": {
+        "name": "Matrix Grid (Verde Fosfórico & Terminal)",
+        "bg": "#020d06",
+        "border": "#059669",
+        "text": "#ecfdf5",
+        "text_dim": "#6ee7b7",
+        "core_node": "#10b981",
+        "core_glow": "rgba(16, 185, 129, 0.8)",
+        "front_color": "#34d399",
+        "back_color": "#00ff66",
+        "cloud_color": "#10b981",
+        "ai_color": "#6ee7b7",
+        "conduit_active": "#22c55e",
+        "conduit_inactive": "#064e3b",
+    },
     "celestial_gold": {
         "name": "Celestial Gold & Obsidian",
         "bg": "#07090e",
@@ -24,21 +69,6 @@ SKILL_TREE_THEMES = {
         "cloud_color": "#f97316",
         "ai_color": "#a855f7",
         "conduit_active": "#fbbf24",
-        "conduit_inactive": "#1e293b",
-    },
-    "cyber_neon": {
-        "name": "Cyberpunk 2077 Matrix",
-        "bg": "#05070f",
-        "border": "#00f0ff",
-        "text": "#f0f6fc",
-        "text_dim": "#64748b",
-        "core_node": "#00f0ff",
-        "core_glow": "rgba(0, 240, 255, 0.7)",
-        "front_color": "#00f0ff",
-        "back_color": "#00ff66",
-        "cloud_color": "#ffe600",
-        "ai_color": "#ff007f",
-        "conduit_active": "#00f0ff",
         "conduit_inactive": "#1e293b",
     },
     "dracula_rpg": {
@@ -58,6 +88,11 @@ SKILL_TREE_THEMES = {
     }
 }
 
+SKILL_TREE_THEMES["cyber_neon"] = SKILL_TREE_THEMES["cyber_constellation"]
+SKILL_TREE_THEMES["matrix_grid"] = SKILL_TREE_THEMES["matrix_nodes"]
+SKILL_TREE_THEMES["matrix"] = SKILL_TREE_THEMES["matrix_nodes"]
+SKILL_TREE_THEMES["diablo"] = SKILL_TREE_THEMES["diablo_arcane"]
+
 @registry.register
 class SkillTreePlugin(BasePlugin):
     name = "skill_tree"
@@ -71,13 +106,18 @@ class SkillTreePlugin(BasePlugin):
         specialization: str = "Grandmaster Systems Architect",
         points_allocated: int = 48,
         total_points: int = 50,
-        theme: str = "celestial_gold",
+        theme: str = "cyber_constellation",
         canvas_w: int = 680,
         canvas_h: int = 440,
         **kwargs
     ) -> Dict[str, Any]:
-        pfx = "skt_" + str(abs(hash(out_svg + username + str(theme))) % 100000)
-        thm = SKILL_TREE_THEMES.get(theme, SKILL_TREE_THEMES["celestial_gold"])
+        chosen_theme = (theme or kwargs.get("theme") or "cyber_constellation").lower().strip()
+        thm = SKILL_TREE_THEMES.get(chosen_theme, SKILL_TREE_THEMES.get(f"{chosen_theme}_nodes", SKILL_TREE_THEMES["cyber_constellation"]))
+
+        if "focus" in kwargs and kwargs["focus"]:
+            specialization = str(kwargs["focus"])
+
+        pfx = "skt_" + str(abs(hash(out_svg + username + str(chosen_theme))) % 100000)
 
         titlebar_h = 34
         cx = canvas_w / 2

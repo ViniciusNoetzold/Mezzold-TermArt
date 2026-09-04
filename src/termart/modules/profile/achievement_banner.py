@@ -21,7 +21,9 @@ ACHIEVEMENT_THEMES = {
         "text": "#ffffff",
         "text_dim": "#86efac",
         "badge_bg": "#14532d",
-        "platform_icon": "🎮 XBOX NETWORK"
+        "platform_icon": "🎮 XBOX NETWORK",
+        "score_prefix": "+",
+        "score_suffix": "G"
     },
     "steam_blue": {
         "name": "Steam Rare Trophy",
@@ -34,7 +36,9 @@ ACHIEVEMENT_THEMES = {
         "text": "#ffffff",
         "text_dim": "#93c5fd",
         "badge_bg": "#1e293b",
-        "platform_icon": "⚓ STEAM TROPHY"
+        "platform_icon": "⚓ STEAM COMMUNITY",
+        "score_prefix": "+",
+        "score_suffix": " XP"
     },
     "playstation_gold": {
         "name": "PlayStation Platinum Trophy",
@@ -47,7 +51,9 @@ ACHIEVEMENT_THEMES = {
         "text": "#ffffff",
         "text_dim": "#fef08a",
         "badge_bg": "#422006",
-        "platform_icon": "🏆 PLAYSTATION PLATINUM"
+        "platform_icon": "🏆 PLAYSTATION NETWORK",
+        "score_prefix": "★ ",
+        "score_suffix": "p"
     },
     "cyberpunk_neon": {
         "name": "Night City Legend",
@@ -60,9 +66,17 @@ ACHIEVEMENT_THEMES = {
         "text": "#f0f6fc",
         "text_dim": "#f472b6",
         "badge_bg": "#3b0764",
-        "platform_icon": "⚡ CYBERPUNK 2077"
+        "platform_icon": "⚡ CYBERPUNK 2077",
+        "score_prefix": "+",
+        "score_suffix": " SC"
     }
 }
+
+ACHIEVEMENT_THEMES["xbox"] = ACHIEVEMENT_THEMES["xbox_emerald"]
+ACHIEVEMENT_THEMES["steam"] = ACHIEVEMENT_THEMES["steam_blue"]
+ACHIEVEMENT_THEMES["playstation"] = ACHIEVEMENT_THEMES["playstation_gold"]
+ACHIEVEMENT_THEMES["ps"] = ACHIEVEMENT_THEMES["playstation_gold"]
+ACHIEVEMENT_THEMES["cyberpunk"] = ACHIEVEMENT_THEMES["cyberpunk_neon"]
 
 @registry.register
 class AchievementBannerPlugin(BasePlugin):
@@ -79,12 +93,24 @@ class AchievementBannerPlugin(BasePlugin):
         score_points: int = 100,
         rarity_pct: float = 0.1,
         theme: str = "xbox_emerald",
+        platform: Optional[str] = None,
         canvas_w: int = 680,
         canvas_h: int = 180,
         **kwargs
     ) -> Dict[str, Any]:
-        pfx = "ach_" + str(abs(hash(out_svg + username + str(theme))) % 100000)
-        thm = ACHIEVEMENT_THEMES.get(theme, ACHIEVEMENT_THEMES["xbox_emerald"])
+        chosen_key = (platform or kwargs.get("platform") or theme or "xbox").lower().strip()
+        thm = ACHIEVEMENT_THEMES.get(chosen_key, ACHIEVEMENT_THEMES.get(f"{chosen_key}_emerald", ACHIEVEMENT_THEMES["xbox_emerald"]))
+
+        if "points" in kwargs and kwargs["points"] is not None:
+            try:
+                score_points = int(kwargs["points"])
+            except (ValueError, TypeError):
+                pass
+
+        raw_rarity = kwargs.get("rarity")
+        rarity_str = str(raw_rarity) if raw_rarity else f"RARA ({rarity_pct:.1f}% dos devs têm)"
+
+        pfx = "ach_" + str(abs(hash(out_svg + username + str(chosen_key))) % 100000)
 
         stops_bg = "".join(f'<stop offset="{off}" stop-color="{col}"/>' for col, off in thm["bg_stops"])
 
@@ -170,12 +196,12 @@ class AchievementBannerPlugin(BasePlugin):
             f'<g transform="translate({tx}, 128)">',
             # Score Pill
             f'<rect x="0" y="0" width="76" height="24" rx="6" fill="{thm["border"]}" stroke="{thm["accent"]}" stroke-width="1.2"/>',
-            f'<text x="38" y="16" fill="{thm["accent"]}" font-size="11.5" font-weight="900" text-anchor="middle">+{score_points}G</text>',
+            f'<text x="38" y="16" fill="{thm["accent"]}" font-size="11.5" font-weight="900" text-anchor="middle">{thm.get("score_prefix", "+")}{score_points}{thm.get("score_suffix", "G")}</text>',
 
             # Rarity Diamond & Percentage
             f'<rect x="88" y="0" width="220" height="24" rx="6" fill="{thm["badge_bg"]}" stroke="{thm["border"]}" stroke-width="1"/>',
             f'<text x="100" y="16" fill="{thm["accent"]}" font-size="12">💎</text>',
-            f'<text x="120" y="16" fill="{thm["text"]}" font-size="10" font-weight="bold">RARA ({rarity_pct:.1f}% dos devs têm)</text>',
+            f'<text x="120" y="16" fill="{thm["text"]}" font-size="10" font-weight="bold">{html.escape(rarity_str)}</text>',
 
             # Unlocked by user
             f'<text x="{canvas_w - tx - 24}" y="16" fill="{thm["text_dim"]}" font-size="10" font-weight="bold" text-anchor="end">DESBLOQUEADO POR @{html.escape(username.upper())}</text>',

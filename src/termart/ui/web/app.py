@@ -343,7 +343,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
             <!-- Quick Presets -->
             <div class="flex flex-wrap gap-1">
               <button type="button" onclick="selectImgPreset('recommended')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-brand-400 font-bold">⚡ Top 4 Recomendados</button>
-              <button type="button" onclick="selectImgPreset('all')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">🎨 Todos os 10</button>
+              <button type="button" onclick="selectImgPreset('all')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-brand-500 text-[10px] text-slate-300 font-medium">🎨 Todos os 13 Motores</button>
               <button type="button" onclick="selectImgPreset('clear')" class="px-2 py-0.5 rounded bg-brand-dark border border-brand-border hover:border-red-500 text-[10px] text-red-400">✕ Limpar</button>
             </div>
 
@@ -356,6 +356,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
                 <input type="checkbox" name="img_batch_eng" value="rgb_ascii" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
                 <span>RGB TrueColor</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="palette_swap" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Palette Swap (Retrô)</span>
               </label>
               <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
                 <input type="checkbox" name="img_batch_eng" value="drawille" checked class="accent-brand-500" onchange="updateImgBatchCounter()">
@@ -388,6 +392,14 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
                 <input type="checkbox" name="img_batch_eng" value="rainbow_wave" class="accent-brand-500" onchange="updateImgBatchCounter()">
                 <span>Rainbow Wave</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none">
+                <input type="checkbox" name="img_batch_eng" value="portrait" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Retrato Terminal</span>
+              </label>
+              <label class="flex items-center gap-1.5 px-2 py-1 rounded bg-brand-dark border border-brand-border/80 hover:border-brand-500 text-[11px] text-slate-300 cursor-pointer select-none col-span-2">
+                <input type="checkbox" name="img_batch_eng" value="signature" class="accent-brand-500" onchange="updateImgBatchCounter()">
+                <span>Assinatura / Caligrafia (ASCII &amp; Braille)</span>
               </label>
             </div>
           </div>
@@ -1005,9 +1017,11 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <div>
                 <label class="text-xs text-slate-400 block mb-1">Tema da Constelação</label>
                 <select id="skill-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
-                  <option value="cyber_constellation">Cyber Constellation</option>
-                  <option value="diablo_arcane">Diablo IV Arcane</option>
-                  <option value="matrix_nodes">Matrix Grid</option>
+                  <option value="cyber_constellation" selected>🌌 Cyber Constellation (Neon Cyan &amp; Magenta)</option>
+                  <option value="diablo_arcane">🔥 Diablo IV Arcane (Carmesim &amp; Runas Ígneas)</option>
+                  <option value="matrix_nodes">🟢 Matrix Grid (Verde Fosfórico &amp; Terminal)</option>
+                  <option value="celestial_gold">⭐ Celestial Gold &amp; Obsidian (Dourado Cósmico)</option>
+                  <option value="dracula_rpg">🧛 Dracula RPG (Roxo &amp; Tons Pastel)</option>
                 </select>
               </div>
               <div>
@@ -3070,8 +3084,8 @@ Sleep 3s
     }
 
     const IMG_PRESETS = {
-      recommended: ['chafa', 'rgb_ascii', 'drawille', 'dither'],
-      all: ['chafa', 'rgb_ascii', 'drawille', 'dither', 'jp2a', 'halftone', 'edge_art', 'glitch', 'pixel_mosaic', 'rainbow_wave']
+      recommended: ['chafa', 'rgb_ascii', 'palette_swap', 'drawille', 'dither'],
+      all: ['chafa', 'rgb_ascii', 'palette_swap', 'drawille', 'dither', 'jp2a', 'halftone', 'edge_art', 'glitch', 'pixel_mosaic', 'rainbow_wave', 'portrait', 'signature']
     };
 
     function selectImgPreset(type) {
@@ -3373,7 +3387,7 @@ Sleep 3s
         const pts = document.getElementById('ach-points') ? document.getElementById('ach-points').value : 100;
         const ttl = document.getElementById('ach-title') ? document.getElementById('ach-title').value : 'LENDÁRIO CODE ARCHITECT';
         const desc = document.getElementById('ach-desc') ? document.getElementById('ach-desc').value : 'Deployou 1.000 microsserviços em produção numa sexta-feira sem quebrar';
-        url += `&platform=${encodeURIComponent(plat)}&points=${encodeURIComponent(pts)}&title=${encodeURIComponent(ttl)}&description=${encodeURIComponent(desc)}`;
+        url += `&platform=${encodeURIComponent(plat)}&theme=${encodeURIComponent(plat)}&points=${encodeURIComponent(pts)}&title=${encodeURIComponent(ttl)}&description=${encodeURIComponent(desc)}`;
       } else if (widget === 'skill_tree') {
         const theme = document.getElementById('skill-theme') ? document.getElementById('skill-theme').value : 'cyber_constellation';
         const focus = document.getElementById('skill-focus') ? document.getElementById('skill-focus').value : 'Fullstack / Cloud / AI Architect';
@@ -4644,9 +4658,11 @@ Sleep 3s
             <div>
               <label class="font-semibold text-slate-300 block mb-1">Tema da Constelação</label>
               <select id="cfg-sk-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
-                <option value="cyber_constellation" ${(params.theme || 'cyber_constellation') === 'cyber_constellation' ? 'selected' : ''}>Cyber Constellation</option>
-                <option value="diablo_arcane" ${params.theme === 'diablo_arcane' ? 'selected' : ''}>Diablo IV Arcane</option>
-                <option value="matrix_nodes" ${params.theme === 'matrix_nodes' ? 'selected' : ''}>Matrix Grid</option>
+                <option value="cyber_constellation" ${(params.theme || 'cyber_constellation') === 'cyber_constellation' ? 'selected' : ''}>🌌 Cyber Constellation</option>
+                <option value="diablo_arcane" ${params.theme === 'diablo_arcane' ? 'selected' : ''}>🔥 Diablo IV Arcane</option>
+                <option value="matrix_nodes" ${params.theme === 'matrix_nodes' ? 'selected' : ''}>🟢 Matrix Grid</option>
+                <option value="celestial_gold" ${params.theme === 'celestial_gold' ? 'selected' : ''}>⭐ Celestial Gold</option>
+                <option value="dracula_rpg" ${params.theme === 'dracula_rpg' ? 'selected' : ''}>🧛 Dracula RPG</option>
               </select>
             </div>
             <div>
@@ -6122,16 +6138,18 @@ async def render_image_batch(
         "edge_art": ("Edge Art", "Sobel Mangá"),
         "glitch": ("Glitch Cyberpunk", "VHS Corrupção"),
         "pixel_mosaic": ("Pixel Mosaic", "Arcade 8-bit"),
-        "palette_swap": ("Palette Swap", "Catppuccin/Nord"),
-        "rainbow_wave": ("Rainbow Wave", "Lolcat Arco-Íris")
+        "palette_swap": ("Palette Swap", "Catppuccin/GameBoy"),
+        "rainbow_wave": ("Rainbow Wave", "Lolcat Arco-Íris"),
+        "portrait": ("Retrato Terminal", "Braille Datagrama"),
+        "signature": ("Caligrafia & Assinatura", "ASCII & Braille")
     }
 
-    for eng in engine_list[:12]:
+    for eng in engine_list[:16]:
         p = registry.get(eng)
         if not p:
             continue
         try:
-            tmp = os.path.join(tempfile.gettempdir(), f"_img_batch_{eng}.svg")
+            tmp = os.path.join(tempfile.gettempdir(), f"_img_batch_{eng}_{os.getpid()}.svg")
             kwargs = {
                 "image_path": upload_path,
                 "out_svg": tmp,
@@ -6145,6 +6163,11 @@ async def render_image_batch(
             elif eng == "chafa":
                 kwargs["symbols"] = "braille"
                 kwargs["colors"] = "256"
+            elif eng == "palette_swap":
+                kwargs["theme"] = "catppuccin"
+            elif eng == "portrait":
+                kwargs["full_name"] = username
+                kwargs["cols"] = min(cols, 80)
 
             p.run(**kwargs)
             with open(tmp, "r", encoding="utf-8") as f:
@@ -6678,16 +6701,19 @@ def render_achievement(
     points: int = 100,
     rarity: str = "0.1% RARO",
     platform: str = "xbox",
+    theme: Optional[str] = None,
     username: str = "gamer"
 ):
     p = registry.get("achievement")
     tmp = os.path.join(tempfile.gettempdir(), f"_temp_achievement_{os.getpid()}.svg")
+    chosen_plat = platform or theme or "xbox"
     p.run(
         title=title,
         description=description,
         points=int(points),
         rarity=rarity,
-        platform=platform,
+        platform=chosen_plat,
+        theme=chosen_plat,
         username=username,
         out_svg=tmp
     )
@@ -6703,7 +6729,7 @@ def render_skill_tree(
 ):
     p = registry.get("skill_tree")
     tmp = os.path.join(tempfile.gettempdir(), f"_temp_skill_tree_{os.getpid()}.svg")
-    p.run(focus=focus, theme=theme, username=username, out_svg=tmp)
+    p.run(focus=focus, specialization=focus, theme=theme, username=username, out_svg=tmp)
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
