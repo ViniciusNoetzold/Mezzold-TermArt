@@ -222,87 +222,99 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    /* Mobile UX & Responsive Touch Optimization */
+    @media (max-width: 640px) {
+      select, input, textarea {
+        font-size: 14px !important;
+      }
+      .tab-btn {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
   </style>
 </head>
-<body class="bg-[#07090e] text-slate-200 font-sans min-h-screen flex flex-col antialiased selection:bg-sky-500/30 selection:text-sky-200">
+<body class="bg-[#07090e] text-slate-200 font-sans min-h-screen flex flex-col antialiased selection:bg-sky-500/30 selection:text-sky-200 overflow-x-hidden">
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KC94Z22H"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
   <!-- Header -->
-  <header class="border-b border-white/5 bg-[#0a0f1d]/85 backdrop-blur-xl sticky top-0 z-50 px-6 py-3 shadow-lg shadow-black/20">
-    <div class="max-w-[1600px] w-full mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3.5">
-        <div class="relative flex items-center justify-center">
-          <div class="h-3.5 w-3.5 rounded-full bg-emerald-400 pulse-dot shadow-lg shadow-emerald-400/50"></div>
-          <div class="absolute h-6 w-6 rounded-full bg-emerald-500/20 animate-ping"></div>
+  <header class="border-b border-white/5 bg-[#0a0f1d]/85 backdrop-blur-xl sticky top-0 z-50 px-3 py-2.5 sm:px-6 sm:py-3 shadow-lg shadow-black/20">
+    <div class="max-w-[1600px] w-full mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+        <div class="relative flex items-center justify-center shrink-0">
+          <div class="h-3 sm:h-3.5 w-3 sm:w-3.5 rounded-full bg-emerald-400 pulse-dot shadow-lg shadow-emerald-400/50"></div>
+          <div class="absolute h-5 sm:h-6 w-5 sm:w-6 rounded-full bg-emerald-500/20 animate-ping"></div>
         </div>
-        <div class="flex flex-col">
-          <h1 class="text-sm font-extrabold text-white tracking-wide flex items-center gap-2">
-            <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent font-black tracking-wider text-base">⚡ MEZZOLD TERMART</span>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold tracking-normal font-mono">v2.5 PRO</span>
+        <div class="flex flex-col min-w-0">
+          <h1 class="text-xs sm:text-sm font-extrabold text-white tracking-wide flex items-center gap-1.5 sm:gap-2 truncate">
+            <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent font-black tracking-wider text-sm sm:text-base">⚡ MEZZOLD TERMART</span>
+            <span class="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold tracking-normal font-mono shrink-0">v2.5 PRO</span>
           </h1>
-          <span class="text-[11px] text-slate-400 font-medium">A Suíte Definitiva de Arte em Terminal, Screensavers Arcade &amp; Perfil GitHub</span>
+          <span class="hidden md:inline text-[11px] text-slate-400 font-medium truncate">A Suíte Definitiva de Arte em Terminal, Screensavers Arcade &amp; Perfil GitHub</span>
         </div>
       </div>
-      <div class="flex items-center gap-2.5 text-xs font-medium">
-        <button id="btn-sound-toggle" onclick="toggleAudioFx()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm active:scale-95" title="Ligar / Desligar Efeitos Sonoros Retrô">
+      <div class="flex items-center gap-1.5 sm:gap-2.5 text-xs font-medium shrink-0">
+        <button id="btn-sound-toggle" onclick="toggleAudioFx()" class="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm active:scale-95" title="Ligar / Desligar Efeitos Sonoros Retrô">
           <span id="sound-icon">🔊</span>
-          <span id="sound-label">Som: ON</span>
+          <span id="sound-label" class="hidden md:inline">Som: ON</span>
         </button>
-        <button onclick="openConfigModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm active:scale-95" title="Configurar Perfil e GitHub">
+        <button onclick="openConfigModal()" class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm active:scale-95" title="Configurar Perfil e GitHub">
           <span class="text-sky-400">⚙️</span>
-          <span id="header-user-badge">Perfil: <strong class="text-white">Convidado</strong></span>
+          <span id="header-user-badge" class="hidden sm:inline">Perfil: <strong class="text-white">Convidado</strong></span>
         </button>
-        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold transition shadow-md shadow-sky-600/20 flex items-center gap-1.5 active:scale-95">
-          <span>GitHub Repo</span>
-          <span class="text-sky-200">↗</span>
+        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold transition shadow-md shadow-sky-600/20 flex items-center gap-1 active:scale-95">
+          <span class="hidden sm:inline">GitHub</span><span>↗</span>
         </a>
       </div>
     </div>
   </header>
 
   <!-- Navigation Tabs -->
-  <div class="border-b border-white/5 bg-[#0a0f1d]/60 backdrop-blur-md px-6 py-2.5 sticky top-[57px] z-40 shadow-sm">
-    <div class="max-w-[1600px] mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs font-medium">
-      <button onclick="switchTab('image')" id="btn-image" class="tab-btn px-4 py-2 rounded-xl font-semibold bg-brand-600 text-white flex items-center gap-2 transition shrink-0 shadow-md shadow-sky-500/20">
+  <div class="relative border-b border-white/5 bg-[#0a0f1d]/60 backdrop-blur-md px-3 sm:px-6 py-2 sticky top-[48px] sm:top-[57px] z-40 shadow-sm">
+    <div class="max-w-[1600px] mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs font-medium scroll-smooth overscroll-x-contain">
+      <button onclick="switchTab('image')" id="btn-image" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold bg-brand-600 text-white flex items-center gap-1.5 transition shrink-0 shadow-md shadow-sky-500/20">
         <span>🖼️</span> <span>Imagens &amp; Chafa</span>
       </button>
-      <button onclick="switchTab('3d')" id="btn-3d" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+      <button onclick="switchTab('3d')" id="btn-3d" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
         <span>🧊</span> <span>3D &amp; Tipografia</span>
       </button>
-      <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+      <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
         <span>🛡️</span> <span>Widgets de Perfil</span>
       </button>
-      <button onclick="switchTab('animator')" id="btn-animator" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+      <button onclick="switchTab('animator')" id="btn-animator" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
         <span>✨</span> <span>Animador SVG</span>
       </button>
-      <button onclick="switchTab('pipes')" id="btn-pipes" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
-        <span>🕹️</span> <span>Screensavers Arcade &amp; FX</span>
+      <button onclick="switchTab('pipes')" id="btn-pipes" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
+        <span>🕹️</span> <span>Arcade &amp; FX</span>
       </button>
-      <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
-        <span>🎬</span> <span>Gravador VHS &amp; AGG</span>
+      <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
+        <span>🎬</span> <span>VHS &amp; AGG</span>
       </button>
-      <button onclick="switchTab('badges')" id="btn-badges" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
-        <span>🏷️</span> <span>Badges &amp; Tech Stack</span>
+      <button onclick="switchTab('badges')" id="btn-badges" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
+        <span>🏷️</span> <span>Badges &amp; Stacks</span>
       </button>
-      <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
-        <span>🎵</span> <span>Música &amp; Atividade Dev</span>
+      <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
+        <span>🎵</span> <span>Música &amp; Dev</span>
       </button>
-      <button onclick="switchTab('builder')" id="btn-builder" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
-        <span>🚀</span> <span>Construtor de Perfil &amp; README</span>
+      <button onclick="switchTab('builder')" id="btn-builder" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition shrink-0">
+        <span>🚀</span> <span>Construtor Perfil</span>
       </button>
-      <button onclick="openConfigModal()" id="btn-config" class="tab-btn px-4 py-2 rounded-xl font-semibold bg-slate-900/70 border border-white/10 text-sky-400 hover:text-sky-300 hover:border-sky-500/40 flex items-center gap-2 transition ml-auto shrink-0 shadow-sm">
-        <span>⚙️</span> <span>Configurar Perfil Dev</span>
+      <button onclick="openConfigModal()" id="btn-config" class="tab-btn px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs rounded-xl font-semibold bg-slate-900/70 border border-white/10 text-sky-400 hover:text-sky-300 hover:border-sky-500/40 flex items-center gap-1.5 transition shrink-0 shadow-sm">
+        <span>⚙️</span> <span>Config Perfil</span>
       </button>
     </div>
+    <!-- Mobile swipe indicator fade -->
+    <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#0a0f1d] to-transparent sm:hidden"></div>
   </div>
 
   <!-- Main Content -->
-  <main class="flex-1 max-w-[1600px] w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+  <main class="flex-1 max-w-[1600px] w-full mx-auto p-3 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-start">
     <!-- Left Column: Controls -->
-    <div class="lg:col-span-5 flex flex-col gap-5">
-      <div class="p-6 rounded-3xl studio-glass border border-white/10 flex flex-col gap-5 text-sm shadow-2xl backdrop-blur-xl">
+    <div class="lg:col-span-5 flex flex-col gap-4 sm:gap-5">
+      <div class="p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl studio-glass border border-white/10 flex flex-col gap-4 sm:gap-5 text-sm shadow-2xl backdrop-blur-xl">
         
         <!-- ================= TAB 1: IMAGENS & CHAFA ================= -->
         <div id="tab-image" class="tab-content flex flex-col gap-4">
@@ -2166,65 +2178,69 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
 
     <!-- Right Column: Live Canvas & Preview -->
-    <div class="lg:col-span-7 flex flex-col gap-4 lg:sticky lg:top-20">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xs text-slate-400">Arte Renderizada:</span>
-          <span id="preview-tag" class="text-xs px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-medium border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span>termart.svg</span>
-          </span>
-          <span id="preview-count-badge" class="hidden text-xs px-3 py-1 rounded-full bg-sky-500/15 text-sky-300 font-mono font-medium border border-sky-500/30">0 itens</span>
+    <div id="preview-column" class="lg:col-span-7 flex flex-col gap-3 sm:gap-4 lg:sticky lg:top-20">
+      <div class="flex flex-col gap-2.5">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="text-[11px] sm:text-xs text-slate-400">Arte:</span>
+            <span id="preview-tag" class="text-[11px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-medium border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>termart.svg</span>
+            </span>
+            <span id="preview-count-badge" class="hidden text-[11px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-sky-500/15 text-sky-300 font-mono font-medium border border-sky-500/30">0 itens</span>
+          </div>
+          <button id="btn-global-anim" onclick="toggleGlobalAnimations()" class="text-[11px] sm:text-xs px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl border border-white/10 bg-[#0e1424] hover:bg-[#151f36] text-slate-300 font-medium transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Ativar ou desativar todas as animações para economia de CPU">
+            <span id="global-anim-icon">✨</span> <span id="global-anim-label" class="hidden sm:inline">Animações: ON</span><span class="sm:hidden">Anim: ON</span>
+          </button>
         </div>
-        <div class="flex items-center gap-2">
-          <button id="btn-global-anim" onclick="toggleGlobalAnimations()" class="text-xs px-3 py-1.5 rounded-xl border border-white/10 bg-[#0e1424] hover:bg-[#151f36] text-slate-300 font-medium transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Ativar ou desativar todas as animações para economia de CPU">
-            <span id="global-anim-icon">✨</span> <span id="global-anim-label">Animações: ON</span>
-          </button>
-          <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-medium transition flex items-center gap-1.5 shadow-lg shadow-purple-500/10 active:scale-95">
-            <span>📦</span> <span>Baixar Todas (.ZIP)</span>
-          </button>
-          <button id="btn-download-gif" onclick="downloadGif()" class="text-xs px-3.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-medium transition flex items-center gap-1.5 shadow-md shadow-amber-500/10 active:scale-95" title="Exportar GIF animado em alta qualidade (FFmpeg)">
-            <span>🎞️</span> <span>Baixar GIF</span>
-          </button>
-          <button id="btn-download-mp4" onclick="downloadMp4()" class="text-xs px-3.5 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-medium transition flex items-center gap-1.5 shadow-md shadow-rose-500/10 active:scale-95" title="Exportar vídeo MP4 H.264 (FFmpeg)">
-            <span>🎥</span> <span>Baixar MP4</span>
-          </button>
-          <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-sky-500/30 bg-[#0e1424] hover:bg-sky-500/10 text-white font-medium transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Baixar arquivo vetorial SVG">
+
+        <!-- Export Action Buttons (Touch Grid on Mobile, Inline on Desktop) -->
+        <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
+          <button id="btn-download-single" onclick="downloadSvg()" class="col-span-2 sm:col-span-1 text-xs px-3.5 py-2.5 sm:py-1.5 rounded-xl border border-sky-400/40 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold transition flex items-center justify-center gap-1.5 shadow-md shadow-sky-600/20 active:scale-95" title="Baixar arquivo vetorial SVG">
             <span>⭳</span> <span>Baixar SVG</span>
           </button>
-          <button id="btn-download-png" onclick="downloadPng()" class="text-xs px-3.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-medium transition flex items-center gap-1.5 shadow-md shadow-emerald-500/10 active:scale-95" title="Exportar arte em PNG de alta resolução (2x)">
+          <button id="btn-download-png" onclick="downloadPng()" class="text-xs px-3 py-2 sm:py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-medium transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95" title="Exportar arte em PNG de alta resolução (2x)">
             <span>🖼️</span> <span>Baixar PNG</span>
           </button>
-          <button id="btn-pin-profile" onclick="pinCurrentToProfile()" class="text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 text-purple-200 font-medium transition flex items-center gap-1.5 shadow-md shadow-purple-500/10 active:scale-95" title="Adicionar esta arte gerada diretamente ao seu perfil do GitHub">
+          <button id="btn-download-gif" onclick="downloadGif()" class="text-xs px-3 py-2 sm:py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-medium transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95" title="Exportar GIF animado em alta qualidade (FFmpeg)">
+            <span>🎞️</span> <span>Baixar GIF</span>
+          </button>
+          <button id="btn-download-mp4" onclick="downloadMp4()" class="text-xs px-3 py-2 sm:py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-medium transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95" title="Exportar vídeo MP4 H.264 (FFmpeg)">
+            <span>🎥</span> <span>Baixar MP4</span>
+          </button>
+          <button id="btn-pin-profile" onclick="pinCurrentToProfile()" class="text-xs px-3 py-2 sm:py-1.5 rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 text-purple-200 font-medium transition flex items-center justify-center gap-1.5 shadow-sm active:scale-95" title="Adicionar esta arte gerada diretamente ao seu perfil do GitHub">
             <span>📌</span> <span>Fixar no Perfil</span>
+          </button>
+          <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3 py-2 sm:py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-medium transition flex items-center justify-center gap-1.5 shadow-lg shadow-purple-500/10 active:scale-95">
+            <span>📦</span> <span>Baixar (.ZIP)</span>
           </button>
         </div>
       </div>
 
       <!-- Preview Canvas -->
-      <div id="canvas-wrapper" class="w-full min-h-[580px] p-8 rounded-3xl canvas-grid border border-white/10 flex flex-col items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
-        <div id="svg-display" class="w-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:h-auto">
-          <div class="text-center text-slate-500">
-            <p class="text-4xl mb-3 animate-pulse">⚡</p>
-            <p>Selecione um motor e clique em Gerar para ver o resultado ao vivo!</p>
+      <div id="canvas-wrapper" class="w-full min-h-[300px] sm:min-h-[520px] p-2.5 sm:p-6 md:p-8 rounded-2xl sm:rounded-3xl canvas-grid border border-white/10 flex flex-col items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
+        <div id="svg-display" class="w-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:h-auto [&>svg]:w-auto overflow-hidden">
+          <div class="text-center text-slate-500 py-8 sm:py-0">
+            <p class="text-3xl sm:text-4xl mb-2 sm:mb-3 animate-pulse">⚡</p>
+            <p class="text-xs sm:text-sm">Selecione um motor e clique em Gerar para ver o resultado ao vivo!</p>
           </div>
         </div>
 
         <!-- Dedicated Builder Workspace -->
         <div id="builder-workspace" class="hidden w-full flex flex-col gap-4">
           <div class="flex items-center justify-between border-b border-brand-border pb-3">
-            <div class="flex items-center gap-2 text-xs">
-              <button onclick="switchBuilderView('visual')" id="btn-view-visual" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white font-semibold transition">
-                👁️ Preview do Perfil
+            <div class="flex items-center gap-1.5 text-[11px] sm:text-xs overflow-x-auto no-scrollbar pb-1 sm:pb-0">
+              <button onclick="switchBuilderView('visual')" id="btn-view-visual" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-600 text-white font-semibold transition shrink-0">
+                👁️ Preview
               </button>
-              <button onclick="switchBuilderView('code')" id="btn-view-code" class="px-3 py-1.5 rounded-lg bg-brand-dark/80 hover:bg-brand-dark text-slate-300 font-semibold transition">
-                📝 Código README.md
+              <button onclick="switchBuilderView('code')" id="btn-view-code" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-dark/80 hover:bg-brand-dark text-slate-300 font-semibold transition shrink-0">
+                📝 README.md
               </button>
-              <button onclick="switchBuilderView('tree')" id="btn-view-tree" class="px-3 py-1.5 rounded-lg bg-brand-dark/80 hover:bg-brand-dark text-slate-300 font-semibold transition">
-                📁 Estrutura do Repositório
+              <button onclick="switchBuilderView('tree')" id="btn-view-tree" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-brand-dark/80 hover:bg-brand-dark text-slate-300 font-semibold transition shrink-0">
+                📁 Repositório
               </button>
             </div>
-            <button onclick="downloadProfileZip()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition flex items-center gap-1.5 shadow">
+            <button onclick="downloadProfileZip()" class="w-full sm:w-auto px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition flex items-center justify-center gap-1.5 shadow shrink-0">
               <span>📦</span> <span>Baixar .ZIP</span>
             </button>
           </div>
@@ -2289,8 +2305,16 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     </div>
   </main>
 
+  <!-- Floating Mobile Quick Switcher Button (Controls <-> Canvas) -->
+  <div id="mobile-quick-nav" class="lg:hidden fixed bottom-5 right-4 z-40 flex items-center gap-2">
+    <button onclick="toggleMobileViewScroll()" id="btn-mobile-scroll" class="px-4 py-2.5 rounded-full bg-gradient-to-r from-sky-600 to-indigo-600 text-white text-xs font-bold shadow-xl shadow-sky-600/40 border border-white/20 flex items-center gap-2 active:scale-95 transition backdrop-blur-md">
+      <span id="mobile-scroll-icon">👁️</span>
+      <span id="mobile-scroll-text">Ver Arte</span>
+    </button>
+  </div>
+
   <!-- Floating Toast Notification -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none px-4 py-2.5 rounded-xl bg-brand-dark/95 border border-brand-500 shadow-2xl text-xs font-semibold text-white flex items-center gap-2">
+  <div id="toast" class="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none px-4 py-2.5 rounded-xl bg-brand-dark/95 border border-brand-500 shadow-2xl text-xs font-semibold text-white flex items-center justify-center sm:justify-start gap-2">
     <span id="toast-msg">Mensagem</span>
   </div>
 
@@ -2940,6 +2964,54 @@ Sleep 3s
     let currentImageSelectionMode = 'single';
     let currentTypoSelectionMode = 'single';
 
+    function scrollToCanvasIfMobile() {
+      if (window.innerWidth < 1024) {
+        const target = document.getElementById('preview-column') || document.getElementById('canvas-wrapper');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          updateMobileScrollButton('controls');
+        }
+      }
+    }
+
+    function toggleMobileViewScroll() {
+      const canvas = document.getElementById('canvas-wrapper');
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.top > 250) {
+        canvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        updateMobileScrollButton('controls');
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        updateMobileScrollButton('canvas');
+      }
+    }
+
+    function updateMobileScrollButton(mode) {
+      const icon = document.getElementById('mobile-scroll-icon');
+      const text = document.getElementById('mobile-scroll-text');
+      if (!icon || !text) return;
+      if (mode === 'controls') {
+        icon.textContent = '⚙️';
+        text.textContent = 'Ajustar';
+      } else {
+        icon.textContent = '👁️';
+        text.textContent = 'Ver Arte';
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      if (window.innerWidth >= 1024) return;
+      const canvas = document.getElementById('canvas-wrapper');
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.top <= 200) {
+        updateMobileScrollButton('controls');
+      } else {
+        updateMobileScrollButton('canvas');
+      }
+    }, { passive: true });
+
     function setPreview(content, filename, isImage = false) {
       currentSvg = content;
       currentFilename = filename;
@@ -2952,6 +3024,7 @@ Sleep 3s
       } else {
         document.getElementById('svg-display').innerHTML = content;
       }
+      scrollToCanvasIfMobile();
     }
 
     function toggleGlobalAnimations() {
@@ -3052,6 +3125,7 @@ Sleep 3s
 
       document.getElementById('svg-display').innerHTML = html;
       showToast(`🎉 ${results.length} variações renderizadas na grade!`);
+      scrollToCanvasIfMobile();
     }
 
     function downloadSingleBatchSvg(idx) {
