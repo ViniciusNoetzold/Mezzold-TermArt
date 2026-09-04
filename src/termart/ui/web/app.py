@@ -28,6 +28,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-KC94Z22H');</script>
   <!-- End Google Tag Manager -->
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8865509480539792"
+       crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mezzold TermArt Studio v2.5 — Terminal Art &amp; Profile Engine</title>
@@ -2260,6 +2263,27 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Elegant Unobtrusive Sponsor / Ad Banner Container -->
+    <div id="ad-container-footer" class="max-w-[1600px] w-full mx-auto px-6 py-4 mt-4">
+      <div class="rounded-2xl border border-white/5 bg-[#0a0f1d]/70 backdrop-blur-md p-3.5 flex flex-col items-center justify-center min-h-[90px] text-center relative overflow-hidden shadow-lg shadow-black/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-[9px] uppercase tracking-widest text-slate-500 font-semibold px-2 py-0.5 rounded bg-white/5 border border-white/5">Patrocinado • Mezzold TermArt</span>
+        </div>
+        <!-- Google AdSense Responsive Unit -->
+        <div class="w-full flex items-center justify-center overflow-hidden">
+          <ins class="adsbygoogle"
+               style="display:block; min-height: 90px; width: 100%;"
+               data-ad-client="ca-pub-8865509480539792"
+               data-ad-slot="auto"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>
+               (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
         </div>
       </div>
     </div>
