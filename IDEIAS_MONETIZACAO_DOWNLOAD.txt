@@ -1,0 +1,49 @@
+===============================================================================
+            MEZZOLD TERMART STUDIO - ESTRATÉGIA DE MONETIZAÇÃO & UX
+===============================================================================
+
+1. MODELO: MODAL DE PREPARAÇÃO COM DOWNLOAD AUTOMÁTICO (3 A 5 SEGUNDOS)
+-------------------------------------------------------------------------------
+Em vez de um bloqueador invasivo (que o Google pune e os desenvolvedores odeiam),
+os maiores sites de ferramentas para devs usam o modelo de Modal de Preparação com
+Download Automático:
+
+Como funcionaria no TermArt:
+1. O usuário clica em [ 📦 Baixar Repositório (.ZIP) ].
+2. Abre um modal elegante estilo terminal / cyberpunk:
+   "📦 Empacotando seu Perfil GitHub..."
+   Compilando SVGs, README.md e GitHub Actions... (Aguarde 4s)
+   [ ■■■■■■■■■□□□ ] 75%
+3. Dentro dessa janela de carregamento, aparece o espaço publicitário / patrocinador
+   com a tag: "Patrocinador do Mezzold TermArt".
+4. Ao final dos 4 segundos, o arquivo .zip baixa automaticamente no navegador,
+   sem que o usuário precise ser redirecionado para outro site ou resolver pegadinhas.
+
+Por que essa abordagem é genial?
+- 100% Dentro das Regras do Google: Você não está forçando o clique, está exibindo
+  uma tela de carregamento legítima onde o usuário visualiza o anúncio durante o
+  tempo de processamento técnico.
+- Métricas Altas de CPM: O anúncio fica na tela por 4 a 5 segundos com 100% de
+  atenção do usuário, o que aumenta muito a métrica de Viewability (visibilidade),
+  que é o que faz o CPM pagar mais dólares.
+- Não espanta o desenvolvedor: Devs odeiam protetores de link estilo Adf.ly, mas
+  acham super natural e profissional uma barra de progresso estilizada enquanto
+  o ZIP é gerado.
+
+
+2. OUTRA FONTE FORTE: "APOIE O PROJETO / PIX / GITHUB SPONSORS"
+-------------------------------------------------------------------------------
+Como o seu público é formado por programadores e estudantes de TI, muitos usam
+AdBlock no navegador. Mas desenvolvedores têm uma cultura muito forte de apoiar
+ferramentas open-source que facilitam a vida deles:
+
+No modal de download do ZIP ou no README gerado, podemos colocar:
+- Um botão discreto:
+  "Gostou da ferramenta? Deixe uma estrela ⭐ no GitHub ou pague um café via PIX ☕".
+- Muitas vezes, uma única doação voluntária de R$ 10 ou R$ 20 via PIX rende mais
+  do que centenas de visualizações de anúncios.
+
+===============================================================================
+Registrado em: 04 de Setembro de 2026
+Projeto: Mezzold TermArt Studio
+===============================================================================
