@@ -61,7 +61,18 @@ ENGINES_TO_TEST = [
     ("cyberpunk_city", {"username": "CYBER"}),
     ("rpg_sheet", {"username": "VINICIUS"}),
     ("git_subway", {"username": "VINICIUS"}),
-    ("dev_pet", {"username": "VINICIUS"})
+    ("dev_pet", {"username": "VINICIUS"}),
+
+    # Category C: Retro Arcade 60fps & Unixporn/Gamification (10 New Modules)
+    ("snake", {"casing_color": "navy", "display_mode": "classic_lcd", "score": 420}),
+    ("pong", {"theme": "classic_green", "score_p1": 7, "score_p2": 5}),
+    ("flappy", {"theme": "retro_arcade", "bird_color": "#ffcc00", "score": 12}),
+    ("btop_monitor", {"theme": "catppuccin", "uptime": "42 DAYS, 13:37:00"}),
+    ("cli_session", {"theme": "ghostty", "terminal_title": "ghostty@terminal: ~"}),
+    ("git_graph", {"theme": "neon_cyber", "repo_name": "core-engine"}),
+    ("cyber_id", {"name": "V", "role": "Senior Lead Architect", "department": "Cyber Defense", "clearance_level": "LEVEL 5 - ROOT", "theme": "arasaka_red"}),
+    ("achievement", {"title": "LENDÁRIO CODE ARCHITECT", "points": 100, "rarity": "0.1% RARO", "platform": "xbox"}),
+    ("skill_tree", {"focus": "Fullstack / Cloud / AI Architect", "theme": "cyber_constellation"})
 ]
 
 def run_suite():

@@ -31,6 +31,15 @@ DEFAULT_SECTIONS = [
     {"id": "pacman", "type": "pacman", "title": "Pac-Man Arcade Maze 1980", "enabled": False, "file": "pacman-chase.svg", "params": {"score": 333360}},
     {"id": "dvd", "type": "dvd", "title": "Screensaver DVD Bouncing Retro", "enabled": False, "file": "dvd-screensaver.svg", "params": {"text": "DVD", "speed": 1.0}},
     {"id": "fortune", "type": "fortune", "title": "Biscoito da Sorte Hacker / Filosofia", "enabled": False, "file": "fortune.svg", "params": {}},
+    {"id": "snake", "type": "snake", "title": "Nokia 3310 Snake Game 60fps", "enabled": False, "file": "snake-nokia.svg", "params": {"casing_color": "navy", "display_mode": "classic_lcd", "speed": 1.0, "score": 420}},
+    {"id": "pong", "type": "pong", "title": "Atari 1972 Pong Arcade 60fps", "enabled": False, "file": "pong-arcade.svg", "params": {"theme": "classic_green", "score_p1": 7, "score_p2": 5, "speed": 1.0}},
+    {"id": "flappy", "type": "flappy", "title": "Terminal Flappy Bird 8-Bit 60fps", "enabled": False, "file": "flappy-bird.svg", "params": {"theme": "retro_arcade", "bird_color": "#ffcc00", "score": 12}},
+    {"id": "btop_monitor", "type": "btop_monitor", "title": "Btop++ Cyberpunk System Monitor", "enabled": False, "file": "btop-monitor.svg", "params": {"theme": "catppuccin", "uptime": "42 DAYS, 13:37:00"}},
+    {"id": "cli_session", "type": "cli_session", "title": "CLI Terminal Session Mockup", "enabled": False, "file": "cli-session.svg", "params": {"theme": "ghostty", "terminal_title": "ghostty@terminal: ~"}},
+    {"id": "git_graph", "type": "git_graph", "title": "Git Commit Graph Visualizer", "enabled": False, "file": "git-graph.svg", "params": {"theme": "neon_cyber"}},
+    {"id": "cyber_id", "type": "cyber_id", "title": "Cyberpunk Corporate ID Access Badge", "enabled": False, "file": "cyber-id.svg", "params": {"role": "Senior Lead Architect", "clearance_level": "LEVEL 5 - ROOT", "theme": "arasaka_red"}},
+    {"id": "achievement", "type": "achievement", "title": "Console Achievement 3D Trophy", "enabled": False, "file": "achievement.svg", "params": {"title": "LENDÁRIO CODE ARCHITECT", "points": 100, "rarity": "0.1% RARO", "platform": "xbox"}},
+    {"id": "skill_tree", "type": "skill_tree", "title": "Developer RPG Skill Tree", "enabled": False, "file": "skill-tree.svg", "params": {"focus": "Fullstack / Cloud / AI Architect", "theme": "cyber_constellation"}},
 ]
 
 def generate_readme_markdown(username: str, name: str, sections: List[Dict[str, Any]]) -> str:
@@ -406,6 +415,107 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                     p = registry.get("fortune_banner")
                     res = p.run(username=username, out_svg="fortune.svg")
                     with open(res.get("output_path", "fortune.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "snake":
+                    p = registry.get("snake")
+                    res = p.run(
+                        casing_color=params.get("casing_color", "navy"),
+                        display_mode=params.get("display_mode", "classic_lcd"),
+                        speed=float(params.get("speed", 1.0)),
+                        score=int(params.get("score", 420)),
+                        username=username,
+                        out_svg="snake-nokia.svg"
+                    )
+                    with open(res.get("output_path", "snake-nokia.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "pong":
+                    p = registry.get("pong")
+                    res = p.run(
+                        theme=params.get("theme", "classic_green"),
+                        score_p1=int(params.get("score_p1", 7)),
+                        score_p2=int(params.get("score_p2", 5)),
+                        speed=float(params.get("speed", 1.0)),
+                        username=username,
+                        out_svg="pong-arcade.svg"
+                    )
+                    with open(res.get("output_path", "pong-arcade.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "flappy":
+                    p = registry.get("flappy")
+                    res = p.run(
+                        theme=params.get("theme", "retro_arcade"),
+                        bird_color=params.get("bird_color", "#ffcc00"),
+                        score=int(params.get("score", 12)),
+                        username=username,
+                        out_svg="flappy-bird.svg"
+                    )
+                    with open(res.get("output_path", "flappy-bird.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "btop_monitor":
+                    p = registry.get("btop_monitor")
+                    res = p.run(
+                        theme=params.get("theme", "catppuccin"),
+                        username=username,
+                        uptime=params.get("uptime", "42 DAYS, 13:37:00"),
+                        out_svg="btop-monitor.svg"
+                    )
+                    with open(res.get("output_path", "btop-monitor.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "cli_session":
+                    p = registry.get("cli_session")
+                    res = p.run(
+                        theme=params.get("theme", "ghostty"),
+                        terminal_title=params.get("terminal_title", f"{username}@fedora: ~"),
+                        username=username,
+                        out_svg="cli-session.svg"
+                    )
+                    with open(res.get("output_path", "cli-session.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "git_graph":
+                    p = registry.get("git_graph")
+                    res = p.run(
+                        repo_name=params.get("repo_name", f"{username}/core-platform"),
+                        theme=params.get("theme", "neon_cyber"),
+                        username=username,
+                        out_svg="git-graph.svg"
+                    )
+                    with open(res.get("output_path", "git-graph.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "cyber_id":
+                    p = registry.get("cyber_id")
+                    res = p.run(
+                        name=params.get("name") or name or username,
+                        role=params.get("role", "Senior Lead Architect"),
+                        department=params.get("department", "Cyber Defense & Cloud Infrastructure"),
+                        clearance_level=params.get("clearance_level", "LEVEL 5 - ROOT"),
+                        theme=params.get("theme", "arasaka_red"),
+                        username=username,
+                        out_svg="cyber-id.svg"
+                    )
+                    with open(res.get("output_path", "cyber-id.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "achievement":
+                    p = registry.get("achievement")
+                    res = p.run(
+                        title=params.get("title", "LENDÁRIO CODE ARCHITECT"),
+                        description=params.get("description", "Deployou 1.000 microsserviços em produção numa sexta-feira sem quebrar"),
+                        points=int(params.get("points", 100)),
+                        rarity=params.get("rarity", "0.1% RARO"),
+                        platform=params.get("platform", "xbox"),
+                        username=username,
+                        out_svg="achievement.svg"
+                    )
+                    with open(res.get("output_path", "achievement.svg"), "r", encoding="utf-8") as f:
+                        svg_content = f.read()
+                elif stype == "skill_tree":
+                    p = registry.get("skill_tree")
+                    res = p.run(
+                        focus=params.get("focus", "Fullstack / Cloud / AI Architect"),
+                        theme=params.get("theme", "cyber_constellation"),
+                        username=username,
+                        out_svg="skill-tree.svg"
+                    )
+                    with open(res.get("output_path", "skill-tree.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
             except Exception as e:
                 svg_content = f'<svg xmlns="http://www.w3.org/2000/svg" width="600" height="80"><rect width="600" height="80" rx="8" fill="#111722"/><text x="300" y="45" fill="#58a6ff" text-anchor="middle">{stype.upper()}</text></svg>'

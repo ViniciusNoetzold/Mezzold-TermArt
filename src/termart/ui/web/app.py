@@ -841,6 +841,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Tipo de Widget</label>
             <select id="profile-widget" onchange="onProfileWidgetChange()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="btop_monitor">📟 Btop++ / Htop Cyberpunk (8-Cores, Braille, RAM & Processos)</option>
+              <option value="cli_session">⌨️ CLI Terminal Session Mockup (Ghostty, Digitação & Telemetria)</option>
+              <option value="git_graph">🌿 Git Commit Graph Visualizer (Árvore Neon de Branches & Commits)</option>
+              <option value="cyber_id">🪪 Cyberpunk Corporate ID (Crachá Arasaka/Militech com Chip & QR)</option>
+              <option value="achievement">🏆 Console Achievement Banner (Troféu Dourado 3D com Glint Xbox/Steam)</option>
+              <option value="skill_tree">🌳 Developer RPG Skill Tree (Constelação de Talentos Frontend/Cloud/AI)</option>
               <option value="rpg_sheet">⚔️ Passaporte RPG do Desenvolvedor (Classes D&D, HP/Mana & Inventário)</option>
               <option value="git_subway">🗺️ Mapa de Metrô dos Commits (Git Branch Subway Line & Trens)</option>
               <option value="dev_pet">👾 Tamagotchi Virtual Dev Pet 1996 (Display LCD, Café & Bateria)</option>
@@ -862,6 +868,155 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
 
           <!-- POKEMON OPTIONS -->
+          <!-- BTOP MONITOR OPTIONS -->
+          <div id="profile-opt-btop" class="flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+              <span>📟</span> <span>Configurações do Btop++ Monitor</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Tema Unixporn</label>
+                <select id="btop-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="catppuccin">Catppuccin Mocha</option>
+                  <option value="dracula">Dracula Dark</option>
+                  <option value="tokyonight">Tokyo Night</option>
+                  <option value="nord">Nord Arctic</option>
+                  <option value="cyberpunk">Cyberpunk Neon</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Uptime</label>
+                <input id="btop-uptime" type="text" value="42 DAYS, 13:37:00" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- CLI SESSION OPTIONS -->
+          <div id="profile-opt-cli" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+              <span>⌨️</span> <span>Sessão Interativa de Terminal</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Tema do Terminal</label>
+                <select id="cli-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="ghostty">Ghostty Dark</option>
+                  <option value="dracula">Dracula</option>
+                  <option value="catppuccin">Catppuccin</option>
+                  <option value="matrix">Matrix Green</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Título da Janela</label>
+                <input id="cli-title" type="text" value="user@workstation: ~" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- GIT GRAPH OPTIONS -->
+          <div id="profile-opt-gitgraph" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-purple-400 flex items-center gap-1.5">
+              <span>🌿</span> <span>Grafo de Commits Neon</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Tema de Linhas</label>
+                <select id="gitgraph-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="neon_cyber">Neon Cyber Glow</option>
+                  <option value="gitkraken">GitKraken Vibrant</option>
+                  <option value="terminal">Green Phosphor</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Nome do Repositório</label>
+                <input id="gitgraph-repo" type="text" value="core-engine" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- CYBER ID OPTIONS -->
+          <div id="profile-opt-cyberid" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+              <span>🪪</span> <span>Crachá Cyberpunk Holográfico</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Corporação</label>
+                <select id="cyberid-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="arasaka_red">Arasaka Security</option>
+                  <option value="militech_yellow">Militech Arms</option>
+                  <option value="neon_matrix">NetWatch Matrix</option>
+                  <option value="phantom_purple">Phantom Purple</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Nível de Autorização</label>
+                <input id="cyberid-clearance" type="text" value="LEVEL 5 - ROOT" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Cargo</label>
+                <input id="cyberid-role" type="text" value="Senior Lead Architect" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Departamento</label>
+                <input id="cyberid-dept" type="text" value="Cyber Defense &amp; Cloud Infra" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              </div>
+            </div>
+          </div>
+
+          <!-- ACHIEVEMENT OPTIONS -->
+          <div id="profile-opt-achievement" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-yellow-400 flex items-center gap-1.5">
+              <span>🏆</span> <span>Banner de Conquista / Troféu</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Plataforma</label>
+                <select id="ach-platform" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="xbox">Xbox Rare (+Glint)</option>
+                  <option value="steam">Steam Gold</option>
+                  <option value="playstation">PlayStation Platinum</option>
+                  <option value="cyberpunk">Cyberpunk Secret</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Pontos / Gamerscore</label>
+                <input id="ach-points" type="number" value="100" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Título da Conquista</label>
+              <input id="ach-title" type="text" value="LENDÁRIO CODE ARCHITECT" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Descrição</label>
+              <input id="ach-desc" type="text" value="Deployou 1.000 microsserviços em produção numa sexta-feira sem quebrar" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+            </div>
+          </div>
+
+          <!-- SKILL TREE OPTIONS -->
+          <div id="profile-opt-skilltree" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+              <span>🌳</span> <span>Árvore RPG de Habilidades Dev</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Tema da Constelação</label>
+                <select id="skill-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="cyber_constellation">Cyber Constellation</option>
+                  <option value="diablo_arcane">Diablo IV Arcane</option>
+                  <option value="matrix_nodes">Matrix Grid</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Foco Primário</label>
+                <input id="skill-focus" type="text" value="Fullstack / Cloud / AI Architect" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              </div>
+            </div>
+          </div>
+
           <div id="profile-opt-pokemon" class="flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
             <div class="text-[11px] font-bold uppercase tracking-wider text-brand-accent flex items-center gap-1.5">
               <span>🎮</span> <span>Opções do Pokémon</span>
@@ -1218,6 +1373,9 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <label class="text-xs text-slate-400 block mb-1">Efeito / Screensaver</label>
             <select id="fx-engine" onchange="toggleFxEngine()" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+              <option value="snake">🐍 Nokia 3310 Snake Game (Display LCD, Teclado &amp; Cobrinha em Grid)</option>
+              <option value="pong">🏓 Atari 1972 Pong Arcade (Scanlines CRT, Linha Pontilhada &amp; Placar 7-Seg)</option>
+              <option value="flappy">🐤 Terminal Flappy Bird 8-Bit (Canos Verdes, Pássaro 2-Frames &amp; Nuvens)</option>
               <option value="mario">🍄 Super Mario Bros NES (World 1-1 Runner &amp; Coin Jump)</option>
               <option value="space_invaders">👾 Space Invaders Arcade 1978 (Laser Cannon Defense)</option>
               <option value="pacman">ᗧ••• Pac-Man Terminal Maze 1980 (Chomp &amp; 4 Ghosts)</option>
@@ -1240,6 +1398,96 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </div>
 
                               <!-- FX Mario options -->
+          <!-- FX Snake Nokia options -->
+          <div id="fx-opt-snake" class="flex flex-col gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Carcaça do Nokia</label>
+                <select id="snake-casing" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="navy">🔵 Azul Marinho Original</option>
+                  <option value="cyber_neon">🟣 Cyber Neon</option>
+                  <option value="cherry_red">🔴 Cherry Red</option>
+                  <option value="silver">⚪ Silver Grey</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Display LCD</label>
+                <select id="snake-display" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="classic_lcd">🟢 LCD Esmeralda</option>
+                  <option value="amber">🟠 Âmbar CRT</option>
+                  <option value="cyber_cyan">🔵 Ciano Neon</option>
+                  <option value="matrix">🟢 Terminal Verde</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Score Inicial</label>
+                <input id="snake-score" type="number" value="420" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Velocidade</label>
+                <select id="snake-speed" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="0.75">0.75x</option>
+                  <option value="1.0" selected>1.0x (60fps)</option>
+                  <option value="1.5">1.5x</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- FX Pong Arcade options -->
+          <div id="fx-opt-pong" class="hidden flex flex-col gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Tema Arcade</label>
+                <select id="pong-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="classic_green">🟢 Verde Arcade 1972</option>
+                  <option value="b_and_w">⚪ P&amp;B Original</option>
+                  <option value="cyber_neon">🟣 Cyberpunk Glow</option>
+                  <option value="amber_crt">🟠 Âmbar CRT</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Velocidade</label>
+                <select id="pong-speed" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="0.75">0.75x</option>
+                  <option value="1.0" selected>1.0x</option>
+                  <option value="1.5">1.5x</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Placar P1</label>
+                <input id="pong-score1" type="number" value="7" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Placar P2</label>
+                <input id="pong-score2" type="number" value="5" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- FX Flappy Bird options -->
+          <div id="fx-opt-flappy" class="hidden flex flex-col gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Paleta Visual</label>
+                <select id="flappy-theme" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
+                  <option value="retro_arcade">🎮 Arcade Original</option>
+                  <option value="terminal_green">🟢 Terminal Verde</option>
+                  <option value="vaporwave">🌆 Vaporwave Sunset</option>
+                  <option value="midnight">🌌 Midnight Cyberpunk</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">Score</label>
+                <input id="flappy-score" type="number" value="12" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
           <div id="fx-opt-mario" class="grid grid-cols-2 gap-3">
             <div>
               <label class="text-xs text-slate-400 block mb-1">Mundo (World)</label>
@@ -1873,6 +2121,12 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           </button>
           <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-medium transition flex items-center gap-1.5 shadow-lg shadow-purple-500/10 active:scale-95">
             <span>📦</span> <span>Baixar Todas (.ZIP)</span>
+          </button>
+          <button id="btn-download-gif" onclick="downloadGif()" class="text-xs px-3.5 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-medium transition flex items-center gap-1.5 shadow-md shadow-amber-500/10 active:scale-95" title="Exportar GIF animado em alta qualidade (FFmpeg)">
+            <span>🎞️</span> <span>Baixar GIF</span>
+          </button>
+          <button id="btn-download-mp4" onclick="downloadMp4()" class="text-xs px-3.5 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-medium transition flex items-center gap-1.5 shadow-md shadow-rose-500/10 active:scale-95" title="Exportar vídeo MP4 H.264 (FFmpeg)">
+            <span>🎥</span> <span>Baixar MP4</span>
           </button>
           <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-sky-500/30 bg-[#0e1424] hover:bg-sky-500/10 text-white font-medium transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Baixar arquivo vetorial SVG">
             <span>⭳</span> <span>Baixar SVG</span>
@@ -2568,6 +2822,9 @@ Sleep 3s
     function toggleFxEngine() {
       const fx = document.getElementById('fx-engine').value;
       const setH = (id, hide) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', hide); };
+      setH('fx-opt-snake', fx !== 'snake');
+      setH('fx-opt-pong', fx !== 'pong');
+      setH('fx-opt-flappy', fx !== 'flappy');
       setH('fx-opt-mario', fx !== 'mario');
       setH('fx-opt-invaders', fx !== 'space_invaders');
       setH('fx-opt-pacman', fx !== 'pacman');
@@ -3032,6 +3289,12 @@ Sleep 3s
       if (typeof playSwitchSound === 'function') playSwitchSound();
       const w = document.getElementById('profile-widget').value;
       const setH = (id, show) => { const el = document.getElementById(id); if (el) el.classList.toggle('hidden', !show); };
+      setH('profile-opt-btop', w === 'btop_monitor');
+      setH('profile-opt-cli', w === 'cli_session');
+      setH('profile-opt-gitgraph', w === 'git_graph');
+      setH('profile-opt-cyberid', w === 'cyber_id');
+      setH('profile-opt-achievement', w === 'achievement');
+      setH('profile-opt-skilltree', w === 'skill_tree');
       setH('profile-opt-rpg', w === 'rpg_sheet');
       setH('profile-opt-subway', w === 'git_subway');
       setH('profile-opt-pet', w === 'dev_pet');
@@ -3054,7 +3317,35 @@ Sleep 3s
 
       let url = `/api/render/${widget}?username=${encodeURIComponent(user)}`;
 
-      if (widget === 'rpg_sheet') {
+      if (widget === 'btop_monitor') {
+        const theme = document.getElementById('btop-theme') ? document.getElementById('btop-theme').value : 'catppuccin';
+        const uptime = document.getElementById('btop-uptime') ? document.getElementById('btop-uptime').value : '42 DAYS, 13:37:00';
+        url += `&theme=${encodeURIComponent(theme)}&uptime=${encodeURIComponent(uptime)}`;
+      } else if (widget === 'cli_session') {
+        const theme = document.getElementById('cli-theme') ? document.getElementById('cli-theme').value : 'ghostty';
+        const ttl = document.getElementById('cli-title') ? document.getElementById('cli-title').value : `${user}@terminal: ~`;
+        url += `&theme=${encodeURIComponent(theme)}&terminal_title=${encodeURIComponent(ttl)}`;
+      } else if (widget === 'git_graph') {
+        const theme = document.getElementById('gitgraph-theme') ? document.getElementById('gitgraph-theme').value : 'neon_cyber';
+        const repo = document.getElementById('gitgraph-repo') ? document.getElementById('gitgraph-repo').value : `${user}/core-engine`;
+        url += `&theme=${encodeURIComponent(theme)}&repo_name=${encodeURIComponent(repo)}`;
+      } else if (widget === 'cyber_id') {
+        const theme = document.getElementById('cyberid-theme') ? document.getElementById('cyberid-theme').value : 'arasaka_red';
+        const clr = document.getElementById('cyberid-clearance') ? document.getElementById('cyberid-clearance').value : 'LEVEL 5 - ROOT';
+        const role = document.getElementById('cyberid-role') ? document.getElementById('cyberid-role').value : 'Senior Lead Architect';
+        const dept = document.getElementById('cyberid-dept') ? document.getElementById('cyberid-dept').value : 'Cyber Defense & Cloud Infra';
+        url += `&theme=${encodeURIComponent(theme)}&clearance_level=${encodeURIComponent(clr)}&role=${encodeURIComponent(role)}&department=${encodeURIComponent(dept)}&name=${encodeURIComponent(user)}`;
+      } else if (widget === 'achievement') {
+        const plat = document.getElementById('ach-platform') ? document.getElementById('ach-platform').value : 'xbox';
+        const pts = document.getElementById('ach-points') ? document.getElementById('ach-points').value : 100;
+        const ttl = document.getElementById('ach-title') ? document.getElementById('ach-title').value : 'LENDÁRIO CODE ARCHITECT';
+        const desc = document.getElementById('ach-desc') ? document.getElementById('ach-desc').value : 'Deployou 1.000 microsserviços em produção numa sexta-feira sem quebrar';
+        url += `&platform=${encodeURIComponent(plat)}&points=${encodeURIComponent(pts)}&title=${encodeURIComponent(ttl)}&description=${encodeURIComponent(desc)}`;
+      } else if (widget === 'skill_tree') {
+        const theme = document.getElementById('skill-theme') ? document.getElementById('skill-theme').value : 'cyber_constellation';
+        const focus = document.getElementById('skill-focus') ? document.getElementById('skill-focus').value : 'Fullstack / Cloud / AI Architect';
+        url += `&theme=${encodeURIComponent(theme)}&focus=${encodeURIComponent(focus)}`;
+      } else if (widget === 'rpg_sheet') {
         const cls = document.getElementById('rpg-class') ? document.getElementById('rpg-class').value : 'alchemist';
         const lvl = document.getElementById('rpg-level') ? document.getElementById('rpg-level').value : 85;
         const name = document.getElementById('rpg-name') ? document.getElementById('rpg-name').value : user;
@@ -3322,7 +3613,20 @@ Sleep 3s
       formData.append('engine', fx);
       formData.append('username', user);
 
-      if (fx === 'mario') {
+      if (fx === 'snake') {
+        formData.append('snake_casing', document.getElementById('snake-casing').value);
+        formData.append('snake_display', document.getElementById('snake-display').value);
+        formData.append('snake_score', document.getElementById('snake-score').value);
+        formData.append('snake_speed', document.getElementById('snake-speed').value);
+      } else if (fx === 'pong') {
+        formData.append('pong_theme', document.getElementById('pong-theme').value);
+        formData.append('pong_score1', document.getElementById('pong-score1').value);
+        formData.append('pong_score2', document.getElementById('pong-score2').value);
+        formData.append('pong_speed', document.getElementById('pong-speed').value);
+      } else if (fx === 'flappy') {
+        formData.append('flappy_theme', document.getElementById('flappy-theme').value);
+        formData.append('flappy_score', document.getElementById('flappy-score').value);
+      } else if (fx === 'mario') {
         formData.append('mario_world', document.getElementById('mario-world').value);
         formData.append('mario_score', document.getElementById('mario-score').value);
       } else if (fx === 'space_invaders') {
@@ -3495,6 +3799,74 @@ Sleep 3s
         showToast('🦀 GIF compilado em alta velocidade pelo AGG!');
       } else {
         document.getElementById('svg-display').innerHTML = `<div class="p-4 bg-red-900/30 border border-red-500 rounded-xl text-red-200 text-xs">${data.message}</div>`;
+      }
+    }
+
+    async function downloadGif() {
+      if (!currentSvg) {
+        showToast("⚠️ Gere ou selecione uma arte antes de exportar!");
+        return;
+      }
+      showToast("🎬 Renderizando GIF animado com Chromium & ffmpeg...", 5000);
+      const btn = document.getElementById('btn-download-gif');
+      if (btn) btn.classList.add('animate-pulse', 'opacity-50');
+      try {
+        const res = await fetch('/api/export/gif', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ svg: currentSvg, duration: 2.5, fps: 16 })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ message: 'Erro desconhecido' }));
+          throw new Error(err.message || 'Falha na renderização');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const name = (currentFilename || 'termart-animation.svg').replace(/\.svg$/i, '') + '.gif';
+        a.download = name;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("✓ GIF animado exportado com sucesso!", 3000);
+      } catch (e) {
+        showToast(`❌ Erro ao exportar GIF: ${e.message}`, 4000);
+      } finally {
+        if (btn) btn.classList.remove('animate-pulse', 'opacity-50');
+      }
+    }
+
+    async function downloadMp4() {
+      if (!currentSvg) {
+        showToast("⚠️ Gere ou selecione uma arte antes de exportar!");
+        return;
+      }
+      showToast("🎥 Renderizando vídeo MP4 H.264 via ffmpeg...", 5000);
+      const btn = document.getElementById('btn-download-mp4');
+      if (btn) btn.classList.add('animate-pulse', 'opacity-50');
+      try {
+        const res = await fetch('/api/export/mp4', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ svg: currentSvg, duration: 3.0, fps: 24 })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ message: 'Erro desconhecido' }));
+          throw new Error(err.message || 'Falha na renderização');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const name = (currentFilename || 'termart-video.svg').replace(/\.svg$/i, '') + '.mp4';
+        a.download = name;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast("✓ Vídeo MP4 gerado com sucesso!", 3000);
+      } catch (e) {
+        showToast(`❌ Erro ao exportar MP4: ${e.message}`, 4000);
+      } finally {
+        if (btn) btn.classList.remove('animate-pulse', 'opacity-50');
       }
     }
 
@@ -3790,7 +4162,16 @@ Sleep 3s
       { id: "mario", type: "mario", title: "Super Mario Bros NES World 1-1 Runner", enabled: false, file: "mario-runner.svg", icon: "🍄", params: { world: "1-1", score: 2450 } },
       { id: "invaders", type: "space_invaders", title: "Space Invaders Arcade 1978", enabled: false, file: "space-invaders.svg", icon: "👾", params: { score: 1978 } },
       { id: "pacman", type: "pacman", title: "Pac-Man Arcade Maze 1980", enabled: false, file: "pacman-chase.svg", icon: "ᗧ", params: { score: 333360 } },
-      { id: "dvd", type: "dvd", title: "Screensaver DVD Bouncing Retro", enabled: false, file: "dvd-screensaver.svg", icon: "📀", params: { text: "DVD", speed: 1.0 } }
+      { id: "dvd", type: "dvd", title: "Screensaver DVD Bouncing Retro", enabled: false, file: "dvd-screensaver.svg", icon: "📀", params: { text: "DVD", speed: 1.0 } },
+      { id: "snake", type: "snake", title: "Nokia 3310 Snake Game 60fps", enabled: false, file: "snake-nokia.svg", icon: "🐍", params: { casing_color: "navy", display_mode: "classic_lcd", speed: 1.0, score: 420 } },
+      { id: "pong", type: "pong", title: "Atari 1972 Pong Arcade 60fps", enabled: false, file: "pong-arcade.svg", icon: "🏓", params: { theme: "classic_green", score_p1: 7, score_p2: 5, speed: 1.0 } },
+      { id: "flappy", type: "flappy", title: "Terminal Flappy Bird 8-Bit 60fps", enabled: false, file: "flappy-bird.svg", icon: "🐤", params: { theme: "retro_arcade", bird_color: "#ffcc00", score: 12 } },
+      { id: "btop_monitor", type: "btop_monitor", title: "Btop++ Cyberpunk System Monitor", enabled: false, file: "btop-monitor.svg", icon: "📟", params: { theme: "catppuccin", uptime: "42 DAYS, 13:37:00" } },
+      { id: "cli_session", type: "cli_session", title: "CLI Terminal Session Mockup", enabled: false, file: "cli-session.svg", icon: "⌨️", params: { theme: "ghostty", terminal_title: "ghostty@terminal: ~" } },
+      { id: "git_graph", type: "git_graph", title: "Git Commit Graph Visualizer", enabled: false, file: "git-graph.svg", icon: "🌿", params: { theme: "neon_cyber" } },
+      { id: "cyber_id", type: "cyber_id", title: "Cyberpunk Corporate ID Access Badge", enabled: false, file: "cyber-id.svg", icon: "🪪", params: { role: "Senior Lead Architect", clearance_level: "LEVEL 5 - ROOT", theme: "arasaka_red" } },
+      { id: "achievement", type: "achievement", title: "Console Achievement 3D Trophy", enabled: false, file: "achievement.svg", icon: "🏆", params: { title: "LENDÁRIO CODE ARCHITECT", points: 100, rarity: "0.1% RARO", platform: "xbox" } },
+      { id: "skill_tree", type: "skill_tree", title: "Developer RPG Skill Tree", enabled: false, file: "skill-tree.svg", icon: "🌳", params: { focus: "Fullstack / Cloud / AI Architect", theme: "cyber_constellation" } }
     ];
 
     function getStoredBuilderSections() {
@@ -3892,7 +4273,198 @@ Sleep 3s
       const params = sec.params || {};
       let html = '';
 
-      if (sec.type === 'chess') {
+      if (sec.type === 'snake') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Carcaça do Nokia</label>
+              <select id="cfg-snake-casing" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="navy" ${(params.casing_color || 'navy') === 'navy' ? 'selected' : ''}>🔵 Azul Marinho Original</option>
+                <option value="cyber_neon" ${params.casing_color === 'cyber_neon' ? 'selected' : ''}>🟣 Cyber Neon</option>
+                <option value="cherry_red" ${params.casing_color === 'cherry_red' ? 'selected' : ''}>🔴 Cherry Red</option>
+                <option value="silver" ${params.casing_color === 'silver' ? 'selected' : ''}>⚪ Silver Grey</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Display LCD</label>
+              <select id="cfg-snake-display" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="classic_lcd" ${(params.display_mode || 'classic_lcd') === 'classic_lcd' ? 'selected' : ''}>🟢 LCD Esmeralda</option>
+                <option value="amber" ${params.display_mode === 'amber' ? 'selected' : ''}>🟠 Âmbar CRT</option>
+                <option value="cyber_cyan" ${params.display_mode === 'cyber_cyan' ? 'selected' : ''}>🔵 Ciano Neon</option>
+                <option value="matrix" ${params.display_mode === 'matrix' ? 'selected' : ''}>🟢 Matrix Verde</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 mt-2">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Score Inicial</label>
+              <input type="number" id="cfg-snake-score" value="${params.score || 420}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Velocidade</label>
+              <select id="cfg-snake-speed" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="0.75" ${params.speed === 0.75 ? 'selected' : ''}>0.75x</option>
+                <option value="1.0" ${(!params.speed || params.speed === 1.0) ? 'selected' : ''}>1.0x (60fps)</option>
+                <option value="1.5" ${params.speed === 1.5 ? 'selected' : ''}>1.5x</option>
+              </select>
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'pong') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Tema Arcade</label>
+              <select id="cfg-pong-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="classic_green" ${(params.theme || 'classic_green') === 'classic_green' ? 'selected' : ''}>🟢 Verde Fosfórico 1972</option>
+                <option value="b_and_w" ${params.theme === 'b_and_w' ? 'selected' : ''}>⚪ P&amp;B Original</option>
+                <option value="cyber_neon" ${params.theme === 'cyber_neon' ? 'selected' : ''}>🟣 Cyberpunk Neon</option>
+                <option value="amber_crt" ${params.theme === 'amber_crt' ? 'selected' : ''}>🟠 Âmbar CRT</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Placar P1 vs P2</label>
+              <div class="flex gap-2">
+                <input type="number" id="cfg-pong-s1" value="${params.score_p1 || 7}" class="w-1/2 p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+                <input type="number" id="cfg-pong-s2" value="${params.score_p2 || 5}" class="w-1/2 p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'flappy') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Paleta Visual</label>
+              <select id="cfg-flappy-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="retro_arcade" ${(params.theme || 'retro_arcade') === 'retro_arcade' ? 'selected' : ''}>🎮 Arcade Original</option>
+                <option value="terminal_green" ${params.theme === 'terminal_green' ? 'selected' : ''}>🟢 Terminal Green</option>
+                <option value="vaporwave" ${params.theme === 'vaporwave' ? 'selected' : ''}>🌆 Vaporwave</option>
+                <option value="midnight" ${params.theme === 'midnight' ? 'selected' : ''}>🌌 Midnight</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Score</label>
+              <input type="number" id="cfg-flappy-score" value="${params.score || 12}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'btop_monitor') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Tema Unixporn</label>
+              <select id="cfg-btop-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="catppuccin" ${(params.theme || 'catppuccin') === 'catppuccin' ? 'selected' : ''}>Catppuccin Mocha</option>
+                <option value="dracula" ${params.theme === 'dracula' ? 'selected' : ''}>Dracula Dark</option>
+                <option value="tokyonight" ${params.theme === 'tokyonight' ? 'selected' : ''}>Tokyo Night</option>
+                <option value="nord" ${params.theme === 'nord' ? 'selected' : ''}>Nord</option>
+                <option value="cyberpunk" ${params.theme === 'cyberpunk' ? 'selected' : ''}>Cyberpunk</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Uptime</label>
+              <input type="text" id="cfg-btop-uptime" value="${escapeHtml(params.uptime || '42 DAYS, 13:37:00')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'cli_session') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Tema Terminal</label>
+              <select id="cfg-cli-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="ghostty" ${(params.theme || 'ghostty') === 'ghostty' ? 'selected' : ''}>Ghostty Dark</option>
+                <option value="dracula" ${params.theme === 'dracula' ? 'selected' : ''}>Dracula</option>
+                <option value="catppuccin" ${params.theme === 'catppuccin' ? 'selected' : ''}>Catppuccin</option>
+                <option value="matrix" ${params.theme === 'matrix' ? 'selected' : ''}>Matrix Green</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Título da Janela</label>
+              <input type="text" id="cfg-cli-title" value="${escapeHtml(params.terminal_title || 'ghostty@terminal: ~')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'git_graph') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Tema</label>
+              <select id="cfg-git-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="neon_cyber" ${(params.theme || 'neon_cyber') === 'neon_cyber' ? 'selected' : ''}>Neon Cyber Glow</option>
+                <option value="gitkraken" ${params.theme === 'gitkraken' ? 'selected' : ''}>GitKraken</option>
+                <option value="terminal" ${params.theme === 'terminal' ? 'selected' : ''}>Terminal Green</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Nome do Repositório</label>
+              <input type="text" id="cfg-git-repo" value="${escapeHtml(params.repo_name || 'core-engine')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'cyber_id') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Corporação</label>
+              <select id="cfg-cid-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="arasaka_red" ${(params.theme || 'arasaka_red') === 'arasaka_red' ? 'selected' : ''}>Arasaka Security</option>
+                <option value="militech_yellow" ${params.theme === 'militech_yellow' ? 'selected' : ''}>Militech Arms</option>
+                <option value="neon_matrix" ${params.theme === 'neon_matrix' ? 'selected' : ''}>NetWatch Matrix</option>
+                <option value="phantom_purple" ${params.theme === 'phantom_purple' ? 'selected' : ''}>Phantom Purple</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Autorização</label>
+              <input type="text" id="cfg-cid-level" value="${escapeHtml(params.clearance_level || 'LEVEL 5 - ROOT')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5 mt-2">
+            <label class="font-semibold text-slate-300">Cargo / Especialidade</label>
+            <input type="text" id="cfg-cid-role" value="${escapeHtml(params.role || 'Senior Lead Architect')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'achievement') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Plataforma</label>
+              <select id="cfg-ach-plat" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="xbox" ${(params.platform || 'xbox') === 'xbox' ? 'selected' : ''}>Xbox Rare (+Glint)</option>
+                <option value="steam" ${params.platform === 'steam' ? 'selected' : ''}>Steam Gold</option>
+                <option value="playstation" ${params.platform === 'playstation' ? 'selected' : ''}>PlayStation Platinum</option>
+                <option value="cyberpunk" ${params.platform === 'cyberpunk' ? 'selected' : ''}>Cyberpunk Secret</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Pontos / Gamerscore</label>
+              <input type="number" id="cfg-ach-pts" value="${params.points || 100}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
+            </div>
+          </div>
+          <div class="flex flex-col gap-1.5 mt-2">
+            <label class="font-semibold text-slate-300">Título da Conquista</label>
+            <input type="text" id="cfg-ach-ttl" value="${escapeHtml(params.title || 'LENDÁRIO CODE ARCHITECT')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+        `;
+      } else if (sec.type === 'skill_tree') {
+        html = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Tema da Constelação</label>
+              <select id="cfg-sk-theme" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+                <option value="cyber_constellation" ${(params.theme || 'cyber_constellation') === 'cyber_constellation' ? 'selected' : ''}>Cyber Constellation</option>
+                <option value="diablo_arcane" ${params.theme === 'diablo_arcane' ? 'selected' : ''}>Diablo IV Arcane</option>
+                <option value="matrix_nodes" ${params.theme === 'matrix_nodes' ? 'selected' : ''}>Matrix Grid</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-semibold text-slate-300 block mb-1">Foco Primário</label>
+              <input type="text" id="cfg-sk-focus" value="${escapeHtml(params.focus || 'Fullstack / Cloud / AI Architect')}" class="w-full p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+            </div>
+          </div>
+        `;
+      } else if (sec.type === 'chess') {
         html = `
           <div class="flex flex-col gap-1.5">
             <label class="font-semibold text-slate-300">Partida Histórica de Xadrez</label>
@@ -4229,7 +4801,39 @@ Sleep 3s
       const sec = builderSections[editingBlockIdx];
       sec.params = sec.params || {};
 
-      if (sec.type === 'chess') {
+      if (sec.type === 'snake') {
+        sec.params.casing_color = document.getElementById('cfg-snake-casing') ? document.getElementById('cfg-snake-casing').value : 'navy';
+        sec.params.display_mode = document.getElementById('cfg-snake-display') ? document.getElementById('cfg-snake-display').value : 'classic_lcd';
+        sec.params.score = document.getElementById('cfg-snake-score') ? (parseInt(document.getElementById('cfg-snake-score').value, 10) || 420) : 420;
+        sec.params.speed = document.getElementById('cfg-snake-speed') ? (parseFloat(document.getElementById('cfg-snake-speed').value) || 1.0) : 1.0;
+      } else if (sec.type === 'pong') {
+        sec.params.theme = document.getElementById('cfg-pong-theme') ? document.getElementById('cfg-pong-theme').value : 'classic_green';
+        sec.params.score_p1 = document.getElementById('cfg-pong-s1') ? (parseInt(document.getElementById('cfg-pong-s1').value, 10) || 7) : 7;
+        sec.params.score_p2 = document.getElementById('cfg-pong-s2') ? (parseInt(document.getElementById('cfg-pong-s2').value, 10) || 5) : 5;
+      } else if (sec.type === 'flappy') {
+        sec.params.theme = document.getElementById('cfg-flappy-theme') ? document.getElementById('cfg-flappy-theme').value : 'retro_arcade';
+        sec.params.score = document.getElementById('cfg-flappy-score') ? (parseInt(document.getElementById('cfg-flappy-score').value, 10) || 12) : 12;
+      } else if (sec.type === 'btop_monitor') {
+        sec.params.theme = document.getElementById('cfg-btop-theme') ? document.getElementById('cfg-btop-theme').value : 'catppuccin';
+        sec.params.uptime = document.getElementById('cfg-btop-uptime') ? document.getElementById('cfg-btop-uptime').value.trim() : '42 DAYS, 13:37:00';
+      } else if (sec.type === 'cli_session') {
+        sec.params.theme = document.getElementById('cfg-cli-theme') ? document.getElementById('cfg-cli-theme').value : 'ghostty';
+        sec.params.terminal_title = document.getElementById('cfg-cli-title') ? document.getElementById('cfg-cli-title').value.trim() : 'ghostty@terminal: ~';
+      } else if (sec.type === 'git_graph') {
+        sec.params.theme = document.getElementById('cfg-git-theme') ? document.getElementById('cfg-git-theme').value : 'neon_cyber';
+        sec.params.repo_name = document.getElementById('cfg-git-repo') ? document.getElementById('cfg-git-repo').value.trim() : 'core-engine';
+      } else if (sec.type === 'cyber_id') {
+        sec.params.theme = document.getElementById('cfg-cid-theme') ? document.getElementById('cfg-cid-theme').value : 'arasaka_red';
+        sec.params.clearance_level = document.getElementById('cfg-cid-level') ? document.getElementById('cfg-cid-level').value.trim() : 'LEVEL 5 - ROOT';
+        sec.params.role = document.getElementById('cfg-cid-role') ? document.getElementById('cfg-cid-role').value.trim() : 'Senior Lead Architect';
+      } else if (sec.type === 'achievement') {
+        sec.params.platform = document.getElementById('cfg-ach-plat') ? document.getElementById('cfg-ach-plat').value : 'xbox';
+        sec.params.points = document.getElementById('cfg-ach-pts') ? (parseInt(document.getElementById('cfg-ach-pts').value, 10) || 100) : 100;
+        sec.params.title = document.getElementById('cfg-ach-ttl') ? document.getElementById('cfg-ach-ttl').value.trim() : 'LENDÁRIO CODE ARCHITECT';
+      } else if (sec.type === 'skill_tree') {
+        sec.params.theme = document.getElementById('cfg-sk-theme') ? document.getElementById('cfg-sk-theme').value : 'cyber_constellation';
+        sec.params.focus = document.getElementById('cfg-sk-focus') ? document.getElementById('cfg-sk-focus').value.trim() : 'Fullstack / Cloud / AI Architect';
+      } else if (sec.type === 'chess') {
         sec.params.match = document.getElementById('cfg-chess-match').value;
         sec.params.speed = parseFloat(document.getElementById('cfg-chess-speed').value);
         sec.params.animated = document.getElementById('cfg-chess-anim').checked;
@@ -5277,6 +5881,16 @@ async def render_fx_endpoint(
     mario_score: int = Form(2450),
     invaders_score: int = Form(1978),
     pacman_score: int = Form(333360),
+    snake_casing: str = Form("navy"),
+    snake_display: str = Form("classic_lcd"),
+    snake_score: int = Form(420),
+    snake_speed: float = Form(1.0),
+    pong_theme: str = Form("classic_green"),
+    pong_score1: int = Form(7),
+    pong_score2: int = Form(5),
+    pong_speed: float = Form(1.0),
+    flappy_theme: str = Form("retro_arcade"),
+    flappy_score: int = Form(12),
     starfield_warp: float = Form(1.0),
     city_name: str = Form("NEO-TOKYO"),
     dvd_text: str = Form("DVD"),
@@ -5298,7 +5912,20 @@ async def render_fx_endpoint(
     out_svg = os.path.join(os.path.dirname(__file__), f"_temp_fx_{engine}.svg")
     kwargs = {"out_svg": out_svg, "username": username}
     
-    if engine == "mario":
+    if engine == "snake":
+        kwargs["casing_color"] = snake_casing
+        kwargs["display_mode"] = snake_display
+        kwargs["score"] = snake_score
+        kwargs["speed"] = snake_speed
+    elif engine == "pong":
+        kwargs["theme"] = pong_theme
+        kwargs["score_p1"] = pong_score1
+        kwargs["score_p2"] = pong_score2
+        kwargs["speed"] = pong_speed
+    elif engine == "flappy":
+        kwargs["theme"] = flappy_theme
+        kwargs["score"] = flappy_score
+    elif engine == "mario":
         kwargs["world"] = mario_world
         kwargs["score"] = mario_score
     elif engine == "space_invaders":
@@ -5583,6 +6210,51 @@ def builder_preview(payload: dict = Body(...)):
             sec["preview_url"] = f"/api/render/dvd?text={d_text}&speed={d_spd}&username={safe_user}"
         elif stype == "fortune":
             sec["preview_url"] = f"/api/render/fortune?username={safe_user}"
+        elif stype == "snake":
+            c_col = params.get("casing_color", "navy")
+            d_mod = params.get("display_mode", "classic_lcd")
+            spd = params.get("speed", 1.0)
+            sc = params.get("score", 420)
+            sec["preview_url"] = f"/api/render/snake?casing_color={c_col}&display_mode={d_mod}&speed={spd}&score={sc}&username={safe_user}"
+        elif stype == "pong":
+            thm = params.get("theme", "classic_green")
+            s1 = params.get("score_p1", 7)
+            s2 = params.get("score_p2", 5)
+            spd = params.get("speed", 1.0)
+            sec["preview_url"] = f"/api/render/pong?theme={thm}&score_p1={s1}&score_p2={s2}&speed={spd}&username={safe_user}"
+        elif stype == "flappy":
+            thm = params.get("theme", "retro_arcade")
+            b_col = urllib.parse.quote(params.get("bird_color", "#ffcc00"))
+            sc = params.get("score", 12)
+            sec["preview_url"] = f"/api/render/flappy?theme={thm}&bird_color={b_col}&score={sc}&username={safe_user}"
+        elif stype == "btop_monitor":
+            thm = params.get("theme", "catppuccin")
+            upt = urllib.parse.quote(params.get("uptime", "42 DAYS, 13:37:00"))
+            sec["preview_url"] = f"/api/render/btop_monitor?theme={thm}&uptime={upt}&username={safe_user}"
+        elif stype == "cli_session":
+            thm = params.get("theme", "ghostty")
+            ttl = urllib.parse.quote(params.get("terminal_title", f"{clean_name}@fedora: ~"))
+            sec["preview_url"] = f"/api/render/cli_session?theme={thm}&terminal_title={ttl}&username={safe_user}"
+        elif stype == "git_graph":
+            thm = params.get("theme", "neon_cyber")
+            r_repo = urllib.parse.quote(params.get("repo_name", f"{safe_user}/core-engine"))
+            sec["preview_url"] = f"/api/render/git_graph?theme={thm}&repo_name={r_repo}&username={safe_user}"
+        elif stype == "cyber_id":
+            thm = params.get("theme", "arasaka_red")
+            role = urllib.parse.quote(params.get("role", "Senior Lead Architect"))
+            dept = urllib.parse.quote(params.get("department", "Cyber Defense & Cloud Infrastructure"))
+            lvl = urllib.parse.quote(params.get("clearance_level", "LEVEL 5 - ROOT"))
+            sec["preview_url"] = f"/api/render/cyber_id?name={safe_name}&role={role}&department={dept}&clearance_level={lvl}&theme={thm}&username={safe_user}"
+        elif stype == "achievement":
+            ttl = urllib.parse.quote(params.get("title", "LENDÁRIO CODE ARCHITECT"))
+            pts = params.get("points", 100)
+            rar = urllib.parse.quote(params.get("rarity", "0.1% RARO"))
+            plat = params.get("platform", "xbox")
+            sec["preview_url"] = f"/api/render/achievement?title={ttl}&points={pts}&rarity={rar}&platform={plat}&username={safe_user}"
+        elif stype == "skill_tree":
+            foc = urllib.parse.quote(params.get("focus", "Fullstack / Cloud / AI Architect"))
+            thm = params.get("theme", "cyber_constellation")
+            sec["preview_url"] = f"/api/render/skill_tree?focus={foc}&theme={thm}&username={safe_user}"
 
     readme_md = readme_builder.generate_readme_markdown(username, name, sections)
     return {
@@ -5604,3 +6276,167 @@ def builder_download_zip(payload: dict = Body(...)):
         media_type="application/zip",
         headers={"Content-Disposition": f"attachment; filename={username}-profile-repository.zip"}
     )
+
+
+# ==========================================
+# 10 EXPANDED ENGINES & MEDIA EXPORT ROUTES
+# ==========================================
+
+@app.get("/api/render/snake")
+def render_snake(casing_color: str = "navy", display_mode: str = "classic_lcd", speed: float = 1.0, score: int = 420, username: str = "player"):
+    p = registry.get("snake")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_snake_{os.getpid()}.svg")
+    p.run(casing_color=casing_color, display_mode=display_mode, speed=float(speed), score=int(score), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/pong")
+def render_pong(theme: str = "classic_green", score_p1: int = 7, score_p2: int = 5, speed: float = 1.0, username: str = "arcade"):
+    p = registry.get("pong")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_pong_{os.getpid()}.svg")
+    p.run(theme=theme, score_p1=int(score_p1), score_p2=int(score_p2), speed=float(speed), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/flappy")
+def render_flappy(theme: str = "retro_arcade", bird_color: str = "#ffcc00", score: int = 12, username: str = "flapper"):
+    p = registry.get("flappy")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_flappy_{os.getpid()}.svg")
+    p.run(theme=theme, bird_color=bird_color, score=int(score), username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/btop_monitor")
+def render_btop_monitor(theme: str = "catppuccin", uptime: str = "42 DAYS, 13:37:00", username: str = "root"):
+    p = registry.get("btop_monitor")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_btop_{os.getpid()}.svg")
+    p.run(theme=theme, uptime=uptime, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/cli_session")
+def render_cli_session(theme: str = "ghostty", terminal_title: str = "ghostty@terminal: ~", username: str = "dev"):
+    p = registry.get("cli_session")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_cli_{os.getpid()}.svg")
+    p.run(theme=theme, terminal_title=terminal_title, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/git_graph")
+def render_git_graph(repo_name: str = "core-engine", theme: str = "neon_cyber", username: str = "gitmaster"):
+    p = registry.get("git_graph")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_git_graph_{os.getpid()}.svg")
+    p.run(repo_name=repo_name, theme=theme, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/cyber_id")
+def render_cyber_id(
+    name: str = "V",
+    role: str = "Senior Lead Architect",
+    department: str = "Cyber Defense & Cloud Infrastructure",
+    clearance_level: str = "LEVEL 5 - ROOT",
+    theme: str = "arasaka_red",
+    username: str = "netrunner"
+):
+    p = registry.get("cyber_id")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_cyber_id_{os.getpid()}.svg")
+    p.run(
+        name=name,
+        role=role,
+        department=department,
+        clearance_level=clearance_level,
+        theme=theme,
+        username=username,
+        out_svg=tmp
+    )
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/achievement")
+def render_achievement(
+    title: str = "LENDÁRIO CODE ARCHITECT",
+    description: str = "Deployou 1.000 microsserviços em produção numa sexta-feira sem quebrar",
+    points: int = 100,
+    rarity: str = "0.1% RARO",
+    platform: str = "xbox",
+    username: str = "gamer"
+):
+    p = registry.get("achievement")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_achievement_{os.getpid()}.svg")
+    p.run(
+        title=title,
+        description=description,
+        points=int(points),
+        rarity=rarity,
+        platform=platform,
+        username=username,
+        out_svg=tmp
+    )
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.get("/api/render/skill_tree")
+def render_skill_tree(
+    focus: str = "Fullstack / Cloud / AI Architect",
+    theme: str = "cyber_constellation",
+    username: str = "talents"
+):
+    p = registry.get("skill_tree")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_skill_tree_{os.getpid()}.svg")
+    p.run(focus=focus, theme=theme, username=username, out_svg=tmp)
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.post("/api/export/gif")
+def export_media_gif(payload: dict = Body(...)):
+    svg_data = payload.get("svg") or payload.get("svg_data")
+    if not svg_data:
+        return JSONResponse({"status": "error", "message": "No SVG content provided"}, status_code=400)
+    
+    import time
+    duration = float(payload.get("duration", 2.5))
+    fps = int(payload.get("fps", 16))
+    
+    tmp_out = os.path.join(tempfile.gettempdir(), f"termart_{os.getpid()}_{int(time.time()*1000)}.gif")
+    try:
+        from ...modules.recorder.media_exporter import export_svg_to_media
+        export_svg_to_media(svg_data, tmp_out, fmt="gif", duration=duration, fps=fps)
+        return FileResponse(
+            tmp_out,
+            media_type="image/gif",
+            filename="termart-animation.gif"
+        )
+    except Exception as e:
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+@app.post("/api/export/mp4")
+def export_media_mp4(payload: dict = Body(...)):
+    svg_data = payload.get("svg") or payload.get("svg_data")
+    if not svg_data:
+        return JSONResponse({"status": "error", "message": "No SVG content provided"}, status_code=400)
+    
+    import time
+    duration = float(payload.get("duration", 3.0))
+    fps = int(payload.get("fps", 24))
+    
+    tmp_out = os.path.join(tempfile.gettempdir(), f"termart_{os.getpid()}_{int(time.time()*1000)}.mp4")
+    try:
+        from ...modules.recorder.media_exporter import export_svg_to_media
+        export_svg_to_media(svg_data, tmp_out, fmt="mp4", duration=duration, fps=fps)
+        return FileResponse(
+            tmp_out,
+            media_type="video/mp4",
+            filename="termart-video.mp4"
+        )
+    except Exception as e:
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)

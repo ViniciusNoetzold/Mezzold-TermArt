@@ -15,15 +15,17 @@ from .modules.image import (
 from .modules.profile import (
     heatmap, neofetch, stats_card,
     pokemon_card, weather_card, tty_clock, chess_board, file_tree, fortune_banner,
-    rpg_sheet, git_subway, dev_pet
+    rpg_sheet, git_subway, dev_pet,
+    btop_monitor, cli_session, git_graph, cyber_id, achievement_banner, skill_tree
 )
 from .modules.isometric_3d import wordmark_3d, city_3d, typography, donut_3d
-from .modules.recorder import vhs_recorder, agg_generator
+from .modules.recorder import vhs_recorder, agg_generator, media_exporter
 from .modules.fx import (
     pipes_svg, cmatrix_svg, cbonsai_svg, asciiquarium_svg,
     cowsay_svg, tetris_reveal, ansi_cp437, qr_badge, cava_bars,
     doom_fire, synthwave_grid, game_of_life, dvd_screensaver,
-    mario_runner, space_invaders, pacman_chase, starfield_3d, cyberpunk_city
+    mario_runner, space_invaders, pacman_chase, starfield_3d, cyberpunk_city,
+    snake_nokia, pong_arcade, flappy_bird
 )
 from .modules.animator import svg_importer
 from .modules.badges import tech_stack

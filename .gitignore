@@ -19,3 +19,4 @@ upstream/
 /*.jpeg
 bin/ffmpeg.exe
 bin/cloudflared.exe
+scratch/
