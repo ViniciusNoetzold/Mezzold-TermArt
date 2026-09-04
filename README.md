@@ -48,7 +48,7 @@ Cinco novos motores de screensaver dedicados em SVG puro animado a 60fps:
 
 ### 🛡️ 2. Novos Widgets de Perfil & Gamificação do Dev
 Três novas formas de expressar sua personalidade no GitHub:
-- ⚔️ **Passaporte RPG do Desenvolvedor (`rpg_sheet`):** Ficha de personagem estilo RPG clássico / D&D com 5 classes (*Alchemist, Sorcerer, Ninja, Paladin, Shaman*), nível, barras dinâmicas de HP, Mana e Stamina, atributos (STR, INT, DEX, WIS, CHA) e inventário lendário.
+- ⚔️ **Passaporte RPG do Desenvolvedor (`rpg_sheet`):** Ficha de personagem estilo RPG clássico / D&D com ilustrações vintage autênticas em estilo manual dos anos 80/90 embarcadas diretamente em base64 (100% autossuficiente para GitHub), 5 classes (*Alchemist, Sorcerer, Ninja, Paladin, Shaman*), nível, barras dinâmicas de HP, Mana e Stamina, atributos (STR, INT, DEX, WIS, CHA) e inventário lendário.
 - 🗺️ **Mapa de Metrô dos Commits (`git_subway`):** Suas branches e repositórios transformados em linhas de trânsito rápido inspiradas no metrô de Tóquio e Londres, com estações de merge e trens em trânsito.
 - 👾 **Tamagotchi Virtual Dev Pet 1996 (`dev_pet`):** Casing retrô dos anos 90 com display LCD verde, avatares pixel-art (*Gato, Robô, Dragão, Pinguim*), indicadores de Café e Bateria, medidor de Felicidade e animação de respiração idle com corações.
 
@@ -205,7 +205,7 @@ Uma área exclusiva no aplicativo para você planejar, montar e exportar a vitri
 ### 📊 3. Widgets de Perfil & Gamificação (13 Motores)
 | Motor | Descrição |
 | :--- | :--- |
-| **`rpg_sheet`** | **[NOVO]** Passaporte RPG D&D com 5 classes, barras de HP/Mana/Stamina, atributos e inventário. |
+| **`rpg_sheet`** | **[NOVO]** Passaporte RPG D&D com 5 classes, artes vintage originais embutidas em base64, barras de HP/Mana/Stamina, atributos e inventário. |
 | **`git_subway`** | **[NOVO]** Mapa de metrô das branches e commits estilo trânsito rápido de Tóquio/Londres com trem animado. |
 | **`dev_pet`** | **[NOVO]** Tamagotchi Virtual Dev Pet Bandai 1996 autêntico com matriz LCD 16x16 pixels nítida, 10 mascotes clássicos (Mametchi, Kuchipatchi, Ginjirotchi, Maskutchi, Marutchi, Babytchi, Oyajitchi, etc.), animação de 2 frames (passo/fala), ícones de hardware originais (comida, remédio, banho, alerta) e casing com 3 botões. |
 | **`pokemon_card`** | Card de batalha holográfico com 16 espécies, modo Shiny e atributos RPG. |
@@ -237,7 +237,7 @@ Recomendamos criar um ambiente virtual:
 **No Windows:**
 ```bash
 python -m venv venv
-venv\Scriptsctivate
+venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
