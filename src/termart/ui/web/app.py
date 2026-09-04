@@ -23,103 +23,49 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mezzold TermArt Studio v2.0</title>
+  <title>Mezzold TermArt Studio v2.5 — Terminal Art &amp; Profile Engine</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans (UI) & JetBrains Mono (Code/Terminal) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   
-  
-  <!-- MODAL DE CONFIGURAÇÃO DE BLOCO DO PERFIL -->
-  <div id="modal-block-config" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
-    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
-      <div class="flex items-center justify-between border-b border-brand-border pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-2xl" id="cfg-block-icon">⚙️</span>
-          <div>
-            <h3 class="text-base font-bold text-white tracking-wide" id="cfg-block-title">Configurar Bloco</h3>
-            <p class="text-xs text-slate-400" id="cfg-block-subtitle">Personalize os detalhes e parâmetros desta seção</p>
-          </div>
-        </div>
-        <button onclick="closeBlockConfigModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-lg hover:bg-brand-dark transition">✕</button>
-      </div>
-
-      <!-- Dynamic Form Container -->
-      <div id="cfg-block-form" class="flex flex-col gap-3 text-xs">
-        <!-- Injected dynamically by JS based on block type -->
-      </div>
-
-      <div class="flex gap-2.5 pt-3 border-t border-brand-border">
-        <button onclick="saveBlockConfig()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-xs">
-          <span>💾</span> <span>Salvar & Atualizar Preview</span>
-        </button>
-        <button onclick="closeBlockConfigModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl transition">
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- INSTRUÇÕES DE DEPLOY GITHUB MODAL -->
-  <div id="modal-deploy-instructions" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
-    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
-      <div class="flex items-center justify-between border-b border-brand-border pb-3">
-        <div class="flex items-center gap-2.5">
-          <span class="text-2xl">🚀</span>
-          <div>
-            <h3 class="text-base font-bold text-white tracking-wide">Como Publicar no seu Perfil do GitHub</h3>
-            <p class="text-xs text-slate-400">Transforme seu perfil em menos de 1 minuto</p>
-          </div>
-        </div>
-        <button onclick="closeDeployInstructionsModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-lg hover:bg-brand-dark transition">✕</button>
-      </div>
-
-      <div class="flex flex-col gap-3 text-xs text-slate-300">
-        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
-          <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold shrink-0">1</span>
-          <div>
-            <strong class="text-white">Crie o repositório especial com seu username</strong>
-            <p class="text-slate-400 mt-0.5">Acesse <a href="https://github.com/new" target="_blank" class="text-brand-400 underline font-mono">github.com/new</a> e no nome do repositório digite exatamente o seu usuário (ex: <span class="text-white font-mono" id="deploy-modal-user">seu-usuario</span>).</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
-          <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold shrink-0">2</span>
-          <div>
-            <strong class="text-white">Deixe como Public</strong>
-            <p class="text-slate-400 mt-0.5">Marque a opção <strong>Public</strong> para que todos que visitarem seu GitHub consigam ver os SVGs e cards.</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
-          <span class="w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold shrink-0">3</span>
-          <div>
-            <strong class="text-white">Extraia o arquivo .ZIP ou arraste os arquivos</strong>
-            <p class="text-slate-400 mt-0.5">Clique no botão <span class="text-emerald-400 font-bold">📦 Baixar Repositório (.ZIP)</span>, descompacte no seu computador e faça o commit/upload no GitHub.</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3 items-start bg-brand-dark/60 p-3 rounded-xl border border-brand-border/60">
-          <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">✓</span>
-          <div>
-            <strong class="text-emerald-400">Pronto! Seu perfil ganha vida instantaneamente</strong>
-            <p class="text-slate-400 mt-0.5">Seu perfil terá o README com os SVGs interligados e a GitHub Action pronta para manter seus dados atualizados diariamente!</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-end pt-2">
-        <button onclick="closeDeployInstructionsModal()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-xl transition">
-          Entendi, vamos lá!
-        </button>
-      </div>
-    </div>
-  </div>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace']
+          },
           colors: {
-            brand: { 500: '#58a6ff', 600: '#1f6feb', dark: '#0a0e14', card: '#111722', border: '#30363d', accent: '#22d3ee' }
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              dark: '#07090e',
+              card: '#0d1322',
+              cardElevated: '#131b2e',
+              border: '#1e293b',
+              borderLight: '#334155',
+              accent: '#00f0ff',
+              neon: '#a855f7'
+            }
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 20px -3px rgba(0, 240, 255, 0.25)',
+            'glow-sky': '0 0 20px -3px rgba(14, 165, 233, 0.35)',
+            'glow-purple': '0 0 20px -3px rgba(168, 85, 247, 0.35)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.45)'
           }
         }
       }
@@ -128,70 +74,166 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <style>
     @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
     .pulse-dot { animation: pulse-slow 2s infinite ease-in-out; }
-    svg { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
-    pre, textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #07090e;
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14, 165, 233, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 5% 30%, rgba(168, 85, 247, 0.07), transparent),
+        radial-gradient(ellipse 50% 30% at 95% 70%, rgba(16, 185, 129, 0.05), transparent);
+      background-attachment: fixed;
+      color: #e2e8f0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Monospace elements use JetBrains Mono */
+    .font-mono, pre, code, textarea, .code-font {
+      font-family: 'JetBrains Mono', monospace !important;
+    }
+
+    /* Glassmorphism panels */
+    .studio-glass {
+      background: rgba(13, 19, 34, 0.82);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+    
+    .canvas-grid {
+      background-color: #090e17;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    /* Custom select dropdown */
+    select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1.2em 1.2em;
+      padding-right: 2.4rem !important;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    /* Form Inputs Micro-transitions */
+    input, select, textarea {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22) !important;
+      background-color: #0b111e !important;
+    }
+
+    .tab-btn {
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.15);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
   </style>
 </head>
-<body class="bg-brand-dark text-slate-200 font-mono min-h-screen flex flex-col">
+<body class="bg-[#07090e] text-slate-200 font-sans min-h-screen flex flex-col antialiased selection:bg-sky-500/30 selection:text-sky-200">
   <!-- Header -->
-  <header class="border-b border-brand-border bg-brand-card/80 backdrop-blur sticky top-0 z-50 px-6 py-3">
+  <header class="border-b border-white/5 bg-[#0a0f1d]/85 backdrop-blur-xl sticky top-0 z-50 px-6 py-3 shadow-lg shadow-black/20">
     <div class="max-w-[1600px] w-full mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="h-3 w-3 rounded-full bg-emerald-400 pulse-dot"></div>
+      <div class="flex items-center gap-3.5">
+        <div class="relative flex items-center justify-center">
+          <div class="h-3.5 w-3.5 rounded-full bg-emerald-400 pulse-dot shadow-lg shadow-emerald-400/50"></div>
+          <div class="absolute h-6 w-6 rounded-full bg-emerald-500/20 animate-ping"></div>
+        </div>
         <div class="flex flex-col">
-          <h1 class="text-base font-bold text-white tracking-wider flex items-center gap-2">
-            <span>⚡ MEZZOLD</span>
-            <span class="text-brand-500">TERMART STUDIO</span>
-            <span class="text-xs px-2 py-0.5 rounded bg-brand-border text-slate-400">v2.0</span>
+          <h1 class="text-sm font-extrabold text-white tracking-wide flex items-center gap-2">
+            <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-400 bg-clip-text text-transparent font-black tracking-wider text-base">⚡ MEZZOLD TERMART</span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 font-semibold tracking-normal font-mono">v2.5 PRO</span>
           </h1>
-          <span class="text-[11px] text-slate-500">Suite Completa de Arte em Terminal & Widgets de Perfil</span>
+          <span class="text-[11px] text-slate-400 font-medium">A Suíte Definitiva de Arte em Terminal, Screensavers Arcade &amp; Perfil GitHub</span>
         </div>
       </div>
-      <div class="flex items-center gap-3 text-xs">
-        <button id="btn-sound-toggle" onclick="toggleAudioFx()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-dark/90 hover:bg-brand-dark border border-brand-border text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm" title="Ligar / Desligar Efeitos Sonoros Retrô">
+      <div class="flex items-center gap-2.5 text-xs font-medium">
+        <button id="btn-sound-toggle" onclick="toggleAudioFx()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm active:scale-95" title="Ligar / Desligar Efeitos Sonoros Retrô">
           <span id="sound-icon">🔊</span>
           <span id="sound-label">Som: ON</span>
         </button>
-        <button onclick="openConfigModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-dark/90 hover:bg-brand-dark border border-brand-border text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm" title="Configurar Perfil e GitHub">
-          <span class="text-brand-400">⚙️</span>
+        <button onclick="openConfigModal()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-xs text-slate-200 hover:text-white transition cursor-pointer shadow-sm active:scale-95" title="Configurar Perfil e GitHub">
+          <span class="text-sky-400">⚙️</span>
           <span id="header-user-badge">Perfil: <strong class="text-white">Convidado</strong></span>
         </button>
-        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold transition">GitHub Repo ↗</a>
+        <a href="https://github.com/ViniciusNoetzold/Mezzold-TermArt" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-semibold transition shadow-md shadow-sky-600/20 flex items-center gap-1.5 active:scale-95">
+          <span>GitHub Repo</span>
+          <span class="text-sky-200">↗</span>
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- Navigation Tabs (5 Categorias Abrangendo Todas as Ferramentas) -->
-  <div class="border-b border-brand-border bg-brand-card/50 px-6 py-2.5">
-    <div class="max-w-[1600px] mx-auto flex flex-wrap gap-2 text-xs">
-      <button onclick="switchTab('image')" id="btn-image" class="tab-btn px-4 py-2 rounded-xl font-bold bg-brand-600 text-white flex items-center gap-1.5 transition shadow">
-        <span>🖼️</span> <span>Imagens & Chafa</span>
+  <!-- Navigation Tabs -->
+  <div class="border-b border-white/5 bg-[#0a0f1d]/60 backdrop-blur-md px-6 py-2.5 sticky top-[57px] z-40 shadow-sm">
+    <div class="max-w-[1600px] mx-auto flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs font-medium">
+      <button onclick="switchTab('image')" id="btn-image" class="tab-btn px-4 py-2 rounded-xl font-semibold bg-brand-600 text-white flex items-center gap-2 transition shrink-0 shadow-md shadow-sky-500/20">
+        <span>🖼️</span> <span>Imagens &amp; Chafa</span>
       </button>
-      <button onclick="switchTab('3d')" id="btn-3d" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🧊</span> <span>3D & Tipografia</span>
+      <button onclick="switchTab('3d')" id="btn-3d" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🧊</span> <span>3D &amp; Tipografia</span>
       </button>
-      <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🛡️</span> <span>Widgets de Perfil & Gamificação</span>
+      <button onclick="switchTab('profile')" id="btn-profile" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🛡️</span> <span>Widgets de Perfil</span>
       </button>
-      <button onclick="switchTab('animator')" id="btn-animator" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
+      <button onclick="switchTab('animator')" id="btn-animator" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
         <span>✨</span> <span>Animador SVG</span>
       </button>
-      <button onclick="switchTab('pipes')" id="btn-pipes" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🧪</span> <span>Screensavers & Retro FX</span>
+      <button onclick="switchTab('pipes')" id="btn-pipes" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🕹️</span> <span>Screensavers Arcade &amp; FX</span>
       </button>
-      <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🎬</span> <span>Gravador VHS & AGG</span>
+      <button onclick="switchTab('vhs')" id="btn-vhs" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🎬</span> <span>Gravador VHS &amp; AGG</span>
       </button>
-      <button onclick="switchTab('badges')" id="btn-badges" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🛡️</span> <span>Badges & Tech Stack</span>
+      <button onclick="switchTab('badges')" id="btn-badges" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🏷️</span> <span>Badges &amp; Tech Stack</span>
       </button>
-      <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🎵</span> <span>Música & Atividade Dev</span>
+      <button onclick="switchTab('activity')" id="btn-activity" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🎵</span> <span>Música &amp; Atividade Dev</span>
       </button>
-      <button onclick="switchTab('builder')" id="btn-builder" class="tab-btn px-4 py-2 rounded-xl font-bold text-slate-400 hover:text-white flex items-center gap-1.5 transition">
-        <span>🚀</span> <span>Construtor de Perfil & README</span>
+      <button onclick="switchTab('builder')" id="btn-builder" class="tab-btn px-4 py-2 rounded-xl font-semibold text-slate-400 hover:text-white hover:bg-white/5 flex items-center gap-2 transition shrink-0">
+        <span>🚀</span> <span>Construtor de Perfil &amp; README</span>
       </button>
-      <button onclick="openConfigModal()" id="btn-config" class="tab-btn px-4 py-2 rounded-xl font-bold bg-brand-dark/90 border border-brand-border text-brand-400 hover:text-brand-300 hover:border-brand-500 flex items-center gap-1.5 transition ml-auto shadow-sm">
+      <button onclick="openConfigModal()" id="btn-config" class="tab-btn px-4 py-2 rounded-xl font-semibold bg-slate-900/70 border border-white/10 text-sky-400 hover:text-sky-300 hover:border-sky-500/40 flex items-center gap-2 transition ml-auto shrink-0 shadow-sm">
         <span>⚙️</span> <span>Configurar Perfil Dev</span>
       </button>
     </div>
@@ -201,7 +243,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   <main class="flex-1 max-w-[1600px] w-full mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
     <!-- Left Column: Controls -->
     <div class="lg:col-span-5 flex flex-col gap-5">
-      <div class="p-5 rounded-2xl bg-brand-card border border-brand-border flex flex-col gap-4 text-sm shadow-xl">
+      <div class="p-6 rounded-3xl studio-glass border border-white/10 flex flex-col gap-5 text-sm shadow-2xl backdrop-blur-xl">
         
         <!-- ================= TAB 1: IMAGENS & CHAFA ================= -->
         <div id="tab-image" class="tab-content flex flex-col gap-4">
@@ -1695,30 +1737,33 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="text-xs text-slate-400">Arte Renderizada:</span>
-          <span id="preview-tag" class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">termart.svg</span>
-          <span id="preview-count-badge" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-400 font-semibold border border-brand-500/30">0 itens</span>
+          <span id="preview-tag" class="text-xs px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 font-mono font-medium border border-emerald-500/30 flex items-center gap-1.5 shadow-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>termart.svg</span>
+          </span>
+          <span id="preview-count-badge" class="hidden text-xs px-3 py-1 rounded-full bg-sky-500/15 text-sky-300 font-mono font-medium border border-sky-500/30">0 itens</span>
         </div>
         <div class="flex items-center gap-2">
-          <button id="btn-global-anim" onclick="toggleGlobalAnimations()" class="text-xs px-3 py-1.5 rounded-xl border border-brand-border bg-brand-card hover:bg-brand-border text-slate-300 font-semibold transition flex items-center gap-1.5 shadow" title="Ativar ou desativar todas as animações para economia de CPU">
+          <button id="btn-global-anim" onclick="toggleGlobalAnimations()" class="text-xs px-3 py-1.5 rounded-xl border border-white/10 bg-[#0e1424] hover:bg-[#151f36] text-slate-300 font-medium transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Ativar ou desativar todas as animações para economia de CPU">
             <span id="global-anim-icon">✨</span> <span id="global-anim-label">Animações: ON</span>
           </button>
-          <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/40 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 font-semibold transition flex items-center gap-1.5 shadow-lg shadow-purple-500/10">
+          <button id="btn-download-zip" onclick="downloadAllAsZip()" class="hidden text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-medium transition flex items-center gap-1.5 shadow-lg shadow-purple-500/10 active:scale-95">
             <span>📦</span> <span>Baixar Todas (.ZIP)</span>
           </button>
-          <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-card hover:bg-brand-border text-white font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/10" title="Baixar arquivo vetorial SVG">
+          <button id="btn-download-single" onclick="downloadSvg()" class="text-xs px-3.5 py-1.5 rounded-xl border border-sky-500/30 bg-[#0e1424] hover:bg-sky-500/10 text-white font-medium transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Baixar arquivo vetorial SVG">
             <span>⭳</span> <span>Baixar SVG</span>
           </button>
-          <button id="btn-download-png" onclick="downloadPng()" class="text-xs px-3.5 py-1.5 rounded-xl border border-emerald-500/40 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 font-semibold transition flex items-center gap-2 shadow-lg shadow-emerald-500/10" title="Exportar arte em PNG de alta resolução (2x)">
+          <button id="btn-download-png" onclick="downloadPng()" class="text-xs px-3.5 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-medium transition flex items-center gap-1.5 shadow-md shadow-emerald-500/10 active:scale-95" title="Exportar arte em PNG de alta resolução (2x)">
             <span>🖼️</span> <span>Baixar PNG</span>
           </button>
-          <button id="btn-pin-profile" onclick="pinCurrentToProfile()" class="text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/40 bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 font-semibold transition flex items-center gap-2 shadow-lg shadow-purple-500/10" title="Adicionar esta arte gerada diretamente ao seu perfil do GitHub">
+          <button id="btn-pin-profile" onclick="pinCurrentToProfile()" class="text-xs px-3.5 py-1.5 rounded-xl border border-purple-500/30 bg-gradient-to-r from-purple-600/30 to-indigo-600/30 hover:from-purple-600/40 hover:to-indigo-600/40 text-purple-200 font-medium transition flex items-center gap-1.5 shadow-md shadow-purple-500/10 active:scale-95" title="Adicionar esta arte gerada diretamente ao seu perfil do GitHub">
             <span>📌</span> <span>Fixar no Perfil</span>
           </button>
         </div>
       </div>
 
       <!-- Preview Canvas -->
-      <div id="canvas-wrapper" class="w-full min-h-[580px] p-6 rounded-2xl bg-brand-card/70 border border-brand-border flex flex-col items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
+      <div id="canvas-wrapper" class="w-full min-h-[580px] p-8 rounded-3xl canvas-grid border border-white/10 flex flex-col items-center justify-center overflow-auto shadow-2xl relative backdrop-blur-md">
         <div id="svg-display" class="w-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:h-auto">
           <div class="text-center text-slate-500">
             <p class="text-4xl mb-3 animate-pulse">⚡</p>
@@ -1789,9 +1834,95 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
     <span id="toast-msg">Mensagem</span>
   </div>
 
+  <!-- MODAL DE CONFIGURAÇÃO DE BLOCO DO PERFIL -->
+  <div id="modal-block-config" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
+    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl" id="cfg-block-icon">⚙️</span>
+          <div>
+            <h3 class="text-base font-bold text-white tracking-wide" id="cfg-block-title">Configurar Bloco</h3>
+            <p class="text-xs text-slate-400" id="cfg-block-subtitle">Personalize os detalhes e parâmetros desta seção</p>
+          </div>
+        </div>
+        <button onclick="closeBlockConfigModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-xl hover:bg-white/5 transition">✕</button>
+      </div>
+
+      <!-- Dynamic Form Container -->
+      <div id="cfg-block-form" class="flex flex-col gap-3 text-xs">
+        <!-- Injected dynamically by JS based on block type -->
+      </div>
+
+      <div class="flex gap-2.5 pt-3 border-t border-white/10">
+        <button onclick="saveBlockConfig()" class="flex-1 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold rounded-xl transition shadow-lg flex items-center justify-center gap-2 text-xs active:scale-95">
+          <span>💾</span> <span>Salvar &amp; Atualizar Preview</span>
+        </button>
+        <button onclick="closeBlockConfigModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl transition active:scale-95">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSTRUÇÕES DE DEPLOY GITHUB MODAL -->
+  <div id="modal-deploy-instructions" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
+    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">🚀</span>
+          <div>
+            <h3 class="text-base font-bold text-white tracking-wide">Como Publicar no seu Perfil do GitHub</h3>
+            <p class="text-xs text-slate-400">Transforme seu perfil em menos de 1 minuto</p>
+          </div>
+        </div>
+        <button onclick="closeDeployInstructionsModal()" class="text-slate-400 hover:text-white text-lg p-1.5 rounded-xl hover:bg-white/5 transition">✕</button>
+      </div>
+
+      <div class="flex flex-col gap-3 text-xs text-slate-300">
+        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
+          <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">1</span>
+          <div>
+            <strong class="text-white">Crie o repositório especial com seu username</strong>
+            <p class="text-slate-400 mt-0.5">Acesse <a href="https://github.com/new" target="_blank" class="text-sky-400 hover:underline font-mono">github.com/new</a> e no nome do repositório digite exatamente o seu usuário (ex: <span class="text-white font-mono" id="deploy-modal-user">seu-usuario</span>).</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
+          <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">2</span>
+          <div>
+            <strong class="text-white">Deixe como Public</strong>
+            <p class="text-slate-400 mt-0.5">Marque a opção <strong>Public</strong> para que todos que visitarem seu GitHub consigam ver os SVGs e cards.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
+          <span class="w-6 h-6 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold shrink-0">3</span>
+          <div>
+            <strong class="text-white">Extraia o arquivo .ZIP ou arraste os arquivos</strong>
+            <p class="text-slate-400 mt-0.5">Clique no botão <span class="text-emerald-400 font-bold">📦 Baixar Repositório (.ZIP)</span>, descompacte no seu computador e faça o commit/upload no GitHub.</p>
+          </div>
+        </div>
+
+        <div class="flex gap-3 items-start bg-slate-900/80 p-3.5 rounded-2xl border border-white/5">
+          <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0">✓</span>
+          <div>
+            <strong class="text-emerald-400">Pronto! Seu perfil ganha vida instantaneamente</strong>
+            <p class="text-slate-400 mt-0.5">Seu perfil terá o README com os SVGs interligados e a GitHub Action pronta para manter seus dados atualizados diariamente!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="closeDeployInstructionsModal()" class="px-5 py-2.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-sky-600/20 active:scale-95">
+          Entendi, vamos lá!
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- PERFIL DEV & CONFIGURAÇÃO INICIAL MODAL -->
-  <div id="modal-dev-profile" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md hidden transition-all p-4">
-    <div class="bg-brand-card border border-brand-border rounded-2xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
+  <div id="modal-dev-profile" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl hidden transition-all p-4">
+    <div class="bg-[#0e1424] border border-white/10 rounded-3xl p-6 max-w-lg w-full shadow-2xl flex flex-col gap-4 relative animate-fade-in">
       <div class="flex items-center justify-between border-b border-brand-border pb-3">
         <div class="flex items-center gap-2.5">
           <span class="text-2xl">⚡</span>
