@@ -21,6 +21,13 @@ app = FastAPI(title="Mezzold TermArt Studio", version="2.0.0")
 HTML_TEMPLATE = r"""<!DOCTYPE html>
 <html lang="pt-BR" class="dark">
 <head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KC94Z22H');</script>
+  <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mezzold TermArt Studio v2.5 — Terminal Art &amp; Profile Engine</title>
@@ -215,6 +222,10 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   </style>
 </head>
 <body class="bg-[#07090e] text-slate-200 font-sans min-h-screen flex flex-col antialiased selection:bg-sky-500/30 selection:text-sky-200">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KC94Z22H"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <!-- Header -->
   <header class="border-b border-white/5 bg-[#0a0f1d]/85 backdrop-blur-xl sticky top-0 z-50 px-6 py-3 shadow-lg shadow-black/20">
     <div class="max-w-[1600px] w-full mx-auto flex items-center justify-between">
