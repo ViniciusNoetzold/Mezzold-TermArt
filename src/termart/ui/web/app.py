@@ -117,16 +117,61 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
 
-    /* Custom select dropdown */
+    /* Ultra-sleek Cyberpunk & Glassmorphic select dropdowns */
     select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-      background-position: right 0.75rem center;
-      background-repeat: no-repeat;
-      background-size: 1.2em 1.2em;
-      padding-right: 2.4rem !important;
+      background-color: rgba(11, 17, 30, 0.95) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 10px !important;
+      color: #f1f5f9 !important;
+      font-weight: 500 !important;
+      letter-spacing: 0.2px;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2338bdf8' stroke-width='2'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3e%3c/svg%3e") !important;
+      background-position: right 0.85rem center !important;
+      background-repeat: no-repeat !important;
+      background-size: 1.1em 1.1em !important;
+      padding-right: 2.5rem !important;
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    select:hover {
+      border-color: rgba(56, 189, 248, 0.6) !important;
+      background-color: rgba(16, 24, 42, 0.98) !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.2), 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    select:focus {
+      outline: none !important;
+      border-color: #38bdf8 !important;
+      background-color: #0b111e !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25), 0 0 20px rgba(56, 189, 248, 0.3) !important;
+    }
+
+    /* Option popup styling across modern browsers */
+    select option {
+      background-color: #0d1424 !important;
+      color: #e2e8f0 !important;
+      padding: 12px 14px !important;
+      font-size: 12.5px !important;
+      font-weight: 500 !important;
+    }
+
+    select option:checked {
+      background-color: #1e293b !important;
+      color: #38bdf8 !important;
+      font-weight: 700 !important;
+    }
+
+    select optgroup {
+      background-color: #070a12 !important;
+      color: #64748b !important;
+      font-weight: 700 !important;
+      font-size: 11px !important;
+      letter-spacing: 1px !important;
     }
 
     /* Form Inputs Micro-transitions */
@@ -1520,14 +1565,56 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <label class="text-xs text-slate-400">Presets de Tecnologias</label>
-              <div class="flex gap-1 text-[10px]">
-                <button type="button" onclick="loadTechPreset('fullstack')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">Fullstack</button>
-                <button type="button" onclick="loadTechPreset('python_ai')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">Python/AI</button>
-                <button type="button" onclick="loadTechPreset('devops')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">DevOps</button>
-                <button type="button" onclick="loadTechPreset('systems')" class="px-2 py-0.5 rounded bg-brand-dark hover:bg-brand-border text-slate-300">Sistemas</button>
+              <span class="text-[10px] text-slate-500">Clique para carregar</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-[11px] mb-2.5">
+              <button type="button" onclick="loadTechPreset('fullstack')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">🌐 Fullstack</button>
+              <button type="button" onclick="loadTechPreset('python_ai')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">🤖 Python & AI</button>
+              <button type="button" onclick="loadTechPreset('devops')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">☁️ DevOps/Cloud</button>
+              <button type="button" onclick="loadTechPreset('systems')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">⚡ Baixo Nível</button>
+              <button type="button" onclick="loadTechPreset('mobile')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">📱 Mobile Dev</button>
+              <button type="button" onclick="loadTechPreset('web3')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">💎 Web3 Crypto</button>
+              <button type="button" onclick="loadTechPreset('gamedev')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">🎮 Game Dev</button>
+              <button type="button" onclick="loadTechPreset('datascience')" class="px-2 py-1 rounded-lg bg-brand-dark hover:bg-sky-950/60 border border-brand-border hover:border-sky-500/50 text-slate-300 hover:text-white transition text-center font-medium">📊 Data Science</button>
+            </div>
+
+            <!-- Quick Add Chips Cloud -->
+            <div class="mb-2 p-2 rounded-xl bg-brand-dark/50 border border-brand-border/60">
+              <label class="text-[10px] uppercase font-bold tracking-wider text-sky-400 block mb-1.5 flex items-center justify-between">
+                <span>⚡ Adicionar / Alternar Rápido (+/-):</span>
+                <span class="text-[9px] text-slate-500 font-normal">Clique no chip para alternar</span>
+              </label>
+              <div class="flex flex-wrap gap-1 text-[10px]" id="quick-tech-chips">
+                <button type="button" onclick="toggleTechChip('flutter')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Flutter</button>
+                <button type="button" onclick="toggleTechChip('react_native')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ React Native</button>
+                <button type="button" onclick="toggleTechChip('swift')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Swift</button>
+                <button type="button" onclick="toggleTechChip('kotlin')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Kotlin</button>
+                <button type="button" onclick="toggleTechChip('pytorch')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ PyTorch</button>
+                <button type="button" onclick="toggleTechChip('langchain')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ LangChain</button>
+                <button type="button" onclick="toggleTechChip('terraform')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Terraform</button>
+                <button type="button" onclick="toggleTechChip('solidity')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Solidity</button>
+                <button type="button" onclick="toggleTechChip('godot')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Godot</button>
+                <button type="button" onclick="toggleTechChip('supabase')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Supabase</button>
+                <button type="button" onclick="toggleTechChip('qdrant')" class="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-400 text-slate-300 hover:text-sky-300 transition">+ Qdrant</button>
               </div>
             </div>
-            <label class="text-[11px] text-slate-500 block mb-1">Tecnologias selecionadas (separadas por vírgula):</label>
+
+            <!-- Custom Tech Input Form -->
+            <div class="mb-2 p-2.5 rounded-xl bg-brand-dark/50 border border-brand-border/60">
+              <label class="text-[10px] uppercase font-bold tracking-wider text-purple-400 block mb-1.5">
+                ✨ Adicionar Tecnologia Personalizada
+              </label>
+              <div class="grid grid-cols-12 gap-1.5">
+                <input id="custom-tech-cat" type="text" placeholder="Categoria (ex: Mobile, AI)" class="col-span-5 bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                <input id="custom-tech-name" type="text" placeholder="Nome da Ferramenta" class="col-span-4 bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
+                <button type="button" onclick="addCustomTech()" class="col-span-3 px-2 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-lg text-xs transition active:scale-95 shadow">
+                  + Inserir
+                </button>
+              </div>
+              <p class="text-[9.5px] text-slate-500 mt-1">Dica: Deixe a categoria vazia para auto-classificar, ou especifique para criar sua própria categoria!</p>
+            </div>
+
+            <label class="text-[11px] text-slate-400 block mb-1">Tecnologias selecionadas (separadas por vírgula):</label>
             <textarea id="badge-techs" rows="3" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs font-mono">python, typescript, rust, react, nextjs, fastapi, docker, postgresql, tailwind, linux, git</textarea>
           </div>
 
@@ -1612,16 +1699,22 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 
           <!-- DIAGRAM CONTROLS -->
           <div id="act-opt-diagram" class="hidden flex flex-col gap-3 p-3 bg-brand-dark/60 rounded-xl border border-brand-border/60">
-            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-              <span>🗺️</span> <span>Topologia & Arquitetura</span>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>🗺️</span> <span>Topologia de Arquitetura em Nuvem</span></span>
+              <span class="text-[9.5px] px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono">ANIMATED BUS</span>
             </div>
             <div>
               <label class="text-xs text-slate-400 block mb-1">Topologia de Sistema</label>
               <select id="diagram-preset" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
                 <option value="microservices">☁️ Nuvem Distribuída (Gateway + Microsserviços + Kafka + Postgres)</option>
-                <option value="ai_agent">🤖 Agente de IA Autônomo & RAG (Prompt + Vector DB + LLM + Tools)</option>
-                <option value="gitops">🚀 Pipeline GitOps Zero-Downtime (GitHub Actions + Docker + K8s)</option>
+                <option value="ai_agent">🤖 Agente de IA Autônomo & RAG (Prompt + Vector DB + LLM Swarm + Tools)</option>
+                <option value="gitops">🚀 Pipeline GitOps Zero-Downtime (GitHub Actions + OCI + ArgoCD + K8s)</option>
+                <option value="event_driven">⚡ Event-Driven CQRS & Real-time (Clients + NATS + EventStore + Redis)</option>
               </select>
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Título Personalizado (Opcional)</label>
+              <input id="diagram-title" type="text" placeholder="ex: ARQUITETURA DE PRODUÇÃO E-COMMERCE" class="w-full bg-brand-dark border border-brand-border rounded-lg p-2 text-slate-200 text-xs">
             </div>
           </div>
 
@@ -2943,15 +3036,56 @@ Sleep 3s
 
     const TECH_PRESETS = {
       fullstack: 'typescript, javascript, react, nextjs, nodejs, express, tailwind, postgresql, docker, git',
-      python_ai: 'python, fastapi, django, postgresql, redis, docker, linux, git, github',
-      devops: 'docker, kubernetes, aws, gcp, azure, linux, git, github, terraform, nginx',
-      systems: 'rust, go, cpp, csharp, linux, git, docker, sqlite, neovim'
+      python_ai: 'python, fastapi, pytorch, langchain, openai, postgresql, redis, docker, linux, git',
+      devops: 'docker, kubernetes, aws, terraform, ansible, linux, nginx, prometheus, grafana, git',
+      systems: 'rust, go, cpp, c, csharp, linux, git, docker, sqlite, neovim',
+      mobile: 'flutter, dart, react_native, typescript, swift, kotlin, android, ios',
+      web3: 'solidity, ethereum, typescript, rust, react, nextjs, tailwind, nodejs',
+      gamedev: 'godot, csharp, cpp, rust, python, lua, unity, git',
+      datascience: 'python, pandas, numpy, scikit_learn, pytorch, spark, sql, postgresql'
     };
 
     function loadTechPreset(key) {
       if (TECH_PRESETS[key]) {
         document.getElementById('badge-techs').value = TECH_PRESETS[key];
         showToast(`Preset "${key}" carregado!`);
+        generateTechBadges();
+      }
+    }
+
+    function toggleTechChip(tech) {
+      const area = document.getElementById('badge-techs');
+      let current = area.value.split(',').map(s => s.trim()).filter(Boolean);
+      const idx = current.findIndex(t => t.toLowerCase() === tech.toLowerCase() || t.toLowerCase().endsWith(':' + tech.toLowerCase()));
+      if (idx >= 0) {
+        current.splice(idx, 1);
+        showToast(`Removido: ${tech}`);
+      } else {
+        current.push(tech);
+        showToast(`Adicionado: ${tech}`);
+      }
+      area.value = current.join(', ');
+      generateTechBadges();
+    }
+
+    function addCustomTech() {
+      const cat = document.getElementById('custom-tech-cat').value.trim();
+      const name = document.getElementById('custom-tech-name').value.trim();
+      if (!name) {
+        showToast('⚠️ Digite o nome da tecnologia!');
+        return;
+      }
+      const full = cat ? `${cat}:${name}` : name;
+      const area = document.getElementById('badge-techs');
+      let current = area.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (!current.includes(full)) {
+        current.push(full);
+        area.value = current.join(', ');
+        document.getElementById('custom-tech-name').value = '';
+        showToast(`✨ Adicionado ao arsenal: ${full}`);
+        generateTechBadges();
+      } else {
+        showToast('ℹ️ Essa tecnologia já está na lista!');
       }
     }
 
@@ -2978,22 +3112,47 @@ Sleep 3s
         javascript: 'JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black',
         rust: 'Rust-DEA584?style=for-the-badge&logo=rust&logoColor=white',
         go: 'Go-00ADD8?style=for-the-badge&logo=go&logoColor=white',
+        cpp: 'C%2B%2B-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white',
+        csharp: 'C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white',
+        java: 'Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white',
+        kotlin: 'Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white',
+        swift: 'Swift-F05138?style=for-the-badge&logo=swift&logoColor=white',
+        dart: 'Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white',
+        flutter: 'Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white',
+        react_native: 'React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB',
         react: 'React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB',
         nextjs: 'Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white',
+        vue: 'Vue.js-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white',
+        angular: 'Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white',
+        svelte: 'Svelte-FF3E00?style=for-the-badge&logo=svelte&logoColor=white',
         fastapi: 'FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white',
+        django: 'Django-092E20?style=for-the-badge&logo=django&logoColor=white',
+        nodejs: 'Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white',
         docker: 'Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white',
+        kubernetes: 'Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white',
+        aws: 'AWS-232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=white',
         postgresql: 'PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white',
+        mongodb: 'MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white',
+        redis: 'Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white',
         tailwind: 'Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white',
         linux: 'Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black',
-        git: 'Git-F05032?style=for-the-badge&logo=git&logoColor=white'
+        git: 'Git-F05032?style=for-the-badge&logo=git&logoColor=white',
+        solidity: 'Solidity-AA6746?style=for-the-badge&logo=solidity&logoColor=white',
+        godot: 'Godot_Engine-478CBF?style=for-the-badge&logo=godotengine&logoColor=white',
+        pytorch: 'PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white',
+        terraform: 'Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white'
       };
 
       for (let t of rawTechs) {
-        t = t.trim().toLowerCase();
-        if (SHIELD_MAP[t]) {
-          mdList.push(`![${t}](https://img.shields.io/badge/${SHIELD_MAP[t]})`);
-        } else if (t) {
-          const cap = t.charAt(0).toUpperCase() + t.slice(1);
+        let clean = t.trim();
+        if (clean.includes(':')) {
+          clean = clean.split(':')[1].trim();
+        }
+        const key = clean.toLowerCase().replace('-', '_').replace(' ', '_');
+        if (SHIELD_MAP[key]) {
+          mdList.push(`![${clean}](https://img.shields.io/badge/${SHIELD_MAP[key]})`);
+        } else if (clean) {
+          const cap = clean.charAt(0).toUpperCase() + clean.slice(1);
           mdList.push(`![${cap}](https://img.shields.io/badge/${encodeURIComponent(cap)}-23272d?style=for-the-badge)`);
         }
       }
@@ -3030,7 +3189,8 @@ Sleep 3s
         url = `/api/render/coding_stats?hours=${encodeURIComponent(hours)}&streak=${encodeURIComponent(streak)}&rank=${encodeURIComponent(rank)}&username=${encodeURIComponent(user)}`;
       } else if (w === 'diagram') {
         const preset = document.getElementById('diagram-preset').value;
-        url = `/api/render/diagram?preset=${encodeURIComponent(preset)}&username=${encodeURIComponent(user)}`;
+        const title = document.getElementById('diagram-title') ? document.getElementById('diagram-title').value.trim() : '';
+        url = `/api/render/diagram?preset=${encodeURIComponent(preset)}&title=${encodeURIComponent(title)}&username=${encodeURIComponent(user)}`;
       }
 
       const res = await fetch(url);

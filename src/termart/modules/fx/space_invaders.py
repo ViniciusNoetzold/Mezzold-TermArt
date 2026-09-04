@@ -197,48 +197,51 @@ class SpaceInvadersPlugin(BasePlugin):
             f'</g>'
         )
 
-        # 3 REAL LASER BOLTS THAT HIT AND DESTROY TARGETS
-        # Shot 1: From x = 250 (cannon_home_x - 130), fires at t=0.20 to 0.28 (1.2s to 1.7s) -> Hits Alien 1 (row 3, col 2)!
+        # 3 SYNCHRONIZED LASER BOLTS FIRED ONLY WHEN CANNON REACHES POSITION
+        # Shot 1: From x = 250 (cannon_home_x - 130), fires between t=0.20 and 0.28 (hits Alien 1 at row 3, col 2)
         t1_x = cannon_home_x - 130
         hit1_y = swarm_start_y + 3 * 32 + 5
         parts.append(
             f'<g stroke="#00ffff" stroke-width="3" stroke-linecap="round">'
             f'<line x1="{t1_x}" y1="{cannon_y-16}" x2="{t1_x}" y2="{cannon_y-34}">'
-            f'<animate attributeName="y1" values="{cannon_y-16}; {hit1_y}" '
-            f'keyTimes="0; 1" dur="0.45s" begin="1.2s" repeatCount="indefinite"/>'
-            f'<animate attributeName="y2" values="{cannon_y-34}; {hit1_y-16}" '
-            f'keyTimes="0; 1" dur="0.45s" begin="1.2s" repeatCount="indefinite"/>'
-            f'<animate attributeName="opacity" values="0; 1; 1; 0" keyTimes="0; 0.20; 0.28; 0.29" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="y1" values="{cannon_y-16}; {cannon_y-16}; {hit1_y}; {cannon_y-16}" '
+            f'keyTimes="0; 0.20; 0.28; 1" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="y2" values="{cannon_y-34}; {cannon_y-34}; {hit1_y-18}; {cannon_y-34}" '
+            f'keyTimes="0; 0.20; 0.28; 1" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" '
+            f'keyTimes="0; 0.199; 0.20; 0.279; 0.28; 1" dur="{dur}" repeatCount="indefinite"/>'
             f'</line>'
             f'</g>'
         )
 
-        # Shot 2: From x = 470 (cannon_home_x + 90), fires at t=0.54 to 0.61 -> Hits Alien 2 (row 2, col 6)!
+        # Shot 2: From x = 470 (cannon_home_x + 90), fires between t=0.54 and 0.61 (hits Alien 2 at row 2, col 6)
         t2_x = cannon_home_x + 90
         hit2_y = swarm_start_y + 2 * 32 + 5
         parts.append(
             f'<g stroke="#00ffff" stroke-width="3" stroke-linecap="round">'
             f'<line x1="{t2_x}" y1="{cannon_y-16}" x2="{t2_x}" y2="{cannon_y-34}">'
-            f'<animate attributeName="y1" values="{cannon_y-16}; {hit2_y}" '
-            f'keyTimes="0; 1" dur="0.45s" begin="3.2s" repeatCount="indefinite"/>'
-            f'<animate attributeName="y2" values="{cannon_y-34}; {hit2_y-16}" '
-            f'keyTimes="0; 1" dur="0.45s" begin="3.2s" repeatCount="indefinite"/>'
-            f'<animate attributeName="opacity" values="0; 1; 1; 0" keyTimes="0; 0.53; 0.61; 0.62" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="y1" values="{cannon_y-16}; {cannon_y-16}; {hit2_y}; {cannon_y-16}" '
+            f'keyTimes="0; 0.54; 0.61; 1" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="y2" values="{cannon_y-34}; {cannon_y-34}; {hit2_y-18}; {cannon_y-34}" '
+            f'keyTimes="0; 0.54; 0.61; 1" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" '
+            f'keyTimes="0; 0.539; 0.54; 0.609; 0.61; 1" dur="{dur}" repeatCount="indefinite"/>'
             f'</line>'
             f'</g>'
         )
 
-        # Shot 3: From x = 360 (cannon_home_x - 20), fires at t=0.85 to 0.92 -> Hits Alien 3 (row 3, col 4)!
+        # Shot 3: From x = 360 (cannon_home_x - 20), fires between t=0.85 and 0.91 (hits Alien 3 at row 3, col 4)
         t3_x = cannon_home_x - 20
         hit3_y = swarm_start_y + 3 * 32 + 5
         parts.append(
             f'<g stroke="#00ffff" stroke-width="3" stroke-linecap="round">'
             f'<line x1="{t3_x}" y1="{cannon_y-16}" x2="{t3_x}" y2="{cannon_y-34}">'
-            f'<animate attributeName="y1" values="{cannon_y-16}; {hit3_y}" '
-            f'keyTimes="0; 1" dur="0.45s" begin="5.0s" repeatCount="indefinite"/>'
-            f'<animate attributeName="y2" values="{cannon_y-34}; {hit3_y-16}" '
-            f'keyTimes="0; 1" dur="0.45s" begin="5.0s" repeatCount="indefinite"/>'
-            f'<animate attributeName="opacity" values="0; 1; 1; 0" keyTimes="0; 0.83; 0.91; 0.92" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="y1" values="{cannon_y-16}; {cannon_y-16}; {hit3_y}; {cannon_y-16}" '
+            f'keyTimes="0; 0.85; 0.91; 1" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="y2" values="{cannon_y-34}; {cannon_y-34}; {hit3_y-18}; {cannon_y-34}" '
+            f'keyTimes="0; 0.85; 0.91; 1" dur="{dur}" repeatCount="indefinite"/>'
+            f'<animate attributeName="opacity" values="0; 0; 1; 1; 0; 0" '
+            f'keyTimes="0; 0.849; 0.85; 0.909; 0.91; 1" dur="{dur}" repeatCount="indefinite"/>'
             f'</line>'
             f'</g>'
         )
