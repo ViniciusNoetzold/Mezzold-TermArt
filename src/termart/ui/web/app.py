@@ -1171,6 +1171,35 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
                 <input id="rpg-stamina" type="number" min="10" max="100" value="98" class="w-full bg-brand-dark border border-brand-border rounded-lg p-1.5 text-slate-200 text-xs">
               </div>
             </div>
+            <!-- UPLOAD DE IMAGEM / AVATAR (PNG, JPG, GIF ANIMADO, SVG) -->
+            <div class="pt-2 border-t border-brand-border/40 flex flex-col gap-2">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <span>🖼️</span> <span>Avatar Personalizado</span>
+                </label>
+                <span class="text-[10px] text-purple-400 font-mono">PNG, JPG, GIF, SVG</span>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-tight">
+                Substitua a ilustração da classe por sua própria foto, avatar ou GIF animado no passaporte.
+              </p>
+              <div class="flex items-center gap-2">
+                <label class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 hover:border-purple-500/50 rounded-lg cursor-pointer transition text-xs text-purple-200 font-medium">
+                  <span>📁 Anexar Imagem / GIF</span>
+                  <input id="rpg-avatar-input" type="file" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" class="hidden" onchange="handleRpgAvatarUpload(event)">
+                </label>
+                <button type="button" id="btn-rpg-avatar-clear" onclick="clearRpgAvatar()" class="hidden px-2.5 py-2 bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 rounded-lg text-xs text-red-300 transition" title="Restaurar ilustração padrão da classe">
+                  ✕ Limpar
+                </button>
+              </div>
+              <div id="rpg-avatar-preview-box" class="hidden items-center gap-2.5 p-2 bg-brand-surface/80 rounded-lg border border-purple-500/30">
+                <img id="rpg-avatar-preview-img" src="" alt="Avatar" class="w-12 h-10 object-cover rounded border border-purple-500/40 shadow-sm bg-brand-dark">
+                <div class="flex-1 min-w-0">
+                  <div id="rpg-avatar-preview-name" class="text-xs text-slate-200 font-medium truncate">avatar.png</div>
+                  <div id="rpg-avatar-preview-size" class="text-[10px] text-purple-300 font-mono">Base64 Embutido</div>
+                </div>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">✓ Ativo</span>
+              </div>
+            </div>
           </div>
 
           <!-- GIT SUBWAY OPTIONS -->
@@ -2075,11 +2104,15 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
               <option value="pacman">ᗧ••• Pac-Man Terminal Arcade</option>
               <option value="dvd">📀 DVD Bouncing Screensaver Retro</option>
               <option value="fortune">🥠 Biscoito da Sorte Hacker / Zen</option>
-              <option value="custom_svg">🖼️ Arte Customizada / Enviar Meu SVG</option>
+              <option value="custom_svg">🖼️ Imagem / GIF / SVG Personalizado (Upload)</option>
             </select>
             <button onclick="addBuilderBlock()" type="button" class="px-3 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shrink-0">
               <span>➕</span> <span>Adicionar</span>
             </button>
+            <label class="px-3 py-2 bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 hover:border-purple-500 text-purple-200 hover:text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shrink-0 cursor-pointer" title="Anexar diretamente uma imagem PNG, JPG, GIF animado ou SVG no Perfil">
+              <span>📎</span> <span>Anexar Imagem</span>
+              <input type="file" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" class="hidden" onchange="handleDirectImageUploadToBuilder(event)">
+            </label>
           </div>
 
           <!-- Botões de Ação Principal -->
@@ -3389,9 +3422,166 @@ Sleep 3s
         }
       }
 
-      const res = await fetch(url);
+      let res;
+      if (widget === 'rpg_sheet' && currentRpgAvatarDataUrl) {
+        res = await fetch('/api/render/rpg_sheet_custom', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cls: document.getElementById('rpg-class') ? document.getElementById('rpg-class').value : 'alchemist',
+            level: document.getElementById('rpg-level') ? document.getElementById('rpg-level').value : 85,
+            name: document.getElementById('rpg-name') ? document.getElementById('rpg-name').value : user,
+            hp: document.getElementById('rpg-hp') ? document.getElementById('rpg-hp').value : 96,
+            mana: document.getElementById('rpg-mana') ? document.getElementById('rpg-mana').value : 91,
+            stamina: document.getElementById('rpg-stamina') ? document.getElementById('rpg-stamina').value : 98,
+            username: user,
+            custom_avatar: currentRpgAvatarDataUrl
+          })
+        });
+      } else {
+        res = await fetch(url);
+      }
       const svg = await res.text();
       setPreview(svg, `${widget}.svg`);
+    }
+
+    // RPG Sheet Custom Avatar (PNG, JPG, GIF Animado, SVG)
+    let currentRpgAvatarDataUrl = null;
+
+    function handleRpgAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const raw = evt.target.result;
+        currentRpgAvatarDataUrl = raw;
+        const box = document.getElementById('rpg-avatar-preview-box');
+        const img = document.getElementById('rpg-avatar-preview-img');
+        const nameEl = document.getElementById('rpg-avatar-preview-name');
+        const sizeEl = document.getElementById('rpg-avatar-preview-size');
+        const clearBtn = document.getElementById('btn-rpg-avatar-clear');
+
+        if (box) {
+          box.classList.remove('hidden');
+          box.classList.add('flex');
+        }
+        if (img) img.src = isSvg ? 'data:image/svg+xml;utf8,' + encodeURIComponent(raw) : raw;
+        if (nameEl) nameEl.innerText = file.name;
+        if (sizeEl) sizeEl.innerText = `${Math.round(file.size / 1024)} KB • Base64 Embutido`;
+        if (clearBtn) clearBtn.classList.remove('hidden');
+
+        showToast(`✓ Avatar "${file.name}" anexado! Gerando passaporte...`);
+        generateProfile();
+      };
+
+      if (isSvg) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearRpgAvatar() {
+      currentRpgAvatarDataUrl = null;
+      const box = document.getElementById('rpg-avatar-preview-box');
+      const clearBtn = document.getElementById('btn-rpg-avatar-clear');
+      const input = document.getElementById('rpg-avatar-input');
+      if (box) {
+        box.classList.add('hidden');
+        box.classList.remove('flex');
+      }
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (input) input.value = '';
+      showToast("Avatar restaurado para a ilustração padrão da classe!");
+      generateProfile();
+    }
+
+    function handleDirectImageUploadToBuilder(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const raw = evt.target.result;
+        const blockId = 'custom_' + Date.now();
+        const baseName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        let svgPayload = '';
+        if (isSvg && typeof raw === 'string' && raw.trim().startsWith('<svg')) {
+          svgPayload = raw;
+        } else {
+          svgPayload = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 450" width="100%" height="100%">
+  <image href="${raw}" xlink:href="${raw}" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"/>
+</svg>`;
+        }
+
+        const newBlock = {
+          id: blockId,
+          type: 'custom_svg',
+          title: `Arte: ${file.name.replace(/\.[^/.]+$/, "")}`,
+          file: baseName.endsWith('.svg') ? baseName : `${baseName}.svg`,
+          icon: '🖼️',
+          enabled: true,
+          width: '100%',
+          layout_mode: 'inline',
+          terminal_prompt: '',
+          details_summary: '',
+          svg_data: svgPayload,
+          preview_url: `/api/builder/custom_svg/${blockId}`,
+          params: { custom_avatar: raw }
+        };
+
+        builderSections.push(newBlock);
+        saveStoredBuilderSections(builderSections);
+        renderReadmePreview();
+        showToast(`✓ Imagem "${file.name}" anexada com sucesso ao Perfil!`, 3000);
+      };
+
+      if (isSvg) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
+      e.target.value = '';
+    }
+
+    window._modalRpgCustomAvatar = undefined;
+    function handleModalRpgAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const raw = evt.target.result;
+        window._modalRpgCustomAvatar = raw;
+        const previewBox = document.getElementById('cfg-modal-rpg-preview-box');
+        const previewImg = document.getElementById('cfg-modal-rpg-preview-img');
+        const clearBtn = document.getElementById('btn-modal-rpg-avatar-clear');
+        if (previewBox) {
+          previewBox.classList.remove('hidden');
+          previewBox.classList.add('flex');
+        }
+        if (previewImg) previewImg.src = isSvg ? 'data:image/svg+xml;utf8,' + encodeURIComponent(raw) : raw;
+        if (clearBtn) clearBtn.classList.remove('hidden');
+        showToast(`✓ Avatar "${file.name}" selecionado!`);
+      };
+      if (isSvg) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearModalRpgAvatar() {
+      window._modalRpgCustomAvatar = null;
+      const previewBox = document.getElementById('cfg-modal-rpg-preview-box');
+      const clearBtn = document.getElementById('btn-modal-rpg-avatar-clear');
+      if (previewBox) {
+        previewBox.classList.add('hidden');
+        previewBox.classList.remove('flex');
+      }
+      if (clearBtn) clearBtn.classList.add('hidden');
+      showToast("Avatar restaurado para o padrão da classe!");
     }
 
     const TECH_PRESETS = {
@@ -4171,7 +4361,8 @@ Sleep 3s
       { id: "git_graph", type: "git_graph", title: "Git Commit Graph Visualizer", enabled: false, file: "git-graph.svg", icon: "🌿", params: { theme: "neon_cyber" } },
       { id: "cyber_id", type: "cyber_id", title: "Cyberpunk Corporate ID Access Badge", enabled: false, file: "cyber-id.svg", icon: "🪪", params: { role: "Senior Lead Architect", clearance_level: "LEVEL 5 - ROOT", theme: "arasaka_red" } },
       { id: "achievement", type: "achievement", title: "Console Achievement 3D Trophy", enabled: false, file: "achievement.svg", icon: "🏆", params: { title: "LENDÁRIO CODE ARCHITECT", points: 100, rarity: "0.1% RARO", platform: "xbox" } },
-      { id: "skill_tree", type: "skill_tree", title: "Developer RPG Skill Tree", enabled: false, file: "skill-tree.svg", icon: "🌳", params: { focus: "Fullstack / Cloud / AI Architect", theme: "cyber_constellation" } }
+      { id: "skill_tree", type: "skill_tree", title: "Developer RPG Skill Tree", enabled: false, file: "skill-tree.svg", icon: "🌳", params: { focus: "Fullstack / Cloud / AI Architect", theme: "cyber_constellation" } },
+      { id: "custom_art", type: "custom_svg", title: "Arte / Imagem / GIF Personalizado", enabled: false, file: "custom-art.svg", icon: "🖼️", params: {} }
     ];
 
     function getStoredBuilderSections() {
@@ -4498,6 +4689,7 @@ Sleep 3s
           </div>
         `;
       } else if (sec.type === 'rpg' || sec.type === 'rpg_sheet') {
+        window._modalRpgCustomAvatar = params.custom_avatar;
         html = `
           <div class="flex flex-col gap-1.5">
             <label class="font-semibold text-slate-300">Classe do Desenvolvedor</label>
@@ -4512,6 +4704,28 @@ Sleep 3s
           <div class="flex flex-col gap-1.5">
             <label class="font-semibold text-slate-300">Nível do Personagem</label>
             <input type="number" id="cfg-rpg-level" min="1" max="999" value="${params.level || 85}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
+          </div>
+          <div class="flex flex-col gap-1.5 mt-2 pt-2 border-t border-brand-border/40">
+            <label class="font-semibold text-slate-300 flex items-center justify-between">
+              <span>🖼️ Foto / Avatar Personalizado</span>
+              <span class="text-[10px] text-purple-400 font-mono">PNG, JPG, GIF, SVG</span>
+            </label>
+            <div class="flex items-center gap-2">
+              <label class="flex-1 px-3 py-1.5 bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 rounded-lg cursor-pointer text-xs text-purple-200 text-center font-medium transition">
+                📁 Escolher Nova Imagem / GIF
+                <input type="file" id="cfg-rpg-avatar-input" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" class="hidden" onchange="handleModalRpgAvatarUpload(event)">
+              </label>
+              <button type="button" id="btn-modal-rpg-avatar-clear" onclick="clearModalRpgAvatar()" class="${params.custom_avatar ? '' : 'hidden'} px-2.5 py-1.5 bg-red-500/15 hover:bg-red-500/25 border border-red-500/30 rounded-lg text-xs text-red-300 transition">
+                Restaurar Padrão
+              </button>
+            </div>
+            <div id="cfg-modal-rpg-preview-box" class="${params.custom_avatar ? 'flex' : 'hidden'} items-center gap-2.5 mt-1 p-2 bg-brand-surface rounded-lg border border-purple-500/30">
+              <img id="cfg-modal-rpg-preview-img" src="${params.custom_avatar || ''}" class="w-12 h-10 object-cover rounded border border-purple-500/40 bg-brand-dark">
+              <div class="flex-1 min-w-0">
+                <span class="text-xs text-slate-200 font-medium block truncate">Avatar Personalizado Ativo</span>
+                <span class="text-[10px] text-purple-300">Base64 embutido no passaporte</span>
+              </div>
+            </div>
           </div>
         `;
       } else if (sec.type === 'subway' || sec.type === 'git_subway') {
@@ -4710,12 +4924,24 @@ Sleep 3s
             <input type="text" id="cfg-cust-title" value="${escapeHtml(sec.title)}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs">
           </div>
           <div class="flex flex-col gap-1.5">
-            <label class="font-semibold text-slate-300">Nome do Arquivo SVG (no repositório)</label>
+            <label class="font-semibold text-slate-300">Nome do Arquivo (no repositório GitHub)</label>
             <input type="text" id="cfg-cust-file" value="${escapeHtml(sec.file || 'custom-art.svg')}" class="p-2 bg-brand-dark border border-brand-border rounded-lg text-slate-200 text-xs font-mono">
           </div>
           <div class="flex flex-col gap-1.5 pt-1">
-            <label class="font-semibold text-slate-300">Substituir Arquivo SVG</label>
-            <input type="file" accept=".svg" onchange="handleCustomSvgUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-brand-600 file:text-white file:font-semibold cursor-pointer">
+            <label class="font-semibold text-slate-300 flex items-center justify-between">
+              <span>Substituir Imagem / GIF / SVG</span>
+              <span class="text-[10px] text-purple-400 font-mono">PNG, JPG, GIF, SVG</span>
+            </label>
+            <input type="file" accept="image/png,image/jpeg,image/gif,image/svg+xml,image/webp" onchange="handleCustomSvgUpload(event)" class="text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-purple-600/80 file:text-white file:font-semibold cursor-pointer">
+            <div id="cfg-cust-preview-box" class="mt-2 p-2 bg-brand-surface rounded-lg border border-brand-border flex items-center gap-3">
+              <div class="w-16 h-12 rounded border border-purple-500/30 overflow-hidden bg-brand-dark flex items-center justify-center">
+                <img id="cfg-cust-preview" src="/api/builder/custom_svg/${sec.id || 'custom'}" class="max-w-full max-h-full object-contain" onerror="this.style.display='none'">
+              </div>
+              <div class="text-[11px] text-slate-300 flex-1">
+                <span class="text-emerald-400 font-semibold block">✓ Arquivo Pronto para Exportar</span>
+                <span class="text-[10px] text-slate-400">Embutido nativamente no pacote ZIP do perfil</span>
+              </div>
+            </div>
           </div>
         `;
       } else {
@@ -4786,14 +5012,33 @@ Sleep 3s
     function handleCustomSvgUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
+      const isSvg = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
       const reader = new FileReader();
       reader.onload = function(evt) {
         if (editingBlockIdx !== null && builderSections[editingBlockIdx]) {
-          builderSections[editingBlockIdx].svg_data = evt.target.result;
-          showToast(`✓ SVG "${file.name}" carregado!`);
+          const raw = evt.target.result;
+          let svgPayload = '';
+          if (isSvg && typeof raw === 'string' && raw.trim().startsWith('<svg')) {
+            svgPayload = raw;
+          } else {
+            svgPayload = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 450" width="100%" height="100%">
+  <image href="${raw}" xlink:href="${raw}" x="0" y="0" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"/>
+</svg>`;
+          }
+          builderSections[editingBlockIdx].svg_data = svgPayload;
+          const prev = document.getElementById('cfg-cust-preview');
+          if (prev) {
+            prev.src = isSvg ? 'data:image/svg+xml;utf8,' + encodeURIComponent(raw) : raw;
+            prev.style.display = 'block';
+          }
+          showToast(`✓ Arquivo "${file.name}" carregado com sucesso!`);
         }
       };
-      reader.readAsText(file);
+      if (isSvg) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
     }
 
     function saveBlockConfig() {
@@ -4840,6 +5085,9 @@ Sleep 3s
       } else if (sec.type === 'rpg' || sec.type === 'rpg_sheet') {
         sec.params.cls = document.getElementById('cfg-rpg-cls') ? document.getElementById('cfg-rpg-cls').value : 'alchemist';
         sec.params.level = document.getElementById('cfg-rpg-level') ? (parseInt(document.getElementById('cfg-rpg-level').value, 10) || 85) : 85;
+        if (window._modalRpgCustomAvatar !== undefined) {
+          sec.params.custom_avatar = window._modalRpgCustomAvatar;
+        }
       } else if (sec.type === 'subway' || sec.type === 'git_subway') {
         sec.params.repo = document.getElementById('cfg-sub-repo') ? document.getElementById('cfg-sub-repo').value.trim() : 'core-platform';
       } else if (sec.type === 'pet' || sec.type === 'dev_pet') {
@@ -4909,12 +5157,13 @@ Sleep 3s
       const blockTitle = cleanFilename.replace('.svg', '').replace(/[-_]/g, ' ').toUpperCase();
 
       const blockId = 'custom_' + Date.now();
+      const isRpg = (currentFilename === 'rpg_sheet.svg' || currentFilename === 'rpg-sheet.svg');
       const newBlock = {
         id: blockId,
-        type: 'custom_svg',
-        title: `Arte: ${blockTitle}`,
+        type: isRpg ? 'rpg_sheet' : 'custom_svg',
+        title: isRpg ? 'Passaporte RPG do Desenvolvedor' : `Arte: ${blockTitle}`,
         file: cleanFilename.endsWith('.svg') ? cleanFilename : `${cleanFilename}.svg`,
-        icon: '🖼️',
+        icon: isRpg ? '⚔️' : '🖼️',
         enabled: true,
         width: '100%',
         layout_mode: 'inline',
@@ -4922,7 +5171,11 @@ Sleep 3s
         details_summary: '',
         svg_data: currentSvg,
         preview_url: `/api/builder/custom_svg/${blockId}`,
-        params: {}
+        params: {
+          cls: document.getElementById('rpg-class') ? document.getElementById('rpg-class').value : 'alchemist',
+          level: document.getElementById('rpg-level') ? (parseInt(document.getElementById('rpg-level').value, 10) || 85) : 85,
+          custom_avatar: currentRpgAvatarDataUrl || null
+        }
       };
 
       builderSections.push(newBlock);
@@ -5682,12 +5935,53 @@ def render_rpg_sheet(
     hp: int = 96,
     mana: int = 91,
     stamina: int = 98,
-    username: str = "hero"
+    username: str = "hero",
+    custom_avatar: Optional[str] = None
 ):
     p = registry.get("rpg_sheet")
-    tmp = os.path.join(os.path.dirname(__file__), "_temp_rpg.svg")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_rpg_{os.getpid()}.svg")
     char_name = name if name else username.upper()
-    p.run(character_name=char_name, rpg_class=cls, level=int(level), hp=int(hp), mana=int(mana), stamina=int(stamina), username=username, out_svg=tmp)
+    p.run(
+        character_name=char_name,
+        rpg_class=cls,
+        level=int(level),
+        hp=int(hp),
+        mana=int(mana),
+        stamina=int(stamina),
+        username=username,
+        custom_avatar=custom_avatar,
+        out_svg=tmp
+    )
+    with open(tmp, "r", encoding="utf-8") as f:
+        svg = f.read()
+    return Response(content=svg, media_type="image/svg+xml")
+
+@app.post("/api/render/rpg_sheet")
+@app.post("/api/render/rpg_sheet_custom")
+def render_rpg_sheet_custom(payload: dict = Body(...)):
+    p = registry.get("rpg_sheet")
+    tmp = os.path.join(tempfile.gettempdir(), f"_temp_rpg_custom_{os.getpid()}.svg")
+    cls = payload.get("cls", "alchemist")
+    level = int(payload.get("level", 85))
+    name = payload.get("name")
+    hp = int(payload.get("hp", 96))
+    mana = int(payload.get("mana", 91))
+    stamina = int(payload.get("stamina", 98))
+    username = payload.get("username", "hero")
+    custom_avatar = payload.get("custom_avatar")
+
+    char_name = name if name else username.upper()
+    p.run(
+        character_name=char_name,
+        rpg_class=cls,
+        level=level,
+        hp=hp,
+        mana=mana,
+        stamina=stamina,
+        username=username,
+        custom_avatar=custom_avatar,
+        out_svg=tmp
+    )
     with open(tmp, "r", encoding="utf-8") as f:
         svg = f.read()
     return Response(content=svg, media_type="image/svg+xml")
@@ -6184,7 +6478,24 @@ def builder_preview(payload: dict = Body(...)):
         elif stype in ("rpg", "rpg_sheet"):
             r_cls = params.get("cls", "alchemist")
             r_lvl = params.get("level", 85)
-            sec["preview_url"] = f"/api/render/rpg_sheet?cls={r_cls}&level={r_lvl}&name={safe_name}&username={safe_user}"
+            c_avatar = params.get("custom_avatar")
+            if c_avatar:
+                sec_id = sec.get("id", "rpg")
+                p = registry.get("rpg_sheet")
+                tmp = os.path.join(tempfile.gettempdir(), f"_temp_rpg_bld_{sec_id}_{os.getpid()}.svg")
+                p.run(
+                    character_name=clean_name.upper(),
+                    rpg_class=r_cls,
+                    level=int(r_lvl),
+                    username=username,
+                    custom_avatar=c_avatar,
+                    out_svg=tmp
+                )
+                with open(tmp, "r", encoding="utf-8") as f:
+                    _BUILDER_CUSTOM_CACHE[f"rpg_{sec_id}"] = f.read()
+                sec["preview_url"] = f"/api/builder/custom_svg/rpg_{sec_id}"
+            else:
+                sec["preview_url"] = f"/api/render/rpg_sheet?cls={r_cls}&level={r_lvl}&name={safe_name}&username={safe_user}"
         elif stype in ("subway", "git_subway"):
             r_repo = urllib.parse.quote(params.get("repo", "core-platform"))
             sec["preview_url"] = f"/api/render/git_subway?repo={r_repo}&username={safe_user}"

@@ -255,9 +255,15 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
 
             svg_content = None
             try:
-                if stype == "custom_svg":
-                    # Custom user SVG uploaded or picked from gallery
-                    svg_content = sec.get("svg_data") or params.get("svg_data")
+                if stype in ("custom_svg", "custom_image"):
+                    raw_data = sec.get("svg_data") or params.get("svg_data") or params.get("image_data")
+                    if raw_data:
+                        if raw_data.strip().startswith(("<svg", "<?xml")):
+                            svg_content = raw_data
+                        elif raw_data.strip().startswith("data:image/"):
+                            svg_content = f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 450" width="100%"><image href="{raw_data}" xlink:href="{raw_data}" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"/></svg>'
+                        else:
+                            svg_content = raw_data
                 elif stype == "header":
                     hdr_text = params.get("text") or (name.upper() if name else username.upper())
                     font_type = params.get("font", "wordmark")
@@ -356,7 +362,8 @@ def build_profile_bundle_zip(username: str, name: str, city: str, sections: List
                     p = registry.get("rpg_sheet")
                     r_cls = params.get("cls", "alchemist")
                     r_lvl = int(params.get("level", 85))
-                    res = p.run(username=username, character_name=name or username, rpg_class=r_cls, level=r_lvl, out_svg="rpg-sheet.svg")
+                    c_avatar = params.get("custom_avatar")
+                    res = p.run(username=username, character_name=name or username, rpg_class=r_cls, level=r_lvl, custom_avatar=c_avatar, out_svg="rpg-sheet.svg")
                     with open(res.get("output_path", "rpg-sheet.svg"), "r", encoding="utf-8") as f:
                         svg_content = f.read()
                 elif stype == "git_subway":

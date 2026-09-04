@@ -8,7 +8,7 @@ import os
 import io
 import html
 import base64
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from PIL import Image
 from ...core.plugin import BasePlugin
 from ...core.registry import registry
@@ -112,6 +112,7 @@ class RpgSheetPlugin(BasePlugin):
         stamina: int = 98,
         canvas_w: int = 780,
         canvas_h: int = 470,
+        custom_avatar: Optional[str] = None,
         **kwargs
     ) -> Dict[str, Any]:
         titlebar_h = 34
@@ -119,7 +120,25 @@ class RpgSheetPlugin(BasePlugin):
 
         cls_info = RPG_CLASSES.get(str(rpg_class).lower().strip(), RPG_CLASSES["paladin"])
         accent = cls_info["color"]
-        b64_art = get_rpg_character_b64(rpg_class)
+
+        custom_img = kwargs.get("custom_avatar") or custom_avatar
+        if custom_img and str(custom_img).strip():
+            raw = str(custom_img).strip()
+            if raw.startswith("data:"):
+                b64_art = raw
+            elif raw.startswith(("<svg", "<?xml")):
+                b64 = base64.b64encode(raw.encode("utf-8")).decode("ascii")
+                b64_art = f"data:image/svg+xml;base64,{b64}"
+            elif os.path.isfile(raw):
+                ext = os.path.splitext(raw)[1].lower().lstrip(".")
+                mime = "svg+xml" if ext == "svg" else ("jpeg" if ext in ("jpg", "jpeg") else ("gif" if ext == "gif" else "png"))
+                with open(raw, "rb") as f:
+                    b64 = base64.b64encode(f.read()).decode("ascii")
+                    b64_art = f"data:image/{mime};base64,{b64}"
+            else:
+                b64_art = f"data:image/png;base64,{raw}"
+        else:
+            b64_art = get_rpg_character_b64(rpg_class)
 
         parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="{canvas_w}" height="{canvas_h}" '
@@ -180,7 +199,7 @@ class RpgSheetPlugin(BasePlugin):
                 f'<rect x="{port_x}" y="{port_y}" width="{port_w}" height="{port_h}" rx="8"/>',
                 f'</clipPath>',
                 f'</defs>',
-                f'<image href="{b64_art}" x="{port_x}" y="{port_y}" width="{port_w}" height="{port_h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#port_clip_{clip_pfx})"/>',
+                f'<image href="{b64_art}" xlink:href="{b64_art}" x="{port_x}" y="{port_y}" width="{port_w}" height="{port_h}" preserveAspectRatio="xMidYMid slice" clip-path="url(#port_clip_{clip_pfx})"/>',
                 f'<rect x="{port_x}" y="{port_y}" width="{port_w}" height="{port_h}" rx="8" fill="none" stroke="{accent}" stroke-width="1.5" stroke-opacity="0.75"/>'
             ])
         else:
